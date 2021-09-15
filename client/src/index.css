@@ -1,4 +1,4 @@
-:root{
+:root {
     --bg: #121212;
     --input: #181818;
     --font: #ffffff;
@@ -7,4 +7,63 @@
     --border: #1f1f1f;
     --secondary: #03DAC6;
     --error: #CF6679;
+}
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+/* Dark theme colors */
+body {
+    background-color: var(--bg);
+    color: var(--font);
+}
+
+.logo {
+    color: var(--primary);
+}
+
+.nav-link {
+    color: var(--secondary);
+}
+
+.navbar {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary-variant);
+}
+
+a {
+    color: var(--primary);
+}
+
+a:hover {
+    color: var(--primary-variant);
+}
+
+/* Font size */
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.text-secondary {
+    font-size: 0.95em;
+    font-weight: lighter;
+    color: var(--font)!important;
+}
+
+/* Cards */
+.card {
+    background-color: rgba(255, 255, 255, 0.06);
 }
