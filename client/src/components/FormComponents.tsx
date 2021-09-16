@@ -1,5 +1,5 @@
 import {Component, FormEvent} from "react";
-import "./FormComponents.css";
+import "../css/FormComponents.css";
 import {ISubmittable} from "../models/ISubmittable";
 
 interface IProps {
@@ -13,12 +13,11 @@ class CardForm extends Component<IProps> {
         this.submit = this.submit.bind(this);
     }
     
-    
     public render() {
         return (
             <div>
                 <h3>{this.props.name}</h3>
-                <form className={"card-form"} onSubmit={this.submit}>
+                <form acceptCharset="utf8" className="card-form" onSubmit={this.submit}>
                     {this.props.children}
                 </form>
             </div>

@@ -1,0 +1,16 @@
+.required-item {
+    line-height: 16px;
+    height: 16px;
+    font-size: smaller;
+    color: #B00020;
+    margin-bottom: 0.2rem;
+}
+
+.required-item.fulfilled {
+    color: forestgreen;
+}
+
+.required-item span {
+    vertical-align: middle;
+    display: inline-block;
+}

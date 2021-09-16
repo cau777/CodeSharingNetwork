@@ -1,7 +1,7 @@
 import {FormEvent} from "react";
 import {AxiosResponse} from "axios";
 import {ISubmittable} from "./ISubmittable";
-import api from "../api";
+import api from "../utils/api";
 
 class FormData<TResponse> implements ISubmittable {
     private readonly url: string;

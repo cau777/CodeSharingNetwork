@@ -23,13 +23,18 @@ form {
 
 }
 
+form input:focus {
+    border: solid 1px var(--primary);
+}
+
 form input {
     margin-bottom: 0.4rem;
+    outline: none;
     min-width: 20rem;
     background-color: var(--input);
     color: var(--font);
-    border: 1px var(--border) solid;
     border-radius: 0.25rem;
-    padding-left: 0.05rem;
-    padding-right: 0.05rem;
+    padding: 0.3rem 0.6rem;
+    border: solid 1px black;
+    transition: 0.3s;
 }

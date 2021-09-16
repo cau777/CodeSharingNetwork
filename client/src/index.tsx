@@ -1,12 +1,15 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './index.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import Main from './components/Main';
 import Header from "./components/Header";
 import Login from "./components/Login";
 import {Route, BrowserRouter as Router, Switch} from 'react-router-dom'
 import RedirectNotAuthenticated from "./components/RedirectNotAuthenticated";
 import Loading from "./components/Loading";
+import Register from "./components/Register";
 
 
 ReactDOM.render(
@@ -22,6 +25,9 @@ ReactDOM.render(
                         </Route>
                         <Route path="/loading">
                             <Loading/>
+                        </Route>
+                        <Route path="/register">
+                            <Register/>
                         </Route>
                         
                         <RedirectNotAuthenticated/>

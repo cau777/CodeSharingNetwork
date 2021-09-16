@@ -6,7 +6,9 @@
     --primary-variant: #9700B3;
     --border: #1f1f1f;
     --secondary: #03DAC6;
-    --error: #CF6679;
+    --error: #B00020;
+    --error-outline: #d60027;
+    --error-variant: #CF6679;
 }
 
 a.navbar-brand {
@@ -22,11 +24,8 @@ body {
 }
 
 .logo {
-    color: var(--primary);
-}
-
-.nav-link {
-    color: var(--secondary);
+    color: var(--primary)!important;
+    font-weight: bolder;
 }
 
 .navbar {
@@ -46,6 +45,10 @@ a:hover {
     color: var(--primary-variant);
 }
 
+.icon {
+    color: var(--font);
+}
+
 /* Font size */
 html {
     font-size: 14px;
@@ -60,10 +63,17 @@ html {
 .text-secondary {
     font-size: 0.95em;
     font-weight: lighter;
-    color: var(--font)!important;
+    color: var(--font) !important;
 }
 
 /* Cards */
 .card {
     background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Alerts */
+.alert-danger {
+    color: var(--font);
+    border-color: var(--error-outline);
+    background-color: var(--error);
 }

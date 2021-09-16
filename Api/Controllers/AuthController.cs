@@ -19,6 +19,15 @@ namespace Api.Controllers
 
             return Json(info);
         }
+
+        [HttpPost]
+        [Route("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterInfo info)
+        {
+            if (!TryValidateModel(info)) return BadRequest(info);
+
+            return Json(info);
+        }
         
         public class LoginInfo
         {
@@ -27,6 +36,11 @@ namespace Api.Controllers
             
             [Required]
             public string Password { get;  set; }
+        }
+        
+        public class RegisterInfo : LoginInfo
+        {
+            
         }
     }
 }
