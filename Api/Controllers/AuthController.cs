@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Api.Attributes;
+using Api.Models;
+using Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -11,13 +10,22 @@ namespace Api.Controllers
     [Route("api/auth")]
     public class AuthController : Controller
     {
+        private readonly UserService _userService;
+        public AuthController(UserService userService)
+        {
+            _userService = userService;
+        }
+
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginInfo info)
         {
             if (!TryValidateModel(info)) return BadRequest(info);
 
-            return Json(info);
+            User user = await _userService.FindByLogin(info.Name, info.Password);
+            if (user is null) return NotFound();
+
+            return Ok();
         }
 
         [HttpPost]
@@ -26,21 +34,25 @@ namespace Api.Controllers
         {
             if (!TryValidateModel(info)) return BadRequest(info);
 
-            return Json(info);
+            User user = new(info.Name, info.Password);
+            bool result = await _userService.Add(user);
+
+            return result ? Ok() : Conflict();
         }
-        
+
         public class LoginInfo
         {
             [Required]
-            public string Username { get;  set; }
-            
+            [MinLength(4)]
+            [RegularExpression("^[\\w]+$")]
+            public string Name { get; set; }
+
             [Required]
-            public string Password { get;  set; }
+            [Password]
+            [MinLength(8)]
+            public string Password { get; set; }
         }
-        
-        public class RegisterInfo : LoginInfo
-        {
-            
-        }
+
+        public class RegisterInfo : LoginInfo { }
     }
 }

@@ -51,8 +51,8 @@ class Register extends Component<any, State> {
                     </Alert>
                     
                     <div className="form-section">
-                        <label className="form-label" htmlFor="username">Username</label><br/>
-                        <input onInput={this.validateUser} name="username" type="text" id="username"
+                        <label className="form-label" htmlFor="name">Username</label><br/>
+                        <input onInput={this.validateUser} name="name" type="text" id="name"
                                required={true} maxLength={9999} spellCheck={"false"}/>
                         <div>
                             <RequirementItem message="At least 4 characters long"
@@ -104,8 +104,12 @@ class Register extends Component<any, State> {
     private failed() {
         this.setState({busy: false});
         this.setState({success: false});
-        let passwordInput = document.getElementById("password") as HTMLInputElement;
-        passwordInput.value = "";
+        
+        let password = document.getElementById("password") as HTMLInputElement;
+        let password2 = document.getElementById("password2") as HTMLInputElement;
+    
+        password.value = "";
+        password2.value = "";
     }
     
     private validatePassword(event: FormEvent<HTMLInputElement>) {
@@ -121,9 +125,9 @@ class Register extends Component<any, State> {
     private async validateUser(event: FormEvent<HTMLInputElement>) {
         this.state.data.inputChange(event);
         
-        let username = (document.getElementById("username") as HTMLInputElement).value;
+        let name = (document.getElementById("name") as HTMLInputElement).value;
         
-        await this.state.usernameValidator.validate(username);
+        await this.state.usernameValidator.validate(name);
         this.setState({usernameValidator: this.state.usernameValidator});
     }
 }
