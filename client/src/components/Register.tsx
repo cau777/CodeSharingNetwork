@@ -30,11 +30,11 @@ class Register extends Component<any, State> {
         this.validateUser = this.validateUser.bind(this);
         
         this.state = {
-            data: new FormData<Response>("register", "post", this.startSending, this.success, this.failed),
+            data: new FormData<Response>("auth/register", "post", this.startSending, this.success, this.failed),
             busy: false,
             success: true,
-            passwordValidator: new PasswordValidator(""),
-            usernameValidator: new UsernameValidator("")
+            passwordValidator: new PasswordValidator(),
+            usernameValidator: new UsernameValidator()
         }
     }
     
@@ -65,17 +65,27 @@ class Register extends Component<any, State> {
                     <div className="form-section">
                         <label className="form-label" htmlFor="password">Password</label><br/>
                         <input onInput={this.validatePassword} name="password" type="password" id="password"
-                               required={true} maxLength={9999} spellCheck={"false"}/>
+                               required={true} maxLength={9999} spellCheck="false"/><br/>
+                        
+                        <label className="form-label" htmlFor="password2">Repeat the password</label><br/>
+                        <input onInput={this.validatePassword} type="password" id="password2"
+                               required={true} maxLength={9999} spellCheck="false"/>
+                        
                         <div>
                             <RequirementItem message="At least 8 characters long"
                                              fulfilled={passwordValidator.isRequiredLength}/>
                             <RequirementItem message="Contains a number" fulfilled={passwordValidator.hasNumber}/>
                             <RequirementItem message="Contains uppercase and lowercase letters"
                                              fulfilled={passwordValidator.hasUppercaseAndLowercase}/>
+                            <RequirementItem message="Passwords are equal"
+                                             fulfilled={passwordValidator.passwordsMatch}/>
                         </div>
                     </div>
                     <div className="form-section">
-                        <button disabled={this.state.busy} type="submit" className="btn btn-primary">Submit</button>
+                        <button
+                            disabled={this.state.busy || !this.state.usernameValidator.isValid() || !this.state.passwordValidator.isValid()}
+                            type="submit" className="btn btn-primary">Submit
+                        </button>
                     </div>
                 </div>
             </CardForm>
@@ -99,16 +109,22 @@ class Register extends Component<any, State> {
     }
     
     private validatePassword(event: FormEvent<HTMLInputElement>) {
-        this.setState({passwordValidator: new PasswordValidator(event.currentTarget.value)});
         this.state.data.inputChange(event);
+        
+        let password = (document.getElementById("password") as HTMLInputElement).value;
+        let password2 = (document.getElementById("password2") as HTMLInputElement).value;
+        
+        this.state.passwordValidator.validate(password, password2);
+        this.setState({passwordValidator: this.state.passwordValidator});
     }
     
     private async validateUser(event: FormEvent<HTMLInputElement>) {
-        let validator = new UsernameValidator(event.currentTarget.value);
         this.state.data.inputChange(event);
         
-        await validator.checkAvailability();
-        this.setState({usernameValidator: validator});
+        let username = (document.getElementById("username") as HTMLInputElement).value;
+        
+        await this.state.usernameValidator.validate(username);
+        this.setState({usernameValidator: this.state.usernameValidator});
     }
 }
 

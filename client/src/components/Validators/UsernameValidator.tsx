@@ -1,27 +1,33 @@
 import api from "../../utils/api";
+import {IValidator} from "./IValidator";
 
-export class UsernameValidator {
-    private static readonly charactersRegex = new RegExp("^[a-zA-Z0-9_]+$");
+export class UsernameValidator implements IValidator {
+    private static readonly charactersRegex = new RegExp("^\\w+$");
     
+    public isRequiredLength: boolean;
+    public allowedChars: boolean;
     public isAvailable: boolean;
-    public readonly isRequiredLength: boolean;
-    public readonly allowedChars: boolean;
     
-    private readonly username: string;
-    
-    constructor(username: string) {
-        this.isRequiredLength = username.length >= 4;
-        this.allowedChars = UsernameValidator.charactersRegex.test(username);
-        this.isAvailable = false;
-        this.username = username;
+    constructor() {
+        this.validate = this.validate.bind(this);
+        this.isValid = this.isValid.bind(this);
         
-        this.checkAvailability = this.checkAvailability.bind(this);
+        this.isRequiredLength = false;
+        this.allowedChars = false;
+        this.isAvailable = false;
     }
     
-    public async checkAvailability() {
+    public async validate(username: string) {
+        this.isRequiredLength = username.length >= 4;
+        this.allowedChars = UsernameValidator.charactersRegex.test(username);
+        
         if (this.isRequiredLength && this.allowedChars) {
-            let response = await api.post<boolean>("/users/isAvailable", this.username);
+            let response = await api.post<boolean>("/users/isAvailable", username);
             this.isAvailable = response.data;
         }
+    }
+    
+    public isValid(): boolean {
+        return this.isRequiredLength && this.allowedChars && this.isAvailable;
     }
 }
