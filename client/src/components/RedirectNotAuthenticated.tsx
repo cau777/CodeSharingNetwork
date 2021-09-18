@@ -1,13 +1,10 @@
 import {Component} from "react";
 import {Redirect} from "react-router-dom";
-
-function checkAuthenticated(): boolean {
-    return false;
-}
+import {AuthService} from "../utils/auth/AuthService";
 
 class RedirectNotAuthenticated extends Component {
     public render() {
-        if (!checkAuthenticated()) {
+        if (!AuthService.isAuthenticated()) {
             return (<Redirect to="/login"/>);
         }
         return ("");

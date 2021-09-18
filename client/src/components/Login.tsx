@@ -1,29 +1,29 @@
-import {Component} from "react";
+import React, {Component} from "react";
 import {CardForm} from "./FormComponents";
-import {FormData} from "../models/FormData";
+import {FormData} from "../utils/forms/FormData";
 import {AxiosResponse} from "axios";
 import {Alert} from "react-bootstrap";
-
-interface Response {
-
-}
+import {AuthService} from "../utils/auth/AuthService";
+import {RouteComponentProps, withRouter} from "react-router-dom";
 
 interface State {
-    data: FormData<Response>;
+    data: FormData<string>;
     busy: boolean;
     success: boolean;
 }
 
-class Login extends Component<any, State> {
-    public constructor(props: any) {
-        super(props);
+interface IProps extends RouteComponentProps {
+}
+
+class Login extends Component<IProps, State> {
+    public constructor(props: IProps, context: any) {
+        super(props, context);
         
         this.startSending = this.startSending.bind(this);
         this.success = this.success.bind(this);
         this.failed = this.failed.bind(this);
-        
         this.state = {
-            data: new FormData<Response>("auth/login", "post", this.startSending, this.success, this.failed),
+            data: new FormData<string>("auth/login", "post", this.startSending, this.success, this.failed),
             busy: false,
             success: true
         };
@@ -39,8 +39,8 @@ class Login extends Component<any, State> {
                     </Alert>
                     
                     <div className="form-section">
-                        <label className="form-label" htmlFor="username">Username</label><br/>
-                        <input onInput={formData.inputChange} name="username" type="text" id="username"
+                        <label className="form-label" htmlFor="name">Username</label><br/>
+                        <input onInput={formData.inputChange} name="name" type="text" id="name"
                                required={true} maxLength={9999} spellCheck="false"/><br/>
                         
                         <label className="form-label" htmlFor="password">Password</label><br/>
@@ -64,9 +64,11 @@ class Login extends Component<any, State> {
         this.setState({busy: true});
     }
     
-    private success(response: AxiosResponse<Response>) {
-        this.setState({busy: false});
-        alert(response);
+    private success(response: AxiosResponse<string>) {
+        AuthService.authenticate(response.data).then(() => {
+            this.setState({busy: false});
+            this.props.history.push("/");
+        });
     }
     
     private failed() {
@@ -77,4 +79,4 @@ class Login extends Component<any, State> {
     }
 }
 
-export default Login;
+export default withRouter(Login);

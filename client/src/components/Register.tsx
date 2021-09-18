@@ -1,5 +1,5 @@
 import {Component, FormEvent} from "react";
-import {FormData} from "../models/FormData";
+import {FormData} from "../utils/forms/FormData";
 import {CardForm} from "./FormComponents";
 import {AxiosResponse} from "axios";
 import RequirementItem from "./RequirementItem";

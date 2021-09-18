@@ -1,6 +1,6 @@
 import {Component, FormEvent} from "react";
 import "../css/FormComponents.css";
-import {ISubmittable} from "../models/ISubmittable";
+import {ISubmittable} from "../utils/forms/ISubmittable";
 
 interface IProps {
     name: string;
