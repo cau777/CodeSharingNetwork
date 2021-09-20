@@ -8,6 +8,7 @@ using Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Api.Controllers.DataTransferObjects;
 
 namespace Api.Controllers
 {
@@ -26,11 +27,11 @@ namespace Api.Controllers
         [HttpPost]
         [AllowAnonymous]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] LoginInfo info)
+        public async Task<IActionResult> Login([FromBody] LoginDTO data)
         {
-            if (!TryValidateModel(info)) return BadRequest(info);
+            if (!TryValidateModel(data)) return BadRequest(data);
 
-            User user = await _userService.FindByLogin(info.Name, info.Password);
+            User user = await _userService.FindByLogin(data.Name, data.Password);
             if (user is null) return NotFound();
 
             return Json(PrepareToken(user));
@@ -39,11 +40,11 @@ namespace Api.Controllers
         [HttpPost]
         [AllowAnonymous]
         [Route("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterInfo info)
+        public async Task<IActionResult> Register([FromBody] RegisterDTO data)
         {
-            if (!TryValidateModel(info)) return BadRequest(info);
+            if (!TryValidateModel(data)) return BadRequest(data);
 
-            User user = new(info.Name, info.Password);
+            User user = new(data.Name, data.Password);
             bool result = await _userService.Add(user);
 
             if (result)
@@ -63,20 +64,5 @@ namespace Api.Controllers
         {
             return _tokenService.GenerateToken(user);
         }
-
-        public class LoginInfo
-        {
-            [Required]
-            [MinLength(4)]
-            [RegularExpression("^[\\w]+$")]
-            public string Name { get; set; }
-
-            [Required]
-            [Password]
-            [MinLength(8)]
-            public string Password { get; set; }
-        }
-
-        public class RegisterInfo : LoginInfo { }
     }
 }
