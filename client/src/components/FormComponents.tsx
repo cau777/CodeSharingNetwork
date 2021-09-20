@@ -18,7 +18,9 @@ class CardForm extends Component<IProps> {
             <div>
                 <h3>{this.props.name}</h3>
                 <form acceptCharset="utf8" className="card-form" onSubmit={this.submit}>
-                    {this.props.children}
+                    <div className={"card"}>
+                        {this.props.children}
+                    </div>
                 </form>
             </div>
         );

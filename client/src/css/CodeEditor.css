@@ -1,0 +1,84 @@
+
+.code-editor {
+    max-height: 80vh;
+    border: solid 1px black;
+    width: 100%;
+    font-family: monospace;
+    display: flex;
+    flex-direction: row;
+}
+
+.code-editor * {
+    font-size: 14px !important;
+}
+
+.code-editor .line-numbers td {
+    padding-right: 0.2rem;
+    padding-left: 0.2rem;
+}
+
+.line-text-col {
+    background-color: rgba(255, 255, 255, 0.02);
+    width: auto;
+}
+
+.code-editor textarea {
+    margin: 0;
+    padding: 0;
+    resize: none;
+    overflow-x: scroll;
+    color: transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: transparent;
+    caret-color: var(--font);
+
+    /* Remove word wrapping */
+    white-space: pre;
+    overflow-wrap: normal;
+}
+
+#code-wrapper {
+    flex-grow: 1;
+    line-height: 23px;
+    position: relative;
+    overflow: hidden;
+}
+
+#code-text-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    user-select: none;
+}
+
+#code-text-wrapper * {
+    width: 100%;
+    user-select: none;
+}
+
+#code-text-wrapper table colgroup col {
+    background-color: var(--input);
+}
+
+#code-text-wrapper table tbody tr td {
+    padding: 0;
+    white-space: pre;
+    min-height: 23px;
+}
+
+#code-text-wrapper table tbody tr td.selected {
+    background-color: var(--input-highlight);
+}
+
+.code-editor #code-text {
+    margin: 0;
+    padding: 0;
+    overflow-x: visible;
+    color: var(--font);
+    z-index: -1;
+}

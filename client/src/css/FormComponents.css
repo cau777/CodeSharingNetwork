@@ -20,7 +20,7 @@ form {
 }
 
 .form-label {
-
+    margin-right: 1rem;
 }
 
 form input:focus {
@@ -37,4 +37,27 @@ form input {
     padding: 0.3rem 0.6rem;
     border: solid 1px black;
     transition: 0.3s;
+}
+
+form .inline-input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+form .inline-input input{
+    flex-grow: 1;
+}
+
+form textarea.long-text{
+    min-width: 60vw;
+    margin-bottom: 0.4rem;
+}
+
+form textarea {
+    outline: none;
+    background-color: var(--input);
+    color: var(--font);
+    padding: 0.3rem 0.6rem;
+    border: none;
 }

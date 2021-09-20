@@ -11,7 +11,8 @@ import RedirectNotAuthenticated from "./components/RedirectNotAuthenticated";
 import Loading from "./components/Loading";
 import Register from "./components/Register";
 import {AuthService} from "./utils/auth/AuthService";
-import CookieManager from "./utils/CookieManager";
+import PostSnippet from "./components/PostSnippet";
+import NotFound from "./NotFound";
 
 async function prepareDependencies() {
     await AuthService.authenticateFromCookies();
@@ -36,7 +37,11 @@ prepareDependencies().then(() =>
                                 <Register/>
                             </Route>
                             
-                            <RedirectNotAuthenticated/>
+                            {/* Authenticated routes */}
+                            <Route path="/post">
+                                <RedirectNotAuthenticated/>
+                                <PostSnippet/>
+                            </Route>
                             
                             <Route path="/" exact={true}>
                                 <RedirectNotAuthenticated/>
