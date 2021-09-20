@@ -38,9 +38,14 @@ prepareDependencies().then(() =>
                             
                             <RedirectNotAuthenticated/>
                             
-                            {/* Authenticated routes */}
-                            <Route exact path="/" strict={true}>
+                            <Route path="/" exact={true}>
+                                <RedirectNotAuthenticated/>
                                 <Main/>
+                            </Route>
+                            
+                            <Route path="/">
+                                <RedirectNotAuthenticated/>
+                                <NotFound/>
                             </Route>
                         </Switch>
                     </div>
