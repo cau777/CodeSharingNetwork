@@ -1,7 +1,12 @@
 import {Component} from "react";
 import {Navbar, Container, Nav} from "react-bootstrap";
+import {RouteComponentProps, withRouter} from "react-router-dom";
 
-class Header extends Component {
+interface IProps extends RouteComponentProps {
+
+}
+
+class Header extends Component<IProps> {
     public render() {
         return (
             <header>
@@ -11,7 +16,8 @@ class Header extends Component {
                         <Navbar.Toggle aria-controls="header-nav-collapse"/>
                         <Navbar.Collapse>
                             <Nav className="me-auto" id="header-nav-collapse">
-                                <Nav.Link href="/">Home</Nav.Link>
+                                <Nav.Link onClick={() => this.props.history.push("/")}>Home</Nav.Link>
+                                <Nav.Link onClick={() => this.props.history.push("/post")}>Post snippet</Nav.Link>
                             </Nav>
                         </Navbar.Collapse>
                     </Container>
@@ -21,4 +27,4 @@ class Header extends Component {
     }
 }
 
-export default Header;
+export default withRouter(Header);

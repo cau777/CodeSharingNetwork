@@ -1,18 +1,19 @@
-import {Component, FormEvent} from "react";
-import {FormData} from "../utils/forms/FormData";
+import React, {Component, FormEvent} from "react";
+import {FormController} from "../utils/forms/FormController";
 import {CardForm} from "./FormComponents";
 import {AxiosResponse} from "axios";
 import RequirementItem from "./RequirementItem";
-import {Alert} from "react-bootstrap";
+import {Alert, Button} from "react-bootstrap";
 import {UsernameValidator} from "./Validators/UsernameValidator";
 import {PasswordValidator} from "./Validators/PasswordValidator";
+import Link from "./Link";
 
 interface Response {
 
 }
 
 interface State {
-    data: FormData<Response>;
+    form: FormController<Response>;
     busy: boolean;
     success: boolean;
     usernameValidator: UsernameValidator;
@@ -30,7 +31,7 @@ class Register extends Component<any, State> {
         this.validateUser = this.validateUser.bind(this);
         
         this.state = {
-            data: new FormData<Response>("auth/register", "post", this.startSending, this.success, this.failed),
+            form: new FormController<Response>("auth/register", "post", this.startSending, this.success, this.failed),
             busy: false,
             success: true,
             passwordValidator: new PasswordValidator(),
@@ -39,54 +40,57 @@ class Register extends Component<any, State> {
     }
     
     public render() {
-        let formData = this.state.data;
+        let form = this.state.form;
         let usernameValidator = this.state.usernameValidator;
         let passwordValidator = this.state.passwordValidator;
         
         return (
-            <CardForm name="Register" target={formData}>
-                <div className="card">
-                    <Alert variant={"danger"} hidden={this.state.success}>
-                        Invalid request
-                    </Alert>
+            <CardForm name="Register" target={form}>
+                <Alert variant={"danger"} hidden={this.state.success}>
+                    Invalid request
+                </Alert>
+                
+                <div className="form-section">
+                    <label className="form-label" htmlFor="name">Username</label><br/>
+                    <input className="selected-border" onInput={this.validateUser} name="name" type="text" id="name"
+                           required={true} maxLength={9999} spellCheck={"false"}/>
+                    <div>
+                        <RequirementItem message="At least 4 characters long"
+                                         fulfilled={usernameValidator.isRequiredLength}/>
+                        <RequirementItem message="Only contains letters and underscores"
+                                         fulfilled={usernameValidator.allowedChars}/>
+                        <RequirementItem message={"Is available"} fulfilled={usernameValidator.isAvailable}/>
+                    </div>
+                </div>
+                <div className="form-section">
+                    <label className="form-label" htmlFor="password">Password</label><br/>
+                    <input className="selected-border" onInput={this.validatePassword} name="password" type="password" id="password"
+                           required={true} maxLength={9999} spellCheck="false"/><br/>
                     
-                    <div className="form-section">
-                        <label className="form-label" htmlFor="name">Username</label><br/>
-                        <input onInput={this.validateUser} name="name" type="text" id="name"
-                               required={true} maxLength={9999} spellCheck={"false"}/>
-                        <div>
-                            <RequirementItem message="At least 4 characters long"
-                                             fulfilled={usernameValidator.isRequiredLength}/>
-                            <RequirementItem message="Only contains letters and underscores"
-                                             fulfilled={usernameValidator.allowedChars}/>
-                            <RequirementItem message={"Is available"} fulfilled={usernameValidator.isAvailable}/>
-                        </div>
+                    <label className="form-label" htmlFor="password2">Repeat the password</label><br/>
+                    <input className="selected-border" onInput={this.validatePassword} type="password" id="password2"
+                           required={true} maxLength={9999} spellCheck="false"/>
+                    
+                    <div>
+                        <RequirementItem message="At least 8 characters long"
+                                         fulfilled={passwordValidator.isRequiredLength}/>
+                        <RequirementItem message="Contains a number" fulfilled={passwordValidator.hasNumber}/>
+                        <RequirementItem message="Contains uppercase and lowercase letters"
+                                         fulfilled={passwordValidator.hasUppercaseAndLowercase}/>
+                        <RequirementItem message="Passwords are equal"
+                                         fulfilled={passwordValidator.passwordsMatch}/>
                     </div>
-                    <div className="form-section">
-                        <label className="form-label" htmlFor="password">Password</label><br/>
-                        <input onInput={this.validatePassword} name="password" type="password" id="password"
-                               required={true} maxLength={9999} spellCheck="false"/><br/>
-                        
-                        <label className="form-label" htmlFor="password2">Repeat the password</label><br/>
-                        <input onInput={this.validatePassword} type="password" id="password2"
-                               required={true} maxLength={9999} spellCheck="false"/>
-                        
-                        <div>
-                            <RequirementItem message="At least 8 characters long"
-                                             fulfilled={passwordValidator.isRequiredLength}/>
-                            <RequirementItem message="Contains a number" fulfilled={passwordValidator.hasNumber}/>
-                            <RequirementItem message="Contains uppercase and lowercase letters"
-                                             fulfilled={passwordValidator.hasUppercaseAndLowercase}/>
-                            <RequirementItem message="Passwords are equal"
-                                             fulfilled={passwordValidator.passwordsMatch}/>
-                        </div>
-                    </div>
-                    <div className="form-section">
-                        <button
-                            disabled={this.state.busy || !this.state.usernameValidator.isValid() || !this.state.passwordValidator.isValid()}
-                            type="submit" className="btn btn-primary">Submit
-                        </button>
-                    </div>
+                </div>
+                <div>
+                    <Button
+                        disabled={this.state.busy || !this.state.usernameValidator.isValid() || !this.state.passwordValidator.isValid()}
+                        type="submit">Submit
+                    </Button>
+                </div>
+                <div>
+                    <span className="text-secondary">
+                        Already registered? <Link to="/login">Log in</Link>
+                    </span>
                 </div>
             </CardForm>
         );
@@ -107,13 +111,13 @@ class Register extends Component<any, State> {
         
         let password = document.getElementById("password") as HTMLInputElement;
         let password2 = document.getElementById("password2") as HTMLInputElement;
-    
+        
         password.value = "";
         password2.value = "";
     }
     
     private validatePassword(event: FormEvent<HTMLInputElement>) {
-        this.state.data.inputChange(event);
+        this.state.form.inputChange(event);
         
         let password = (document.getElementById("password") as HTMLInputElement).value;
         let password2 = (document.getElementById("password2") as HTMLInputElement).value;
@@ -123,7 +127,7 @@ class Register extends Component<any, State> {
     }
     
     private async validateUser(event: FormEvent<HTMLInputElement>) {
-        this.state.data.inputChange(event);
+        this.state.form.inputChange(event);
         
         let name = (document.getElementById("name") as HTMLInputElement).value;
         

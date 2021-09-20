@@ -1,9 +1,17 @@
-import {FormEvent} from "react";
 import {AxiosResponse} from "axios";
 import {ISubmittable} from "./ISubmittable";
 import api from "../api";
 
-class FormData<TResponse> implements ISubmittable {
+interface IFormEvent<TValue> {
+    currentTarget: ITarget<TValue>;
+}
+
+interface ITarget<TValue> {
+    name: string;
+    value: TValue;
+}
+
+class FormController<TResponse> implements ISubmittable {
     private readonly url: string;
     private readonly method: "get" | "post";
     private readonly values: Map<string, any>;
@@ -41,10 +49,10 @@ class FormData<TResponse> implements ISubmittable {
         promise.then(this.onFulfilled, this.onRejected);
     }
     
-    public inputChange(event: FormEvent<HTMLInputElement>) {
+    public inputChange(event: IFormEvent<string>) {
         const target = event.currentTarget;
         this.values.set(target.name, target.value);
     }
 }
 
-export {FormData};
+export {FormController};
