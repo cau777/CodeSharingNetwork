@@ -27,6 +27,6 @@ export class AuthService {
             api.defaults.headers.Authorization = authorization;
             
             CookieManager.setCookie(AuthService.CookieName, AuthService.token, 3600 * 4);
-        }, () => CookieManager.setCookie(AuthService.CookieName, ""));
+        }, () => CookieManager.clearCookie(AuthService.CookieName));
     }
 }

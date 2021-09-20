@@ -9,6 +9,10 @@ class CookieManager {
         
         document.cookie = cookie;
     }
+    
+    public static clearCookie(name: string) {
+        document.cookie = name + "=;";
+    }
 }
 
 export default CookieManager;
