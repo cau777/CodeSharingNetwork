@@ -17,6 +17,7 @@ import {DeleteCommand} from "./commands/DeleteCommand";
 
 interface IProps {
     language: SupportedLanguages;
+    onInput?: React.FormEventHandler<HTMLTextAreaElement>;
 }
 
 interface IState {
@@ -43,7 +44,6 @@ class CodeEditor extends Component<IProps, IState> {
             selected: 0,
             rows: 1,
         };
-        
         this.keyDown = this.keyDown.bind(this);
         this.updateSelectedRow = this.updateSelectedRow.bind(this);
     }
@@ -57,9 +57,10 @@ class CodeEditor extends Component<IProps, IState> {
                     <div id="code-text-wrapper">
                         <CodeDisplay selected={this.state.selected} text={this.state.text}/>
                     </div>
-                    <textarea id="code-input" is="LineInput" onKeyDown={this.keyDown}
+                    <textarea id="code-input" name="code" onKeyDown={this.keyDown}
                               onScroll={CodeEditor.scrollNumbers} onFocus={() => $(".code-editor").addClass("selected")}
-                              onBlur={() => $(".code-editor").removeClass("selected")} onSelect={this.updateSelectedRow} rows={1} maxLength={10_000}>
+                              onBlur={() => $(".code-editor").removeClass("selected")} onSelect={this.updateSelectedRow}
+                              onInput={()=>console.log("asd")} rows={1} maxLength={9999}>
                         
                     </textarea>
                 </div>
@@ -108,6 +109,8 @@ class CodeEditor extends Component<IProps, IState> {
                 break;
             }
         }
+        
+       this.props.onInput?.(e);
     }
     
     private updateSelectedRow(e: KeyboardEvent<HTMLTextAreaElement>) {
