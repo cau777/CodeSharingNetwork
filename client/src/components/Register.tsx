@@ -4,24 +4,26 @@ import {CardForm} from "./FormComponents";
 import {AxiosResponse} from "axios";
 import RequirementItem from "./RequirementItem";
 import {Alert, Button} from "react-bootstrap";
-import {UsernameValidator} from "./Validators/UsernameValidator";
-import {PasswordValidator} from "./Validators/PasswordValidator";
+import {UsernameValidator} from "./validators/UsernameValidator";
+import {PasswordValidator} from "./validators/PasswordValidator";
 import Link from "./Link";
+import {RouteComponentProps, withRouter} from "react-router-dom";
+import {AuthService} from "../utils/auth/AuthService";
 
-interface Response {
+interface IProps extends RouteComponentProps {
 
 }
 
-interface State {
-    form: FormController<Response>;
+interface IState {
+    form: FormController<string>;
     busy: boolean;
     success: boolean;
     usernameValidator: UsernameValidator;
     passwordValidator: PasswordValidator;
 }
 
-class Register extends Component<any, State> {
-    public constructor(props: any) {
+class Register extends Component<IProps, IState> {
+    public constructor(props: IProps) {
         super(props);
         
         this.startSending = this.startSending.bind(this);
@@ -31,7 +33,7 @@ class Register extends Component<any, State> {
         this.validateUser = this.validateUser.bind(this);
         
         this.state = {
-            form: new FormController<Response>("auth/register", "post", this.startSending, this.success, this.failed),
+            form: new FormController<string>("auth/register", "post", this.startSending, this.success, this.failed),
             busy: false,
             success: true,
             passwordValidator: new PasswordValidator(),
@@ -100,9 +102,10 @@ class Register extends Component<any, State> {
         this.setState({busy: true});
     }
     
-    private success(response: AxiosResponse<Response>) {
-        this.setState({busy: false});
-        alert(response);
+    private success(response: AxiosResponse<string>) {
+        AuthService.authenticate(response.data).then(() => {
+            this.props.history.push("/");
+        });
     }
     
     private failed() {
@@ -136,4 +139,4 @@ class Register extends Component<any, State> {
     }
 }
 
-export default Register;
+export default withRouter(Register);

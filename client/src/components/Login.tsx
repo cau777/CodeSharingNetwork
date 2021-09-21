@@ -67,7 +67,6 @@ class Login extends Component<IProps, State> {
     
     private success(response: AxiosResponse<string>) {
         AuthService.authenticate(response.data).then(() => {
-            this.setState({busy: false});
             this.props.history.push("/");
         });
     }

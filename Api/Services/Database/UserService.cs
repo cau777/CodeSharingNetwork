@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Api.DatabaseContexts;
 using Api.Models;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -35,15 +36,22 @@ namespace Api.Services
             }
             catch (Exception e)
             {
-                LogFailure("ADD", element, e.InnerException?.Message);
+                LogFailure("ADD", element, e);
                 return false;
             }
         }
 
-        public Task<User> FindByLogin(string name, string password)
+        [ItemCanBeNull]
+        public Task<User> FindByLogin([System.Diagnostics.CodeAnalysis.NotNull]string name, [System.Diagnostics.CodeAnalysis.NotNull]string password)
         {
             byte[] passwordBytes = User.EncodePassword(password);
             return ItemSet.FirstOrDefaultAsync(o => o.Name == name && o.Password.SequenceEqual(passwordBytes));
+        }
+
+        [ItemCanBeNull]
+        public Task<User> FindByName([System.Diagnostics.CodeAnalysis.NotNull]string name)
+        {
+            return ItemSet.FirstOrDefaultAsync(o => o.Name == name);
         }
     }
 }

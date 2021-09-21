@@ -1,11 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Api.Models
 {
-    [Table("users")]
+    [Table("Users")]
     public class User
     {
         [Key]
@@ -13,6 +15,14 @@ namespace Api.Models
         
         [MaxLength(32)]
         public byte[] Password { get; set; }
+        
+        [JsonIgnore]
+        [InverseProperty(nameof(CodeSnippet.Author))]
+        public List<CodeSnippet> SnippetsPosted { get; set; }
+
+        [JsonIgnore]
+        [InverseProperty(nameof(Like.User))]
+        public List<Like> LikesGiven { get; set; }
 
         public User() { }
 

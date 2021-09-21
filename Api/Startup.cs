@@ -3,6 +3,7 @@ using Api.Attributes;
 using Api.DatabaseContexts;
 using Api.Models;
 using Api.Services;
+using Api.Services.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -55,6 +56,7 @@ namespace Api
             services.AddTransient<IContainsUserChecker, UserService>();
             services.AddTransient<UserService>();
             services.AddTransient<TokenService>();
+            services.AddTransient<CodeSnippetService>();
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
