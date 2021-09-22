@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Api.Services.Database
 {
-    public class CodeSnippetService : DatabaseService<CodeSnippet>
+    public class CodeSnippetService : LongIdDatabaseService<CodeSnippet>
     {
         public override IEnumerable<CodeSnippet> Elements => ItemSet.Include(o => o.Likes).Include(o => o.Author);
 

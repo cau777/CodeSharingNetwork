@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using Api.Models.Interfaces;
 
 namespace Api.Models
 {
     [Table("CodeSnippets")]
-    public class CodeSnippet
+    public class CodeSnippet : ILongIdModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -14,7 +16,7 @@ namespace Api.Models
         
         [Required]
         public string Title { get; set; }
-    
+        
         [Required]
         public User Author { get; set; }
 
@@ -28,7 +30,7 @@ namespace Api.Models
 
         public long LikeCount { get; set; }
 
-        [JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore, JsonIgnore]
         [InverseProperty(nameof(Like.Snippet))]
         public List<Like> Likes { get; set; }
     }

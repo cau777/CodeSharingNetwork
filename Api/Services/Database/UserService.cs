@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Api.Services
+namespace Api.Services.Database
 {
     public class UserService : DatabaseService<User>, IContainsUserChecker
     {

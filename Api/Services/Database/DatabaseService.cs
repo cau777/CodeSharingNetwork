@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace Api.Services
+namespace Api.Services.Database
 {
     public abstract class DatabaseService<T> where T : class
     {

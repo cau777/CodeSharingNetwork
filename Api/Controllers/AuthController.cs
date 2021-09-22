@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Api.Controllers.DataTransferObjects;
+using Api.Services.Database;
 
 namespace Api.Controllers
 {
