@@ -22,6 +22,9 @@ namespace Api.Models
 
         [Required]
         public string Code { get; set; }
+        
+        [Required]
+        public DateTime Posted { get; set; }
 
         public long LikeCount { get; set; }
 

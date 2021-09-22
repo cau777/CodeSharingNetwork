@@ -42,7 +42,8 @@ namespace Api.Controllers
                 Title = data.Title,
                 Description = data.Description,
                 Code = data.Code,
-                LikeCount = 0
+                Posted = DateTime.Now,
+                LikeCount = 0,
             });
 
             return result ? Ok() : BadRequest();

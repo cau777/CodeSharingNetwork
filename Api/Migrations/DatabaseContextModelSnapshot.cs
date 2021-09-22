@@ -36,6 +36,9 @@ namespace Api.Migrations
                     b.Property<long>("LikeCount")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("Posted")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("TEXT");
