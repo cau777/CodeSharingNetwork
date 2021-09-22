@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
 using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Api.Models
 {
@@ -16,11 +16,11 @@ namespace Api.Models
         [MaxLength(32)]
         public byte[] Password { get; set; }
         
-        [JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore, JsonIgnore]
         [InverseProperty(nameof(CodeSnippet.Author))]
         public List<CodeSnippet> SnippetsPosted { get; set; }
 
-        [JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore, JsonIgnore]
         [InverseProperty(nameof(Like.User))]
         public List<Like> LikesGiven { get; set; }
 

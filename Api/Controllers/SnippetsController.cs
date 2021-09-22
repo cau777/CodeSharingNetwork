@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Api.Controllers.DataTransferObjects;
@@ -24,15 +26,37 @@ namespace Api.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetSnippets()
+        [Route("{id:long}")]
+        public async Task<IActionResult> GetSnippet(long id)
         {
-            return Json(_codeSnippetService.Elements.ToList());
+            CodeSnippet result = await _codeSnippetService.FindById(id);
+            
+            return result is null ? BadRequest(id) : Json(new GetSnippetDTO
+            {
+                Id = result.Id,
+                Title = result.Title,
+                AuthorName = result.Author.Name,
+                Description = result.Description,
+                Code = result.Code,
+                LikeCount = result.LikeCount,
+            });
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("recommended")]
+        public async Task<IActionResult> GetRecommendedSnippets()
+        {
+            List<CodeSnippet> codeSnippets = _codeSnippetService.Elements.ToList();
+            return Json(codeSnippets.Select(o => o.Id));
         }
 
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> PostSnippet([FromBody] PostSnippetDTO data)
         {
+            if (!TryValidateModel(data)) return BadRequest(data);
+
             User user = await _userService.FindByName(User.GetName());
             if (user is null) return BadRequest();
 
