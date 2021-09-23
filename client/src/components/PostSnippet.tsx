@@ -41,7 +41,7 @@ class PostSnippet extends Component<IProps, IState> {
                 <div className="form-section">
                     <label className="form-label" htmlFor="description">Description</label><br/>
                     <textarea className="long-text selected-border" onInput={form.inputChange} name="description"
-                              id="description" required={true}/>
+                              id="description" required={false}/>
                 </div>
                 
                 <div className="form-section">

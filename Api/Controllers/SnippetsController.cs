@@ -49,6 +49,7 @@ namespace Api.Controllers
         {
             List<CodeSnippet> codeSnippets = _codeSnippetService.Elements.ToList();
             return Json(codeSnippets.Select(o => o.Id));
+            //return Json(Enumerable.Repeat(5, 10));
         }
 
         [HttpPost]
