@@ -32,27 +32,29 @@ class PostSnippet extends Component<IProps, IState> {
     public render() {
         let form = this.state.form;
         return (
-            <CardForm name={"Post Snippet"} target={form}>
-                <div className="form-section inline-input">
-                    <label className="form-label" htmlFor="title">Title:</label>
-                    <input onInput={form.inputChange} type="text" name="title" id="title" required={true}
-                           maxLength={9999} className="inline selected-border"/>
-                </div>
-                <div className="form-section">
-                    <label className="form-label" htmlFor="description">Description</label><br/>
-                    <textarea className="long-text selected-border" onInput={form.inputChange} name="description"
-                              id="description" required={false}/>
-                </div>
-                
-                <div className="form-section">
-                    <label className="form-label">Code</label><br/>
-                    <CodeEditor onInput={form.inputChange} language={SupportedLanguages.Java}/>
-                </div>
-                
-                <div>
-                    <Button disabled={this.state.busy} type="submit">Submit</Button>
-                </div>
-            </CardForm>
+            <div className="fill-area-form">
+                <CardForm name={"Post Snippet"} target={form}>
+                    <div className="form-section inline-input">
+                        <label className="form-label" htmlFor="title">Title:</label>
+                        <input onInput={form.inputChange} type="text" name="title" id="title" required={true}
+                               maxLength={9999} className="inline selected-border"/>
+                    </div>
+                    <div className="form-section">
+                        <label className="form-label" htmlFor="description">Description</label><br/>
+                        <textarea className="long-text selected-border" onInput={form.inputChange} name="description"
+                                  id="description" required={false}/>
+                    </div>
+        
+                    <div className="form-section">
+                        <label className="form-label">Code</label><br/>
+                        <CodeEditor onInput={form.inputChange} language={SupportedLanguages.Java}/>
+                    </div>
+        
+                    <div>
+                        <Button disabled={this.state.busy} type="submit">Submit</Button>
+                    </div>
+                </CardForm>
+            </div>
         );
     }
     

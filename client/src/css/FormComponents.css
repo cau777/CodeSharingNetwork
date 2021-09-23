@@ -45,12 +45,12 @@ form .inline-input {
     align-items: center;
 }
 
-form .inline-input input{
+form .inline-input input {
     flex-grow: 1;
 }
 
-form textarea.long-text{
-    min-width: 60vw;
+form textarea.long-text {
+    width: 100%;
     margin-bottom: 0.4rem;
 }
 
@@ -60,4 +60,8 @@ form textarea {
     color: var(--font);
     padding: 0.3rem 0.6rem;
     border: none;
+}
+
+.fill-area-form form {
+    display: block;
 }
