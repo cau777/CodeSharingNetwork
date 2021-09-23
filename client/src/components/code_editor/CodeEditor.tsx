@@ -1,4 +1,3 @@
-import "../../css/Code.css"
 import "../../css/CodeEditor.css";
 import React, {Component, KeyboardEvent, UIEvent} from "react";
 import {SupportedLanguages} from "./SupportedLanguages";

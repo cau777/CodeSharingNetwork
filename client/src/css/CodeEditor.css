@@ -24,9 +24,9 @@
 
 .code-editor textarea {
     margin: 0;
-    padding: 0;
+    padding: 0 0 0 0.2rem;
     resize: none;
-    overflow-x: scroll;
+    overflow-x: auto;
     color: transparent;
     position: absolute;
     top: 0;
@@ -66,7 +66,7 @@
 }
 
 #code-text-wrapper table tbody tr td {
-    padding: 0;
+    padding: 0 0 0 0.2rem;
     white-space: pre;
     min-height: 23px;
 }
@@ -88,6 +88,13 @@
     overflow: hidden;
 }
 
-.line-numbers {
+#code-text-wrapper table tbody tr td.line-numbers {
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.06);
+    border-right: solid 1px black;
+    user-select: none;
+}
+
+#line-numbers-wrapper #line-numbers {
     position: relative;
 }

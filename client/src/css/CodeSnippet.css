@@ -1,0 +1,32 @@
+.code-snippet * {
+    font-family: monospace;
+    font-size: 14px !important;
+}
+
+.code-snippet {
+    overflow: auto;
+    max-width: 100%;
+}
+
+.code-snippet table {
+    border: solid 1px black;
+    width: 100%;
+
+    max-height: 50vh;
+    border-radius: 0.25rem;
+}
+
+.code-snippet table .col-numbers {
+    background-color: rgba(255, 255, 255, 0.06);
+    padding-right: 0.2rem;
+    padding-left: 0.2rem;
+    border-right: solid 1px black;
+    user-select: none;
+}
+
+.code-snippet table .col-text {
+    width: 100%;
+    background-color: var(--input);
+    padding-right: 0.2rem;
+    white-space: pre;
+}
