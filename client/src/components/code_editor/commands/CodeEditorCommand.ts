@@ -59,15 +59,16 @@ export abstract class CodeEditorCommand {
     }
     
     protected calcIndentationLevel(target: HTMLTextAreaElement) {
-        let opening = 0;
-        let closing = 0;
+        let level = 0;
         
         for (let [open, close] of CodeEditorCommand.BlockCharacters.elements) {
-            opening += countOccurrences(target.value, open, 0, target.selectionStart);
-            closing += countOccurrences(target.value, close, 0, target.selectionStart);
+            let opening = countOccurrences(target.value, open, 0, target.selectionStart);
+            let closing = countOccurrences(target.value, close, 0, target.selectionStart);
+            
+            level += Math.max(0, opening - closing);
         }
         
-        return Math.max(0, opening - closing);
+        return Math.max(0, level);
     }
     
     protected generateIndentation(level: number, options: CodeEditorOptions) {

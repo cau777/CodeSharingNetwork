@@ -5,7 +5,7 @@ interface IProps {
     selected: number;
 }
 
-export class CodeDisplay extends Component<IProps, any> {
+export class CodeEditorDisplay extends Component<IProps, any> {
     public render() {
         let textLines = this.props.text.split("\n");
         let lines: JSX.Element[] = [];

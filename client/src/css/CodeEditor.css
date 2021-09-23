@@ -82,3 +82,12 @@
     color: var(--font);
     z-index: -1;
 }
+
+#line-numbers-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.line-numbers {
+    position: relative;
+}

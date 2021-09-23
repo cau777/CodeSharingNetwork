@@ -1,7 +1,8 @@
+import "../../css/Code.css"
 import "../../css/CodeEditor.css";
 import React, {Component, KeyboardEvent, UIEvent} from "react";
 import {SupportedLanguages} from "./SupportedLanguages";
-import LineNumbers from "./LineNumbers";
+import {CodeEditorLineNumbers} from "./CodeEditorLineNumbers";
 import {DeleteToWordStartCommand} from "./commands/DeleteToWordStartCommand";
 import {EnterCommand} from "./commands/EnterCommand";
 import InsertIndentationCommand from "./commands/InsertIndentationCommand";
@@ -11,7 +12,7 @@ import {InsertKeyCommand} from "./commands/InsertKeyCommand";
 import {CodeEditorCommand} from "./commands/CodeEditorCommand";
 import {CodeEditorOptions} from "./CodeEditorOptions";
 import $ from "jquery";
-import {CodeDisplay} from "./CodeDisplay";
+import {CodeEditorDisplay} from "./CodeEditorDisplay";
 import {countOccurrences} from "../../utils/StringUtils";
 import {DeleteCommand} from "./commands/DeleteCommand";
 
@@ -52,10 +53,10 @@ class CodeEditor extends Component<IProps, IState> {
         // noinspection JSJQueryEfficiency
         return (
             <div className="code-editor selected-border">
-                <LineNumbers lineNumbers={this.state.rows}/>
+                <CodeEditorLineNumbers lineCount={this.state.rows}/>
                 <div id="code-wrapper">
                     <div id="code-text-wrapper">
-                        <CodeDisplay selected={this.state.selected} text={this.state.text}/>
+                        <CodeEditorDisplay selected={this.state.selected} text={this.state.text}/>
                     </div>
                     <textarea id="code-input" name="code" onKeyDown={this.keyDown}
                               onScroll={CodeEditor.scrollNumbers} onFocus={() => $(".code-editor").addClass("selected")}

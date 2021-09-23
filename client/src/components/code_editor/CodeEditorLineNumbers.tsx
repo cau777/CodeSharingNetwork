@@ -1,18 +1,17 @@
-import "../../css/LineNumbers.css"
 import {Component} from "react";
 
 interface IProps {
-    lineNumbers: number;
+    lineCount: number;
 }
 
-class LineNumbers extends Component<IProps, any> {
+export class CodeEditorLineNumbers extends Component<IProps, any> {
     public render() {
         let children: JSX.Element[] = [];
         
-        for (let i = 0; i < this.props.lineNumbers; i++) {
+        for (let i = 0; i < this.props.lineCount; i++) {
             children.push(
                 <tr key={"line " + i}>
-                    <td>{i+1}</td>
+                    <td>{i + 1}</td>
                 </tr>
             );
         }
@@ -36,5 +35,3 @@ class LineNumbers extends Component<IProps, any> {
         );
     }
 }
-
-export default LineNumbers;
