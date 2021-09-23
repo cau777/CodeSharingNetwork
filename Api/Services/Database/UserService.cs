@@ -12,6 +12,9 @@ namespace Api.Services.Database
 {
     public class UserService : DatabaseService<User>, IContainsUserChecker
     {
+        protected override IQueryable<User> IncludingAll =>
+            ItemSet.Include(o => o.LikesGiven).Include(o => o.SnippetsPosted);
+        
         private readonly ISet<string> _namesInUse;
 
         public UserService(DatabaseContext databaseContext, ILogger<DatabaseService<User>> logger) : base(databaseContext, databaseContext.Users, logger)

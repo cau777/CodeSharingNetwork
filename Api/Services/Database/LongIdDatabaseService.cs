@@ -13,7 +13,7 @@ namespace Api.Services.Database
 
         public Task<T> FindById(long id)
         {
-            return ItemSet.FirstOrDefaultAsync(o => o.Id == id);
+            return IncludingAll.FirstOrDefaultAsync(o => o.Id == id);
         }
     }
 }

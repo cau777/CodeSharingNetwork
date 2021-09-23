@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using Api.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,9 @@ namespace Api.Services.Database
 {
     public abstract class DatabaseService<T> where T : class
     {
-        public virtual IEnumerable<T> Elements => ItemSet;
+        public IEnumerable<T> Elements => IncludingAll;
+        protected virtual IQueryable<T> IncludingAll => ItemSet;
+        
         protected readonly DbSet<T> ItemSet;
         protected readonly DatabaseContext Context;
         private readonly ILogger<DatabaseService<T>> _logger;
