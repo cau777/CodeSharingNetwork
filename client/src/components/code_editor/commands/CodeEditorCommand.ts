@@ -8,19 +8,16 @@ export abstract class CodeEditorCommand {
     protected static readonly LinkedCharacters = new OpenCloseSet([["(", ")"], ["{", "}"], ["[", "]"], ["\"", "\""], ["'", "'"]]);
     
     private readonly preventsDefault: boolean;
-    private readonly updatesText: boolean;
     
     public abstract canExecute(alt: boolean, ctrl: boolean, shift: boolean, key: string): boolean;
     
     protected abstract performAction(component: React.Component, e: React.KeyboardEvent<HTMLTextAreaElement>, options: CodeEditorOptions): void;
     
-    protected constructor(preventsDefault: boolean, updatesSize: boolean) {
+    protected constructor(preventsDefault: boolean) {
         this.preventsDefault = preventsDefault;
-        this.updatesText = updatesSize;
         
         this.execute = this.execute.bind(this);
         this.insertValue = this.insertValue.bind(this);
-        this.updateRowsAndCols = this.updateRowsAndCols.bind(this);
         this.calcIndentationLevel = this.calcIndentationLevel.bind(this);
         this.generateIndentation = this.generateIndentation.bind(this);
     }
@@ -28,12 +25,11 @@ export abstract class CodeEditorCommand {
     public execute(component: React.Component, e: React.KeyboardEvent<HTMLTextAreaElement>, options: CodeEditorOptions) {
         this.performAction(component, e, options);
         
-        if (this.updatesText) {
-            this.updateRowsAndCols(component, e.currentTarget);
-            component.setState({text: e.currentTarget.value})
+        if (this.preventsDefault) {
+            e.preventDefault();
+            let event = new Event("input");
+            e.currentTarget.dispatchEvent(event);
         }
-        
-        if (this.preventsDefault) e.preventDefault();
     }
     
     protected insertValue(target: HTMLTextAreaElement, value: string) {
@@ -43,19 +39,6 @@ export abstract class CodeEditorCommand {
         
         target.selectionStart = start + value.length;
         target.selectionEnd = target.selectionStart;
-    }
-    
-    protected updateRowsAndCols(component: React.Component, target: HTMLTextAreaElement) {
-        let lines = (target.value + "\n").match(/.*\n/g) || [];
-        let rows = lines.length;
-        let longestRow = 0;
-        
-        for (let line of lines) {
-            longestRow = Math.max(longestRow, line.length);
-        }
-        
-        target.rows = rows;
-        component.setState({rows: rows});
     }
     
     protected calcIndentationLevel(target: HTMLTextAreaElement) {

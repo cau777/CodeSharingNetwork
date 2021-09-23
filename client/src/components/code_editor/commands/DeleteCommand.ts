@@ -4,7 +4,7 @@ import {CodeEditorOptions} from "../CodeEditorOptions";
 
 export class DeleteCommand extends CodeEditorCommand{
     constructor() {
-        super(true, true);
+        super(true);
     }
     
     public canExecute(alt: boolean, ctrl: boolean, shift: boolean, key: string): boolean {

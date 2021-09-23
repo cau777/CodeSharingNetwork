@@ -4,7 +4,7 @@ import {countOccurrences} from "../../../utils/StringUtils";
 
 export class InsertKeyCommand extends CodeEditorCommand {
     public constructor() {
-        super(true, true);
+        super(true);
         this.performAction = this.performAction.bind(this);
         this.placeCloseChar = this.placeCloseChar.bind(this);
     }

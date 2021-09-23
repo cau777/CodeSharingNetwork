@@ -46,6 +46,7 @@ class CodeEditor extends Component<IProps, IState> {
         };
         this.keyDown = this.keyDown.bind(this);
         this.updateSelectedRow = this.updateSelectedRow.bind(this);
+        this.updateRowsAndCols = this.updateRowsAndCols.bind(this);
     }
     
     public render() {
@@ -60,12 +61,21 @@ class CodeEditor extends Component<IProps, IState> {
                     <textarea id="code-input" name="code" onKeyDown={this.keyDown}
                               onScroll={CodeEditor.scrollNumbers} onFocus={() => $(".code-editor").addClass("selected")}
                               onBlur={() => $(".code-editor").removeClass("selected")} onSelect={this.updateSelectedRow}
-                              onInput={()=>console.log("asd")} rows={1} maxLength={9999}>
+                              rows={1} maxLength={9999}>
                         
                     </textarea>
                 </div>
             </div>
         )
+    }
+    
+    public componentDidMount() {
+        let codeInput = document.getElementById("code-input") as HTMLTextAreaElement;
+        
+        codeInput.addEventListener("input", () => {
+            this.updateRowsAndCols(codeInput);
+            this.setState({text: codeInput.value})
+        });
     }
     
     private static prepareKey(key: string) {
@@ -102,6 +112,19 @@ class CodeEditor extends Component<IProps, IState> {
         }
     }
     
+    private updateRowsAndCols(target: HTMLTextAreaElement) {
+        let lines = (target.value + "\n").match(/.*\n/g) || [];
+        let rows = lines.length;
+        let longestRow = 0;
+        
+        for (let line of lines) {
+            longestRow = Math.max(longestRow, line.length);
+        }
+        
+        target.rows = rows;
+        this.setState({rows: rows});
+    }
+    
     private keyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
         for (let command of CodeEditor.commands) {
             if (command.canExecute(e.altKey, e.ctrlKey, e.shiftKey, CodeEditor.prepareKey(e.key))) {
@@ -110,7 +133,7 @@ class CodeEditor extends Component<IProps, IState> {
             }
         }
         
-       this.props.onInput?.(e);
+        this.props.onInput?.(e);
     }
     
     private updateSelectedRow(e: KeyboardEvent<HTMLTextAreaElement>) {

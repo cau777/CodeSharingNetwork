@@ -4,7 +4,7 @@ import {CodeEditorOptions} from "../CodeEditorOptions";
 
 export default class SelectAllCommand extends CodeEditorCommand {
     constructor() {
-        super(true, false);
+        super(true);
     }
     
     public canExecute(alt: boolean, ctrl: boolean, shift: boolean, key: string): boolean {

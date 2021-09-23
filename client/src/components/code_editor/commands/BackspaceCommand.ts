@@ -5,7 +5,7 @@ import {regexTestRange} from "../../../utils/StringUtils";
 
 export class BackspaceCommand extends CodeEditorCommand {
     constructor() {
-        super(true, true);
+        super(true);
     }
     
     public canExecute(alt: boolean, ctrl: boolean, shift: boolean, key: string): boolean {

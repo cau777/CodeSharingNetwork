@@ -5,7 +5,7 @@ import {CodeEditorOptions} from "../CodeEditorOptions";
 
 export class EnterCommand extends CodeEditorCommand {
     public constructor() {
-        super(true, true);
+        super(true);
     }
     
     public canExecute(alt: boolean, ctrl: boolean, shift: boolean, key: string): boolean {
@@ -27,7 +27,6 @@ export class EnterCommand extends CodeEditorCommand {
         } else {
             let indentation = this.generateIndentation(this.calcIndentationLevel(target), options);
             this.insertValue(target, "\n" + indentation);
-            
         }
         
         if (target.scrollHeight !== 0) {

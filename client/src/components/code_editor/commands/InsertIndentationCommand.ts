@@ -4,7 +4,7 @@ import React from "react";
 
 export default class InsertIndentationCommand extends CodeEditorCommand{
     constructor() {
-        super(true,  true);
+        super(true);
     }
     
     public canExecute(alt: boolean, ctrl: boolean, shift: boolean, key: string): boolean {
