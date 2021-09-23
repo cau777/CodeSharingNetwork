@@ -1,15 +1,26 @@
 import {Component} from "react";
 import {AuthService} from "../../utils/auth/AuthService";
 
-export class NotAuthenticated extends Component<any, any>{
+interface IState {
+    authenticated: boolean;
+}
+
+export class NotAuthenticated extends Component<any, IState>{
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            authenticated: AuthService.isAuthenticated()
+        };
+    }
+    
     public render() {
-        if (!AuthService.isAuthenticated()) {
-            return (
-                <div>
-                    {this.props.children}
-                </div>
-            );
+        if (!this.state.authenticated) {
+            return this.props.children;
         }
         return ("");
+    }
+    
+    public componentDidMount() {
+        AuthService.addAuthenticationEvent(authenticated => this.setState({authenticated: authenticated}));
     }
 }

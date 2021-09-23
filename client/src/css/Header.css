@@ -1,0 +1,19 @@
+
+.logo {
+    color: var(--primary) !important;
+    font-weight: bolder;
+}
+
+#user-img {
+    width: 4vmin;
+    height: 4vmin;
+
+    clip-path: circle(45%);
+}
+
+.simple-dropdown-toggle {
+    padding: 0;
+    background-color: transparent!important;
+    box-shadow: none!important;
+    border: none!important;
+}

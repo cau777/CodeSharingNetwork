@@ -7,12 +7,13 @@ import Main from './components/Main';
 import Header from "./components/Header";
 import Login from "./components/Login";
 import {Route, BrowserRouter as Router, Switch} from 'react-router-dom'
-import RedirectNotAuthenticated from "./components/RedirectNotAuthenticated";
 import Loading from "./components/Loading";
 import Register from "./components/Register";
 import {AuthService} from "./utils/auth/AuthService";
 import PostSnippet from "./components/PostSnippet";
 import NotFound from "./NotFound";
+import {RedirectNotAuthenticated} from "./components/auth/RedirectNotAuthenticated";
+import {Logout} from "./components/Logout";
 
 async function prepareDependencies() {
     await AuthService.authenticateFromCookies();
@@ -43,13 +44,18 @@ prepareDependencies().then(() =>
                                 <PostSnippet/>
                             </Route>
                             
+                            <Route path="/logout">
+                                <RedirectNotAuthenticated/>
+                                <Logout/>
+                            </Route>
+                            
                             <Route path="/" exact={true}>
                                 <RedirectNotAuthenticated/>
                                 <Main/>
                             </Route>
                             
+                            {/* Not found */}
                             <Route path="/">
-                                <RedirectNotAuthenticated/>
                                 <NotFound/>
                             </Route>
                         </Switch>

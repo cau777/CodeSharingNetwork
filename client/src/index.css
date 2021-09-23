@@ -24,11 +24,6 @@ body {
     color: var(--font);
 }
 
-.logo {
-    color: var(--primary)!important;
-    font-weight: bolder;
-}
-
 .navbar {
     background-color: rgba(255, 255, 255, 0.08);
 }
@@ -78,7 +73,7 @@ html {
     border-radius: 0.25rem;
 }
 
-.selected-border:focus{
+.selected-border:focus {
     border: solid 1px var(--primary);
 }
 
