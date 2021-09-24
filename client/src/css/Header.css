@@ -7,8 +7,6 @@
 #user-img {
     width: 4vmin;
     height: 4vmin;
-
-    clip-path: circle(45%);
 }
 
 .simple-dropdown-toggle {

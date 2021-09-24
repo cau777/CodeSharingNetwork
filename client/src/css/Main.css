@@ -7,12 +7,20 @@
     margin-bottom: 2rem;
 }
 
-.card-snippet .card .card-header {
+.card-snippet .card-header {
     background-color: rgba(255, 255, 255, 0.06);
 }
 
-.card-snippet .card .user-image {
-    float: left;
+.card-snippet .user-img {
+    height: 27px;
+    width: auto;
+    margin-right: 1rem;
+}
+
+.card-snippet .snippet-title {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
 }
 
 .test {

@@ -28,7 +28,7 @@ class Header extends Component<IProps> {
                                 <Authenticated>
                                     <Dropdown>
                                         <Dropdown.Toggle className="simple-dropdown-toggle">
-                                            <img id="user-img" src={default_user} alt="user"/>
+                                            <img className={"round-img"} id="user-img" src={default_user} alt="user"/>
                                         </Dropdown.Toggle>
                                         
                                         <Dropdown.Menu variant="dark">

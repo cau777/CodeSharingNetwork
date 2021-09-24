@@ -50,9 +50,11 @@ export class CodeSnippet extends Component<IProps, IState> {
                     <CardHeader>
                         <div>
                             {/* Placeholder */}
-                            <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" height={16}
-                                 className={"user-image"} alt="author"/>
-                            <h4>{snippet.title}</h4>
+                            <div className={"snippet-title"}>
+                                <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
+                                     className={"user-img round-img"} alt="author"/>
+                                <h4>{snippet.title}</h4>
+                            </div>
                             <p>{snippet.description}</p>
                         </div>
                     </CardHeader>

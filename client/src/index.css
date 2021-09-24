@@ -80,3 +80,7 @@ html {
 .selected-border.selected {
     border: solid 1px var(--primary);
 }
+
+.round-img {
+    clip-path: circle(50%);
+}
