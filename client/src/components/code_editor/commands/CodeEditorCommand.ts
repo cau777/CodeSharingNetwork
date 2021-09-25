@@ -7,29 +7,14 @@ export abstract class CodeEditorCommand {
     protected static readonly BlockCharacters = new OpenCloseSet([["(", ")"], ["{", "}"], ["[", "]"]]);
     protected static readonly LinkedCharacters = new OpenCloseSet([["(", ")"], ["{", "}"], ["[", "]"], ["\"", "\""], ["'", "'"]]);
     
-    private readonly preventsDefault: boolean;
-    
     public abstract canExecute(alt: boolean, ctrl: boolean, shift: boolean, key: string): boolean;
     
-    protected abstract performAction(component: React.Component, e: React.KeyboardEvent<HTMLTextAreaElement>, options: CodeEditorOptions): void;
+    public abstract performAction(target: HTMLTextAreaElement, e: React.KeyboardEvent<HTMLTextAreaElement>, options: CodeEditorOptions): Promise<void>;
     
-    protected constructor(preventsDefault: boolean) {
-        this.preventsDefault = preventsDefault;
-        
-        this.execute = this.execute.bind(this);
+    public constructor() {
         this.insertValue = this.insertValue.bind(this);
         this.calcIndentationLevel = this.calcIndentationLevel.bind(this);
         this.generateIndentation = this.generateIndentation.bind(this);
-    }
-    
-    public execute(component: React.Component, e: React.KeyboardEvent<HTMLTextAreaElement>, options: CodeEditorOptions) {
-        this.performAction(component, e, options);
-        
-        if (this.preventsDefault) {
-            e.preventDefault();
-            let event = new Event("input");
-            e.currentTarget.dispatchEvent(event);
-        }
     }
     
     protected insertValue(target: HTMLTextAreaElement, value: string) {
@@ -56,5 +41,10 @@ export abstract class CodeEditorCommand {
     
     protected generateIndentation(level: number, options: CodeEditorOptions) {
         return options.indentation.repeat(level);
+    }
+    
+    protected moveCursor(target: HTMLTextAreaElement, pos: number) {
+        target.selectionStart = pos;
+        target.selectionEnd = target.selectionStart;
     }
 }

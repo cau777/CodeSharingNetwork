@@ -14,6 +14,7 @@ import $ from "jquery";
 import {CodeEditorDisplay} from "./CodeEditorDisplay";
 import {countOccurrences} from "../../utils/StringUtils";
 import {DeleteCommand} from "./commands/DeleteCommand";
+import {CommandExecutor} from "./CommandExecutor";
 
 interface IProps {
     language: SupportedLanguages;
@@ -37,6 +38,8 @@ class CodeEditor extends Component<IProps, IState> {
         new InsertKeyCommand(),
     ];
     
+    private executor?: CommandExecutor;
+    
     public constructor(props: IProps) {
         super(props);
         this.state = {
@@ -45,6 +48,7 @@ class CodeEditor extends Component<IProps, IState> {
             rows: 1,
         };
         this.keyDown = this.keyDown.bind(this);
+        this.changeText = this.changeText.bind(this);
         this.updateSelectedRow = this.updateSelectedRow.bind(this);
         this.updateRowsAndCols = this.updateRowsAndCols.bind(this);
     }
@@ -73,9 +77,11 @@ class CodeEditor extends Component<IProps, IState> {
         let codeInput = document.getElementById("code-input") as HTMLTextAreaElement;
         
         codeInput.addEventListener("input", () => {
-            this.updateRowsAndCols(codeInput);
-            this.setState({text: codeInput.value})
+            this.changeText();
+            this.executor?.saveState();
         });
+        
+        this.executor = new CommandExecutor(codeInput, this.changeText);
     }
     
     private static prepareKey(key: string) {
@@ -126,10 +132,18 @@ class CodeEditor extends Component<IProps, IState> {
     }
     
     private keyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
-        for (let command of CodeEditor.commands) {
-            if (command.canExecute(e.altKey, e.ctrlKey, e.shiftKey, CodeEditor.prepareKey(e.key))) {
-                command.execute(this, e, new CodeEditorOptions());
-                break;
+        if (!e.altKey && e.ctrlKey && !e.shiftKey && e.key === "z") {
+            this.executor?.undo();
+            e.preventDefault();
+        } else if (!e.altKey && e.ctrlKey && e.shiftKey && e.key === "Z") {
+            this.executor?.redo();
+            e.preventDefault();
+        } else {
+            for (let command of CodeEditor.commands) {
+                if (command.canExecute(e.altKey, e.ctrlKey, e.shiftKey, CodeEditor.prepareKey(e.key))) {
+                    this.executor?.execute(command, e, new CodeEditorOptions());
+                    break;
+                }
             }
         }
         
@@ -139,6 +153,12 @@ class CodeEditor extends Component<IProps, IState> {
     private updateSelectedRow(e: KeyboardEvent<HTMLTextAreaElement>) {
         let lineNum = countOccurrences(e.currentTarget.value, "\n", 0, e.currentTarget.selectionEnd);
         this.setState({selected: lineNum});
+    }
+    
+    private changeText() {
+        let codeInput = document.getElementById("code-input") as HTMLTextAreaElement;
+        this.updateRowsAndCols(codeInput);
+        this.setState({text: codeInput.value});
     }
 }
 

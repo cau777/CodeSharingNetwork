@@ -1,20 +1,14 @@
 import {CodeEditorCommand} from "./CodeEditorCommand";
 import React from "react";
 import {countOccurrences} from "../../../utils/StringUtils";
+import {CodeEditorOptions} from "../CodeEditorOptions";
 
 export class InsertKeyCommand extends CodeEditorCommand {
-    public constructor() {
-        super(true);
-        this.performAction = this.performAction.bind(this);
-        this.placeCloseChar = this.placeCloseChar.bind(this);
-    }
-    
     public canExecute(alt: boolean, ctrl: boolean, shift: boolean, key: string): boolean {
         return !alt && !ctrl && key.length === 1;
     }
     
-    public performAction(component: React.Component, e: React.KeyboardEvent<HTMLTextAreaElement>): void {
-        let target = e.currentTarget;
+    public async performAction(target: HTMLTextAreaElement, e: React.KeyboardEvent<HTMLTextAreaElement>, options: CodeEditorOptions): Promise<void> {
         let key = e.key;
         let selecting = target.selectionStart !== target.selectionEnd;
         let isOpen = CodeEditorCommand.LinkedCharacters.isOpenCharacter(key);
@@ -41,7 +35,7 @@ export class InsertKeyCommand extends CodeEditorCommand {
                 }
             } else if (isOpen) {
                 this.placeCloseChar(target, key);
-            }else{
+            } else {
                 this.insertValue(e.currentTarget, key);
             }
         }
