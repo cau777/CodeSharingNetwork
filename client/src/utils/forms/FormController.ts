@@ -1,15 +1,7 @@
 import {AxiosResponse} from "axios";
 import {ISubmittable} from "./ISubmittable";
 import api from "../api";
-
-interface IFormEvent<TValue> {
-    currentTarget: ITarget<TValue>;
-}
-
-interface ITarget<TValue> {
-    name: string;
-    value: TValue;
-}
+import {IFormEvent} from "./IFormEvent";
 
 class FormController<TResponse> implements ISubmittable {
     private readonly url: string;
