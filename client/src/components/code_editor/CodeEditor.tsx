@@ -62,7 +62,7 @@ class CodeEditor extends Component<IProps, IState> {
                     <div id="code-text-wrapper">
                         <CodeEditorDisplay selected={this.state.selected} text={this.state.text}/>
                     </div>
-                    <textarea id="code-input" name="code" onKeyDown={this.keyDown}
+                    <textarea id="code-input" name="code" onKeyDown={this.keyDown} autoCorrect={"none"} spellCheck={false}
                               onScroll={CodeEditor.scrollNumbers} onFocus={() => $(".code-editor").addClass("selected")}
                               onBlur={() => $(".code-editor").removeClass("selected")} onSelect={this.updateSelectedRow}
                               rows={1} maxLength={9999}>
@@ -139,8 +139,10 @@ class CodeEditor extends Component<IProps, IState> {
             this.executor?.redo();
             e.preventDefault();
         } else {
+            let key = CodeEditor.prepareKey(e.key);
+            
             for (let command of CodeEditor.commands) {
-                if (command.canExecute(e.altKey, e.ctrlKey, e.shiftKey, CodeEditor.prepareKey(e.key))) {
+                if (command.canExecute(e.altKey, e.ctrlKey, e.shiftKey, key)) {
                     this.executor?.execute(command, e, new CodeEditorOptions());
                     break;
                 }
