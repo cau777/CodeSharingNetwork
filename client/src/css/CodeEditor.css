@@ -3,13 +3,13 @@
     max-height: 80vh;
     border: solid 1px black;
     width: 100%;
-    font-family: monospace;
+    font-family: code, monospace;
     display: flex;
     flex-direction: row;
 }
 
 .code-editor * {
-    font-size: 14px !important;
+    font-size: 13px !important;
 }
 
 .code-editor .line-numbers td {

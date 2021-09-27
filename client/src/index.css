@@ -12,6 +12,18 @@
     --error-variant: #CF6679;
 }
 
+@font-face {
+    font-family: code;
+    font-weight: normal;
+    src: url(fonts/JetBrainsMono-Regular.woff2) format("woff2");
+}
+
+@font-face {
+    font-family: code;
+    font-weight: bold;
+    src: url(fonts/JetBrainsMono-Bold.woff2) format("woff2");
+}
+
 a.navbar-brand {
     white-space: normal;
     text-align: center;
