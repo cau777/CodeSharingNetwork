@@ -27,5 +27,7 @@ export class EnterCommand extends CodeEditorCommand {
         if (target.scrollHeight !== 0) {
             target.scrollBy(0, 23);
         }
+        
+        this.forceSaveState();
     }
 }

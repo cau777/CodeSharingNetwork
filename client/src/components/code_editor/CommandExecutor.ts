@@ -8,8 +8,9 @@ export class CommandExecutor {
     private readonly history: CodeEditorState[];
     private readonly target: HTMLTextAreaElement;
     private undoneHistory: CodeEditorState[];
+    private savingTimeout?: NodeJS.Timeout;
     
-    public constructor(target: HTMLTextAreaElement, onExecute: ()=>void,) {
+    public constructor(target: HTMLTextAreaElement, onExecute: () => void) {
         this.target = target;
         this.onExecute = onExecute;
         this.history = [new CodeEditorState()];
@@ -21,13 +22,27 @@ export class CommandExecutor {
         this.undoneHistory = [];
         
         await command.performAction(e.currentTarget, e, options);
-        this.saveState();
+        
+        // The state is saved when the user stops typing for one second or an action forces it (like enter)
+        if (command.forcesSaveState) {
+            this.saveState();
+        } else {
+            if (this.savingTimeout) {
+                clearTimeout(this.savingTimeout);
+            }
+            
+            this.savingTimeout = setTimeout(() => {
+                this.saveState();
+                this.savingTimeout = undefined;
+            }, 1000);
+        }
         
         this.onExecute();
     }
     
     public async undo() {
-        console.log(this.history)
+        this.saveState();
+        
         if (this.history.length !== 1) {
             let prev = this.history.pop();
             if (prev)
