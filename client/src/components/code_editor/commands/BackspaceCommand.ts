@@ -12,8 +12,10 @@ export class BackspaceCommand extends CodeEditorCommand {
     public async performAction(target: HTMLTextAreaElement, e: React.KeyboardEvent<HTMLTextAreaElement>, options: CodeEditorOptions): Promise<void> {
         if (target.selectionStart === target.selectionEnd) {
             if (regexTestRange(target.value, new RegExp(options.indentation + "$"), 0, target.selectionStart)) {
+                // Remove indentation
                 target.selectionStart = Math.max(0, target.selectionStart - options.indentation.length);
             } else {
+                // Remove the previous character
                 target.selectionStart = Math.max(0, target.selectionStart - 1);
                 
                 if (target.selectionEnd !== target.value.length) {
@@ -22,6 +24,7 @@ export class BackspaceCommand extends CodeEditorCommand {
                     let closeChar = CodeEditorCommand.LinkedCharacters.findCloseCharacter(currentChar);
                     
                     if (nextChar === closeChar) {
+                        // If removing a character like ([{", also remove the next closing character if present
                         target.selectionEnd++;
                     }
                 }

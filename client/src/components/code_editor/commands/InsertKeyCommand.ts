@@ -10,32 +10,41 @@ export class InsertKeyCommand extends CodeEditorCommand {
     
     public async performAction(target: HTMLTextAreaElement, e: React.KeyboardEvent<HTMLTextAreaElement>, options: CodeEditorOptions): Promise<void> {
         let key = e.key;
-        let selecting = target.selectionStart !== target.selectionEnd;
+        let isSelecting = target.selectionStart !== target.selectionEnd;
         let isOpen = CodeEditorCommand.LinkedCharacters.isOpenCharacter(key);
         let isClose = CodeEditorCommand.LinkedCharacters.isCloseCharacter(key);
         
-        if (selecting) {
+        if (isSelecting) {
             if (isOpen) {
-                // Wrap
+                // Wrap selection (example: '{selection}')
+                let selection = target.value.substring(target.selectionStart, target.selectionEnd);
+                this.insertValue(target, key + selection + CodeEditorCommand.LinkedCharacters.findCloseCharacter(key));
             } else {
-                this.insertValue(e.currentTarget, key);
+                // Replace the selection with the new letter
+                this.insertValue(target, key);
             }
         } else {
+            
             if (isClose) {
                 let opening = countOccurrences(target.value, CodeEditorCommand.LinkedCharacters.findOpenCharacter(key));
                 let closing = countOccurrences(target.value, key);
                 
                 if (opening === closing && target.selectionStart < target.value.length && target.value.charAt(target.selectionStart) === key) {
+                    // Just advance one letter
                     target.selectionStart++;
                     target.selectionEnd = target.selectionStart;
                 } else if (isOpen) {
+                    // Place the closing character (example: '}')
                     this.placeCloseChar(target, key);
                 } else {
+                    // Just insert the letter
                     this.insertValue(e.currentTarget, key);
                 }
             } else if (isOpen) {
+                // Place the closing character (example: '}')
                 this.placeCloseChar(target, key);
             } else {
+                // Just insert the letter
                 this.insertValue(e.currentTarget, key);
             }
         }
