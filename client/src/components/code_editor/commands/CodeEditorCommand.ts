@@ -4,7 +4,8 @@ import {CodeEditorOptions} from "../CodeEditorOptions";
 import {OpenCloseSet} from "../../../utils/OpenCloseSet";
 
 export abstract class CodeEditorCommand {
-    public forcesSaveState: boolean;
+    public savesStateBefore: boolean;
+    public savesStateAfter: boolean;
     
     protected static readonly BlockCharacters = new OpenCloseSet([["(", ")"], ["{", "}"], ["[", "]"]]);
     protected static readonly LinkedCharacters = new OpenCloseSet([["(", ")"], ["{", "}"], ["[", "]"], ["\"", "\""], ["'", "'"]]);
@@ -14,7 +15,8 @@ export abstract class CodeEditorCommand {
     public abstract performAction(target: HTMLTextAreaElement, e: React.KeyboardEvent<HTMLTextAreaElement>, options: CodeEditorOptions): Promise<void>;
     
     public constructor() {
-        this.forcesSaveState = false;
+        this.savesStateBefore = false;
+        this.savesStateAfter = false;
         this.insertValue = this.insertValue.bind(this);
         this.calcIndentationLevel = this.calcIndentationLevel.bind(this);
         this.generateIndentation = this.generateIndentation.bind(this);
@@ -51,7 +53,11 @@ export abstract class CodeEditorCommand {
         target.selectionEnd = target.selectionStart;
     }
     
-    protected forceSaveState() {
-        this.forcesSaveState = true;
+    protected saveStateBefore() {
+        this.savesStateBefore = true;
+    }
+    
+    protected saveStateAfter() {
+        this.savesStateAfter = true;
     }
 }

@@ -10,6 +10,8 @@ export class EnterCommand extends CodeEditorCommand {
     }
     
     public async performAction(target: HTMLTextAreaElement, e: React.KeyboardEvent<HTMLTextAreaElement>, options: CodeEditorOptions): Promise<void> {
+        this.saveStateAfter();
+        
         // If there is ] ) or } right after the cursor, send this character to the next line
         if (regexTestRange(target.value, /^ *[})\]]/, target.selectionEnd)) {
             let level = super.calcIndentationLevel(target);
@@ -27,7 +29,5 @@ export class EnterCommand extends CodeEditorCommand {
         if (target.scrollHeight !== 0) {
             target.scrollBy(0, 23);
         }
-        
-        this.forceSaveState();
     }
 }

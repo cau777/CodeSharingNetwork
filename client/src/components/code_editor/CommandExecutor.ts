@@ -20,11 +20,15 @@ export class CommandExecutor {
     public async execute(command: CodeEditorCommand, e: React.KeyboardEvent<HTMLTextAreaElement>, options: CodeEditorOptions) {
         e.preventDefault();
         this.undoneHistory = [];
+    
+        if (command.savesStateBefore) {
+            this.saveState();
+        }
         
         await command.performAction(e.currentTarget, e, options);
         
         // The state is saved when the user stops typing for one second or an action forces it (like enter)
-        if (command.forcesSaveState) {
+        if (command.savesStateAfter) {
             this.saveState();
         } else {
             if (this.savingTimeout) {
