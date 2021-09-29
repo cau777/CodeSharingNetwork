@@ -15,6 +15,8 @@ import {CodeEditorDisplay} from "./CodeEditorDisplay";
 import {countOccurrences} from "../../utils/StringUtils";
 import {DeleteCommand} from "./commands/DeleteCommand";
 import {CommandExecutor} from "./CommandExecutor";
+import {MoveLineUpCommand} from "./commands/MoveLineUpCommand";
+import {MoveLineDownCommand} from "./commands/MoveLineDownCommand";
 
 interface IProps {
     language: SupportedLanguages;
@@ -33,6 +35,8 @@ class CodeEditor extends Component<IProps, IState> {
         new DeleteToWordStartCommand(),
         new EnterCommand(),
         new InsertIndentationCommand(),
+        new MoveLineUpCommand(),
+        new MoveLineDownCommand(),
         new BackspaceCommand(),
         new DeleteCommand(),
         new InsertKeyCommand(),
