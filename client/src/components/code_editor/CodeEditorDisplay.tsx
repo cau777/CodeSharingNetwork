@@ -29,7 +29,11 @@ export class CodeEditorDisplay extends Component<IProps, any> {
             for (let keyword of options.keywords) {
                 CodeEditorDisplay.applyColor(text, charColors, "\\b" + keyword + "\\b", "keyword");
             }
-    
+            
+            if (options.numberHighlight) {
+                CodeEditorDisplay.applyColor(text, charColors, "\\b\\d+\\b", "number");
+            }
+            
             if (options.stringHighlight) {
                 CodeEditorDisplay.applyColor(text, charColors, "\"[^\"]*(\"|$)", "string");
                 CodeEditorDisplay.applyColor(text, charColors, "'[^']*('|$)", "string");

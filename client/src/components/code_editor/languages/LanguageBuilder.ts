@@ -6,6 +6,7 @@ export class LanguageBuilder {
     private spacesNumber = 4;
     private keywords: string[] = [];
     private stringHighlight: boolean = true;
+    private numberHighlight: boolean = true;
     
     public constructor(name: string) {
         this.lang = name;
@@ -15,8 +16,14 @@ export class LanguageBuilder {
         this.autoIndent = false;
         return this;
     }
+    
     public disableStringHighlight() {
         this.stringHighlight = false;
+        return this;
+    }
+    
+    public disableNumberHighlight() {
+        this.numberHighlight = false;
         return this;
     }
     
@@ -36,6 +43,6 @@ export class LanguageBuilder {
     }
     
     public build() {
-        return new LanguageOptions(this.lang, this.autoIndent, this.spacesNumber, this.keywords, this.stringHighlight)
+        return new LanguageOptions(this.lang, this.autoIndent, this.spacesNumber, this.keywords, this.stringHighlight, this.numberHighlight);
     }
 }
