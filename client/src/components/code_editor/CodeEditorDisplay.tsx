@@ -24,19 +24,16 @@ export class CodeEditorDisplay extends Component<IProps, any> {
                 charColors.push("");
             }
             
-            for (let keyword of this.props.language.keywords) {
-                let matches = text.matchAll(new RegExp("\\b" + keyword + "\\b", "g"));
-                for (let match of matches) {
-                    let start = match.index;
-                    if (start === undefined) continue;
-                    
-                    for (let groupIndex = 0; groupIndex < match[0].length; groupIndex++) {
-                        charColors[start + groupIndex] = "keyword";
-                    }
-                }
+            let options = this.props.language;
+            
+            for (let keyword of options.keywords) {
+                CodeEditorDisplay.applyColor(text, charColors, "\\b" + keyword + "\\b", "keyword");
             }
     
-            console.log(charColors)
+            if (options.stringHighlight) {
+                CodeEditorDisplay.applyColor(text, charColors, "\"[^\"]*(\"|$)", "string");
+                CodeEditorDisplay.applyColor(text, charColors, "'[^']*('|$)", "string");
+            }
             
             let currentColor = "";
             let textBuffer = "";
@@ -78,5 +75,17 @@ export class CodeEditorDisplay extends Component<IProps, any> {
                 </tbody>
             </table>
         );
+    }
+    
+    private static applyColor(text: string, charColors: string[], regexStr: string, colorCode: string) {
+        let matches = text.matchAll(new RegExp(regexStr, "g"));
+        for (let match of matches) {
+            let start = match.index;
+            if (start === undefined) continue;
+            
+            for (let groupIndex = 0; groupIndex < match[0].length; groupIndex++) {
+                charColors[start + groupIndex] = colorCode;
+            }
+        }
     }
 }
