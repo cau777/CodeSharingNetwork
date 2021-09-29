@@ -98,3 +98,7 @@
 #line-numbers-wrapper #line-numbers {
     position: relative;
 }
+
+.line-number {
+    height: 23px;
+}

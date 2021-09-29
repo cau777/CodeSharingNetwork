@@ -10,7 +10,7 @@ export class CodeEditorLineNumbers extends Component<IProps, any> {
         
         for (let i = 0; i < this.props.lineCount; i++) {
             children.push(
-                <tr key={"line " + i}>
+                <tr key={"line " + i} className={"line-number"}>
                     <td>{i + 1}</td>
                 </tr>
             );
