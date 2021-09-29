@@ -1,6 +1,6 @@
 import {CodeEditorCommand} from "./commands/CodeEditorCommand";
 import React from "react";
-import {CodeEditorOptions} from "./CodeEditorOptions";
+import {LanguageOptions} from "./languages/LanguageOptions";
 import {CodeEditorState} from "./CodeEditorState";
 
 export class CommandExecutor {
@@ -17,7 +17,7 @@ export class CommandExecutor {
         this.undoneHistory = [];
     }
     
-    public async execute(command: CodeEditorCommand, e: React.KeyboardEvent<HTMLTextAreaElement>, options: CodeEditorOptions) {
+    public async execute(command: CodeEditorCommand, e: React.KeyboardEvent<HTMLTextAreaElement>, options: LanguageOptions) {
         e.preventDefault();
         this.undoneHistory = [];
     

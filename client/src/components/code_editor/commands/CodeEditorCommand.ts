@@ -1,6 +1,6 @@
 import React from "react";
 import {countOccurrences} from "../../../utils/StringUtils";
-import {CodeEditorOptions} from "../CodeEditorOptions";
+import {LanguageOptions} from "../languages/LanguageOptions";
 import {OpenCloseSet} from "../../../utils/OpenCloseSet";
 
 export abstract class CodeEditorCommand {
@@ -12,7 +12,7 @@ export abstract class CodeEditorCommand {
     
     public abstract canExecute(alt: boolean, ctrl: boolean, shift: boolean, key: string): boolean;
     
-    public abstract performAction(target: HTMLTextAreaElement, e: React.KeyboardEvent<HTMLTextAreaElement>, options: CodeEditorOptions): Promise<void>;
+    public abstract performAction(target: HTMLTextAreaElement, e: React.KeyboardEvent<HTMLTextAreaElement>, options: LanguageOptions): Promise<void>;
     
     public constructor() {
         this.savesStateBefore = false;
@@ -44,8 +44,8 @@ export abstract class CodeEditorCommand {
         return Math.max(0, level);
     }
     
-    protected generateIndentation(level: number, options: CodeEditorOptions) {
-        return options.indentation.repeat(level);
+    protected generateIndentation(level: number, options: LanguageOptions) {
+        return options.tab.repeat(level);
     }
     
     protected moveCursor(target: HTMLTextAreaElement, pos: number) {

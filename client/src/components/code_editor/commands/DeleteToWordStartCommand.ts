@@ -1,5 +1,5 @@
 import {CodeEditorCommand} from "./CodeEditorCommand";
-import {CodeEditorOptions} from "../CodeEditorOptions";
+import {LanguageOptions} from "../languages/LanguageOptions";
 import React from "react";
 
 export class DeleteToWordStartCommand extends CodeEditorCommand {
@@ -8,7 +8,7 @@ export class DeleteToWordStartCommand extends CodeEditorCommand {
         return !alt && ctrl && !shift && key === "Backspace";
     }
     
-    public async performAction(target: HTMLTextAreaElement, e: React.KeyboardEvent<HTMLTextAreaElement>, options: CodeEditorOptions): Promise<void> {
+    public async performAction(target: HTMLTextAreaElement, e: React.KeyboardEvent<HTMLTextAreaElement>, options: LanguageOptions): Promise<void> {
         if (target.selectionStart === target.selectionEnd) {
             let sub = target.value.substring(0, target.selectionEnd);
             let lineStartIndex = target.selectionStart - (sub.match(/\n *$/) ?? [" "])[0].length + 1;

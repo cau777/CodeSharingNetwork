@@ -1,6 +1,6 @@
 import {CodeEditorCommand} from "./CodeEditorCommand";
 import React from "react";
-import {CodeEditorOptions} from "../CodeEditorOptions";
+import {LanguageOptions} from "../languages/LanguageOptions";
 import {find, findReversed} from "../../../utils/StringUtils";
 
 export class MoveLineDownCommand extends CodeEditorCommand {
@@ -8,7 +8,7 @@ export class MoveLineDownCommand extends CodeEditorCommand {
         return alt && !ctrl && !shift && key === "ArrowDown";
     }
     
-    public async performAction(target: HTMLTextAreaElement, e: React.KeyboardEvent<HTMLTextAreaElement>, options: CodeEditorOptions): Promise<void> {
+    public async performAction(target: HTMLTextAreaElement, e: React.KeyboardEvent<HTMLTextAreaElement>, options: LanguageOptions): Promise<void> {
         this.saveStateBefore();
         this.saveStateAfter();
         

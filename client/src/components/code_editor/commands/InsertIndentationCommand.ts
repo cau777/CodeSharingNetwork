@@ -1,5 +1,5 @@
 import {CodeEditorCommand} from "./CodeEditorCommand";
-import {CodeEditorOptions} from "../CodeEditorOptions";
+import {LanguageOptions} from "../languages/LanguageOptions";
 import React from "react";
 
 export default class InsertIndentationCommand extends CodeEditorCommand{
@@ -8,7 +8,7 @@ export default class InsertIndentationCommand extends CodeEditorCommand{
         return !alt && !ctrl && !shift && key === "Tab";
     }
     
-    public async performAction(target: HTMLTextAreaElement, e: React.KeyboardEvent<HTMLTextAreaElement>, options: CodeEditorOptions): Promise<void> {
-        this.insertValue(e.currentTarget, options.indentation);
+    public async performAction(target: HTMLTextAreaElement, e: React.KeyboardEvent<HTMLTextAreaElement>, options: LanguageOptions): Promise<void> {
+        this.insertValue(e.currentTarget, options.tab);
     }
 }

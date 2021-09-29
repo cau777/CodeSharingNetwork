@@ -1,5 +1,5 @@
 import {CodeEditorCommand} from "./CodeEditorCommand";
-import {CodeEditorOptions} from "../CodeEditorOptions";
+import {LanguageOptions} from "../languages/LanguageOptions";
 import React from "react";
 import {regexTestRange} from "../../../utils/StringUtils";
 
@@ -9,11 +9,11 @@ export class BackspaceCommand extends CodeEditorCommand {
         return !alt && !ctrl && !shift && key === "Backspace";
     }
     
-    public async performAction(target: HTMLTextAreaElement, e: React.KeyboardEvent<HTMLTextAreaElement>, options: CodeEditorOptions): Promise<void> {
+    public async performAction(target: HTMLTextAreaElement, e: React.KeyboardEvent<HTMLTextAreaElement>, options: LanguageOptions): Promise<void> {
         if (target.selectionStart === target.selectionEnd) {
-            if (regexTestRange(target.value, new RegExp(options.indentation + "$"), 0, target.selectionStart)) {
+            if (regexTestRange(target.value, new RegExp(options.tab + "$"), 0, target.selectionStart)) {
                 // Remove indentation
-                target.selectionStart = Math.max(0, target.selectionStart - options.indentation.length);
+                target.selectionStart = Math.max(0, target.selectionStart - options.tab.length);
             } else {
                 // Remove the previous character
                 target.selectionStart = Math.max(0, target.selectionStart - 1);

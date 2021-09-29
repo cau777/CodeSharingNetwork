@@ -6,7 +6,7 @@ import {IFormEvent} from "./IFormEvent";
 class FormController<TResponse> implements ISubmittable {
     private readonly url: string;
     private readonly method: "get" | "post";
-    private readonly values: Map<string, any>;
+    public readonly values: Map<string, any>;
     
     private readonly onStart: (() => void) | undefined;
     private readonly onFulfilled: ((response: AxiosResponse<TResponse>) => void) | undefined;

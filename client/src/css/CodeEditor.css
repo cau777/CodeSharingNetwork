@@ -102,3 +102,7 @@
 .line-number {
     height: 23px;
 }
+
+.code-keyword {
+    color: #4a82ff;
+}

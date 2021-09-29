@@ -1,6 +1,5 @@
 import "../../css/CodeEditor.css";
 import React, {Component, KeyboardEvent, UIEvent} from "react";
-import {SupportedLanguages} from "./SupportedLanguages";
 import {CodeEditorLineNumbers} from "./CodeEditorLineNumbers";
 import {DeleteToWordStartCommand} from "./commands/DeleteToWordStartCommand";
 import {EnterCommand} from "./commands/EnterCommand";
@@ -9,7 +8,7 @@ import SelectAllCommand from "./commands/SelectAllCommand";
 import {BackspaceCommand} from "./commands/BackspaceCommand";
 import {InsertKeyCommand} from "./commands/InsertKeyCommand";
 import {CodeEditorCommand} from "./commands/CodeEditorCommand";
-import {CodeEditorOptions} from "./CodeEditorOptions";
+import {LanguageOptions} from "./languages/LanguageOptions";
 import $ from "jquery";
 import {CodeEditorDisplay} from "./CodeEditorDisplay";
 import {countOccurrences} from "../../utils/StringUtils";
@@ -19,7 +18,7 @@ import {MoveLineUpCommand} from "./commands/MoveLineUpCommand";
 import {MoveLineDownCommand} from "./commands/MoveLineDownCommand";
 
 interface IProps {
-    language: SupportedLanguages;
+    language: LanguageOptions;
     onInput?: React.FormEventHandler<HTMLTextAreaElement>;
 }
 
@@ -64,7 +63,7 @@ class CodeEditor extends Component<IProps, IState> {
                 <CodeEditorLineNumbers lineCount={this.state.rows}/>
                 <div id="code-wrapper">
                     <div id="code-text-wrapper">
-                        <CodeEditorDisplay selected={this.state.selected} text={this.state.text}/>
+                        <CodeEditorDisplay selected={this.state.selected} text={this.state.text} language={this.props.language}/>
                     </div>
                     <textarea id="code-input" name="code" onKeyDown={this.keyDown} autoCorrect={"none"} spellCheck={false}
                               onScroll={CodeEditor.scrollNumbers} onFocus={() => $(".code-editor").addClass("selected")}
@@ -147,7 +146,7 @@ class CodeEditor extends Component<IProps, IState> {
             
             for (let command of CodeEditor.commands) {
                 if (command.canExecute(e.altKey, e.ctrlKey, e.shiftKey, key)) {
-                    this.executor?.execute(command, e, new CodeEditorOptions());
+                    this.executor?.execute(command, e, this.props.language);
                     break;
                 }
             }
