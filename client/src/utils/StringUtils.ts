@@ -40,4 +40,8 @@ function reverseStr(str: string): string {
     return reversed;
 }
 
-export {find, findReversed, countOccurrences, regexTestRange, reverseStr};
+function escapeRegExp(target: string) {
+    return target.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+export {find, findReversed, countOccurrences, regexTestRange, reverseStr, escapeRegExp};

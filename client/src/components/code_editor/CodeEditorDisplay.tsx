@@ -1,5 +1,6 @@
 import {Component} from "react";
 import {LanguageOptions} from "./languages/LanguageOptions";
+import {escapeRegExp} from "../../utils/StringUtils";
 
 interface IProps {
     text: string;
@@ -9,64 +10,85 @@ interface IProps {
 
 export class CodeEditorDisplay extends Component<IProps, any> {
     public render() {
-        let textLines = this.props.text.split("\n");
+        let keywordClass = "keyword";
+        let numberClass = "number";
+        let stringClass = "string";
+        let commentClass = "comment";
+        
+        let text = this.props.text;
         let lines: JSX.Element[] = [];
-        for (let i = 0; i < textLines.length; i++) {
-            let className = "";
-            if (this.props.selected === i) className += "selected ";
+        let charColors: string[] = [];
+        let options = this.props.language;
+        
+        for (let j = 0; j < text.length; j++) {
+            charColors.push("");
+        }
+        
+        for (let keyword of options.keywords) {
+            CodeEditorDisplay.applyColor(text, charColors, "\\b" + escapeRegExp(keyword) + "\\b", keywordClass);
+        }
+        
+        for (let literal of options.literals) {
+            CodeEditorDisplay.applyColor(text, charColors, "\\b" + escapeRegExp(literal) + "\\b", keywordClass);
+        }
+        
+        if (options.numberHighlight) {
+            CodeEditorDisplay.applyColor(text, charColors, "\\b[_\\d]+\\b", numberClass);
+        }
+        
+        if (options.stringHighlight) {
+            CodeEditorDisplay.applyColor(text, charColors, "\"[^\"]*(\"|$)", stringClass);
+            CodeEditorDisplay.applyColor(text, charColors, "'[^']*('|$)", stringClass);
+        }
+        
+        if (options.inlineComments) {
+            CodeEditorDisplay.applyColor(text, charColors, escapeRegExp(options.inlineComments) + ".*", commentClass);
+        }
+        
+        if (options.multilineComments) {
+            let regexStr = escapeRegExp(options.multilineComments.start) + "[\\s\\S]*?(" + escapeRegExp(options.multilineComments.end) + "|$)";
+            CodeEditorDisplay.applyColor(text, charColors, regexStr, commentClass);
+        }
+        
+        let lineResult: JSX.Element[] = [];
+        let lineIndex = 0;
+        let currentColor = "";
+        let textBuffer = "";
+        let spanIndex = 0;
+        
+        for (let i = 0; i <= text.length; i++) {
+            let char = text.charAt(i);
             
-            let text = textLines[i];
-            if (text.length === 0) text += " ";
-            
-            let charColors: string[] = [];
-            
-            for (let j = 0; j < text.length; j++) {
-                charColors.push("");
-            }
-            
-            let options = this.props.language;
-            
-            for (let keyword of options.keywords) {
-                CodeEditorDisplay.applyColor(text, charColors, "\\b" + keyword + "\\b", "keyword");
-            }
-            
-            if (options.numberHighlight) {
-                CodeEditorDisplay.applyColor(text, charColors, "\\b\\d+\\b", "number");
-            }
-            
-            if (options.stringHighlight) {
-                CodeEditorDisplay.applyColor(text, charColors, "\"[^\"]*(\"|$)", "string");
-                CodeEditorDisplay.applyColor(text, charColors, "'[^']*('|$)", "string");
-            }
-            
-            let currentColor = "";
-            let textBuffer = "";
-            let result: JSX.Element[] = [];
-            
-            for (let charIndex = 0; charIndex < text.length; charIndex++) {
-                let char = text.charAt(charIndex);
-                let color = charColors[charIndex];
+            if (char === "\n" || i === text.length) {
+                if (textBuffer !== "")
+                    lineResult.push(<span key={spanIndex++} className={"code-" + currentColor}>{textBuffer}</span>);
+                
+                if (lineResult.length === 0) lineResult.push(<span>{" "}</span>);
+                
+                lines.push(
+                    <tr key={"line " + lineIndex}>
+                        <td className={this.props.selected === lineIndex ? "selected" : ""}>
+                            {lineResult}
+                        </td>
+                    </tr>
+                );
+                
+                lineIndex++;
+                lineResult = [];
+                textBuffer = "";
+                currentColor = "";
+            } else {
+                let color = charColors[i];
                 
                 if (currentColor !== color) {
                     if (textBuffer !== "")
-                        result.push(<span className={"code-" + currentColor}>{textBuffer}</span>);
+                        lineResult.push(<span key={spanIndex++} className={"code-" + currentColor}>{textBuffer}</span>);
                     currentColor = color;
                     textBuffer = "";
                 }
                 
                 textBuffer += char;
             }
-            
-            if (textBuffer !== "")
-                result.push(<span className={"code-" + currentColor}>{textBuffer}</span>);
-            
-            lines.push(
-                <tr key={"line " + i}>
-                    <td className={className}>
-                        {result}
-                    </td>
-                </tr>
-            );
         }
         
         return (
