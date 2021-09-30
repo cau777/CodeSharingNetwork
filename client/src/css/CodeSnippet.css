@@ -1,3 +1,24 @@
+.card-snippet {
+    margin-bottom: 2rem;
+}
+
+.card-snippet .card-header {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.card-snippet .user-img {
+    height: 27px;
+    width: auto;
+    margin-right: 1rem;
+}
+
+.card-snippet .snippet-title-header {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 .code-snippet * {
     font-family: code, monospace;
     font-size: 13px !important;
@@ -6,13 +27,13 @@
 .code-snippet {
     overflow: auto;
     max-width: 100%;
+    max-height: 50vh;
 }
 
 .code-snippet table {
     border: solid 1px black;
     width: 100%;
 
-    max-height: 50vh;
     border-radius: 0.25rem;
 }
 
@@ -29,4 +50,17 @@
     background-color: var(--input);
     padding-right: 0.2rem;
     white-space: pre;
+}
+
+.snippet-description {
+    margin-bottom: 0;
+}
+
+.snippet-language {
+    font-family: code, monospace;
+    margin-bottom: 0;
+}
+
+.snippet-title {
+    margin-bottom: 0;
 }

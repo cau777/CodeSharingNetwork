@@ -41,12 +41,12 @@ class PostSnippet extends Component<IProps, IState> {
                     <div className="form-section inline-input">
                         <label className="form-label" htmlFor="title">Title</label>
                         <input onInput={form.inputChange} type="text" name="title" id="title" required={true}
-                               maxLength={9999} className="inline selected-border"/>
+                               maxLength={100} className="inline selected-border"/>
                     </div>
                     <div className="form-section">
                         <label className="form-label" htmlFor="description">Description</label><br/>
                         <textarea className="long-text selected-border" onInput={form.inputChange} name="description"
-                                  id="description" required={false}/>
+                                  id="description" required={false} maxLength={400}/>
                     </div>
                     
                     <div className="form-section inline-input">

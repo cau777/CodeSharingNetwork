@@ -5,6 +5,9 @@ import {ISnippetData} from "./ISnippetData";
 import {Card} from "react-bootstrap";
 import CardHeader from "react-bootstrap/CardHeader";
 import {checkVisible} from "../../utils/DOMUtils";
+import {capitalize} from "../../utils/StringUtils";
+import {SyntaxHighlighter} from "../SyntaxHighlighter";
+import {Languages} from "../code_editor/languages/Languages";
 
 interface IProps {
     order: number;
@@ -32,15 +35,19 @@ export class CodeSnippet extends Component<IProps, IState> {
         
         if (this.state.visible) {
             let snippet = this.props.snippet;
-            let rows = snippet.code.split("\n");
             let tableRows: JSX.Element[] = [];
+            let language = capitalize(snippet.language);
             
-            for (let i = 0; i < rows.length; i++) {
-                let row = rows[i];
+            let highlighter = new SyntaxHighlighter(Languages.findLanguage(language));
+            let charColors = highlighter.highlight(snippet.code);
+            let lines = highlighter.generateLines(snippet.code, charColors);
+            
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i];
                 tableRows.push(
                     <tr key={this.props.order + " " + i}>
                         <td className={"col-numbers"}>{i + 1}</td>
-                        <td className={"col-text"}>{row}</td>
+                        <td className={"col-text"}>{line}</td>
                     </tr>
                 )
             }
@@ -50,16 +57,17 @@ export class CodeSnippet extends Component<IProps, IState> {
                     <CardHeader>
                         <div>
                             {/* Placeholder */}
-                            <div className={"snippet-title"}>
+                            <div className="snippet-title-header">
                                 <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
                                      className={"user-img round-img"} alt="author"/>
-                                <h4>{snippet.title}</h4>
+                                <h4 className="snippet-title">{snippet.title}</h4>
+                                <h6 className="snippet-language ms-auto">{capitalize(snippet.language)}</h6>
                             </div>
-                            <p>{snippet.description}</p>
+                            <p className="snippet-description">{snippet.description}</p>
                         </div>
                     </CardHeader>
                     <div className="card-body">
-                        <div className={"code-snippet"}>
+                        <div className="code-snippet">
                             <table className="snippet">
                                 <colgroup>
                                     <col/>
