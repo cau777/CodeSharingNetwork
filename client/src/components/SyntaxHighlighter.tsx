@@ -1,3 +1,4 @@
+import "../css/SyntaxHighlighter.css";
 import {LanguageOptions} from "./code_editor/languages/LanguageOptions";
 import {escapeRegExp} from "../utils/StringUtils";
 
@@ -56,7 +57,8 @@ export class SyntaxHighlighter {
         }
         
         if (this.options.multilineComments) {
-            let regexStr = escapeRegExp(this.options.multilineComments.start) + "[\\s\\S]*?(" + escapeRegExp(this.options.multilineComments.end) + "|$)";
+            let regexStr = escapeRegExp(this.options.multilineComments.start) + "[\\s\\S]*?(" +
+                escapeRegExp(this.options.multilineComments.end) + "|$)";
             SyntaxHighlighter.applyColor(text, charColors, regexStr, this.commentClass);
         }
         

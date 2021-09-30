@@ -102,19 +102,3 @@
 .line-number {
     height: 23px;
 }
-
-.code-keyword {
-    color: #ff8800;
-}
-
-.code-string {
-    color: #11a214;
-}
-
-.code-number {
-    color: #20c0e8;
-}
-
-.code-comment {
-    color: #a8a2a2;
-}
