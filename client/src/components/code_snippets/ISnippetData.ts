@@ -5,4 +5,5 @@ export interface ISnippetData {
     description: string;
     code: string;
     likeCount: number;
+    language: string;
 }

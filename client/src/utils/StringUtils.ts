@@ -44,4 +44,11 @@ function escapeRegExp(target: string) {
     return target.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-export {find, findReversed, countOccurrences, regexTestRange, reverseStr, escapeRegExp};
+function capitalize(str: string) {
+    if (str.length !== 0) {
+        return str[0].toUpperCase() + str.substr(1);
+    }
+    return str;
+}
+
+export {find, findReversed, countOccurrences, regexTestRange, reverseStr, escapeRegExp, capitalize};

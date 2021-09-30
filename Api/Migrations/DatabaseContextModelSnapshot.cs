@@ -33,6 +33,10 @@ namespace Api.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<long>("LikeCount")
                         .HasColumnType("INTEGER");
 

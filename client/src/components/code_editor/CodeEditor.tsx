@@ -68,7 +68,7 @@ class CodeEditor extends Component<IProps, IState> {
                     <textarea id="code-input" name="code" onKeyDown={this.keyDown} autoCorrect={"none"} spellCheck={false}
                               onScroll={CodeEditor.scrollNumbers} onFocus={() => $(".code-editor").addClass("selected")}
                               onBlur={() => $(".code-editor").removeClass("selected")} onSelect={this.updateSelectedRow}
-                              rows={1} maxLength={9999}>
+                              rows={1} maxLength={10_000}>
                         
                     </textarea>
                 </div>

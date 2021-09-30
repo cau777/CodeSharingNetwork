@@ -15,7 +15,7 @@ namespace Api.Models
         
         [MaxLength(32)]
         public byte[] Password { get; set; }
-        
+
         [Newtonsoft.Json.JsonIgnore, JsonIgnore]
         [InverseProperty(nameof(CodeSnippet.Author))]
         public List<CodeSnippet> SnippetsPosted { get; set; }

@@ -39,6 +39,7 @@ namespace Api.Controllers
                 Description = result.Description,
                 Code = result.Code,
                 LikeCount = result.LikeCount,
+                Language = result.Language,
             });
         }
 
@@ -69,6 +70,7 @@ namespace Api.Controllers
                 Code = data.Code,
                 Posted = DateTime.Now,
                 LikeCount = 0,
+                Language = data.Language.ToLower(),
             });
 
             return result ? Ok() : BadRequest();
