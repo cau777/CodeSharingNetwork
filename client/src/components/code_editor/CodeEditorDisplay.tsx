@@ -37,6 +37,22 @@ export class CodeEditorDisplay extends Component<IProps, any> {
         }
         
         if (options.stringHighlight) {
+            let enclosedBy = "";
+            for (let i = 0; i < text.length; i++) {
+                let char = text.charAt(i);
+                
+                if (enclosedBy === "") {
+                    if (char === "\"" || char === "'") {
+                        enclosedBy = char;
+                        charColors[i] = stringClass;
+                    }
+                } else {
+                    charColors[i] = stringClass;
+                    if (char === enclosedBy) {
+                        enclosedBy = "";
+                    }
+                }
+            }
             CodeEditorDisplay.applyColor(text, charColors, "\"[^\"]*(\"|$)", stringClass);
             CodeEditorDisplay.applyColor(text, charColors, "'[^']*('|$)", stringClass);
         }
@@ -63,7 +79,7 @@ export class CodeEditorDisplay extends Component<IProps, any> {
                 if (textBuffer !== "")
                     lineResult.push(<span key={spanIndex++} className={"code-" + currentColor}>{textBuffer}</span>);
                 
-                if (lineResult.length === 0) lineResult.push(<span>{" "}</span>);
+                if (lineResult.length === 0) lineResult.push(<span key={spanIndex++}>{" "}</span>);
                 
                 lines.push(
                     <tr key={"line " + lineIndex}>
