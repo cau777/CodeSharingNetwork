@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Api.Controllers.DataTransferObjects;
 using Api.Models;
@@ -17,11 +15,13 @@ namespace Api.Controllers
     {
         private readonly CodeSnippetService _codeSnippetService;
         private readonly UserService _userService;
+        private readonly SnippetsRecommenderService _snippetsRecommender;
 
-        public SnippetsController(CodeSnippetService codeSnippetService, UserService userService)
+        public SnippetsController(CodeSnippetService codeSnippetService, UserService userService, SnippetsRecommenderService snippetsRecommender)
         {
             _codeSnippetService = codeSnippetService;
             _userService = userService;
+            _snippetsRecommender = snippetsRecommender;
         }
 
         [HttpGet]
@@ -30,27 +30,31 @@ namespace Api.Controllers
         public async Task<IActionResult> GetSnippet(long id)
         {
             CodeSnippet result = await _codeSnippetService.FindById(id);
-            
-            return result is null ? BadRequest(id) : Json(new GetSnippetDTO
-            {
-                Id = result.Id,
-                Title = result.Title,
-                AuthorName = result.Author.Name,
-                Description = result.Description,
-                Code = result.Code,
-                LikeCount = result.LikeCount,
-                Language = result.Language,
-            });
+
+            return result is null
+                ? BadRequest(id)
+                : Json(new GetSnippetDTO
+                {
+                    Id = result.Id,
+                    Title = result.Title,
+                    AuthorName = result.Author.Name,
+                    Description = result.Description,
+                    Code = result.Code,
+                    LikeCount = result.LikeCount,
+                    Language = result.Language,
+                });
         }
 
         [HttpGet]
         [Authorize]
-        [Route("recommended")]
-        public async Task<IActionResult> GetRecommendedSnippets()
+        [Route("recommended/{page:int}")]
+        public IActionResult GetRecommendedSnippets(int page)
         {
-            List<CodeSnippet> codeSnippets = _codeSnippetService.Elements.ToList();
-            return Json(codeSnippets.Select(o => o.Id));
-            //return Json(Enumerable.Repeat(5, 10));
+            // return Json(Enumerable.Repeat(10, 5));
+            string username = User.GetName();
+            long[] recommendSnippets = _snippetsRecommender.RecommendSnippets(page, username);
+            
+            return Json(recommendSnippets);
         }
 
         [HttpPost]

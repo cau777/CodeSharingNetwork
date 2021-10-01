@@ -56,13 +56,15 @@ export class CodeSnippet extends Component<IProps, IState> {
                 <Card>
                     <CardHeader>
                         <div>
-                            {/* Placeholder */}
-                            <div className="snippet-title-header">
+                            <div className="snippet-author-header flex-center">
+                                {/* Placeholder */}
                                 <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
                                      className={"user-img round-img"} alt="author"/>
-                                <h4 className="snippet-title">{snippet.title}</h4>
+                                <h5 className={"snippet-author"}>{snippet.authorName}</h5>
                                 <h6 className="snippet-language ms-auto">{capitalize(snippet.language)}</h6>
+                            
                             </div>
+                            <h4 className="snippet-title">{snippet.title}</h4>
                             <p className="snippet-description">{snippet.description}</p>
                         </div>
                     </CardHeader>

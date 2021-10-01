@@ -11,14 +11,16 @@ interface IState {
 }
 
 class Main extends Component<any, IState> {
-    currentDate: Date;
-    currentElementOrder: number;
+    private currentPage: number;
+    private elementPosition: number;
+    private canGetSnippets: boolean;
     
     public constructor(props: any) {
         super(props);
         this.render = this.render.bind(this);
         this.update = this.update.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
+        this.getSnippets = this.getSnippets.bind(this);
         
         this.state = {
             loading: false,
@@ -26,10 +28,10 @@ class Main extends Component<any, IState> {
             content: []
         };
         
-        this.currentDate = new Date();
-        this.currentElementOrder = 0;
+        this.currentPage = 0;
+        this.elementPosition = 0;
+        this.canGetSnippets = true;
     }
-    
     
     public componentDidMount() {
         window.addEventListener("scroll", this.update);
@@ -41,6 +43,9 @@ class Main extends Component<any, IState> {
             <div>
                 <div className="snippets-display" id="snippets-display">
                     {this.state.content}
+                </div>
+                <div hidden={this.state.loading}>
+                    <p>No more snippets. Sorry</p>
                 </div>
                 <div hidden={!this.state.loading}>
                     <p>Loading</p>
@@ -54,32 +59,39 @@ class Main extends Component<any, IState> {
     }
     
     private update() {
-        if (this.state.loading) return;
-        
         const scrollPosition = window.scrollY;
         const scrollLimit = Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight,
             document.documentElement.scrollHeight, document.documentElement.offsetHeight) - window.innerHeight * 1.4;
         
         if (scrollPosition > scrollLimit) {
+            if (this.state.loading) return;
+            if (!this.canGetSnippets) return;
             this.setState({loading: true});
             
-            Main.getSnippets().then(data => {
+            let currentPage = this.currentPage++;
+            this.getSnippets(currentPage).then(data => {
                 let content = this.state.content;
                 
-                for (let snippet of data) {
-                    let elementOrder = this.currentElementOrder++;
-                    content.push(
-                        <CodeSnippet key={"snippet-" + elementOrder} order={elementOrder} snippet={snippet}/>
-                    );
+                if (data.length === 0) {
+                    this.canGetSnippets = false;
+                    this.setState({loading: false});
+                } else {
+                    for (let snippet of data) {
+                        let elementPosition = this.elementPosition++;
+                        content.push(
+                            <CodeSnippet key={"snippet-" + elementPosition} order={elementPosition}
+                                         snippet={snippet}/>
+                        );
+                    }
+                    
+                    this.setState({loading: false, content: content});
                 }
-                
-                this.setState({loading: false, content: content});
             }, () => this.setState({loading: false}));
         }
     }
     
-    private static async getSnippets() {
-        let snippetsIds = await api.get<number[]>("snippets/recommended");
+    private async getSnippets(page: number) {
+        let snippetsIds = await api.get<number[]>("snippets/recommended/" + page);
         let snippets: ISnippetData[] = [];
         
         for (let snippetId of snippetsIds.data) {

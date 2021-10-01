@@ -13,7 +13,7 @@ namespace Api.Services.Database
     public abstract class DatabaseService<T> where T : class
     {
         public IEnumerable<T> Elements => IncludingAll;
-        protected virtual IQueryable<T> IncludingAll => ItemSet;
+        public virtual IQueryable<T> IncludingAll => ItemSet;
         
         protected readonly DbSet<T> ItemSet;
         protected readonly DatabaseContext Context;

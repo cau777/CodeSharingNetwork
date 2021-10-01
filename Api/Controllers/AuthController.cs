@@ -1,13 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using Api.Attributes;
 using Api.Models;
 using Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Api.Controllers.DataTransferObjects;
 using Api.Services.Database;
 

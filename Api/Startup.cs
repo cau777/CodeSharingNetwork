@@ -53,10 +53,14 @@ namespace Api
 
             services.AddDbContext<DatabaseContext>(o => o.UseSqlite(Configuration["Database:ConnectionString"]));
 
+            services.AddTransient<DatabaseService<CodeSnippet>, CodeSnippetService>();
+
             services.AddTransient<IContainsUserChecker, UserService>();
             services.AddTransient<UserService>();
             services.AddTransient<TokenService>();
             services.AddTransient<CodeSnippetService>();
+
+            services.AddTransient<SnippetsRecommenderService>();
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

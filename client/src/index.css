@@ -96,3 +96,12 @@ html {
 .round-img {
     clip-path: circle(50%);
 }
+
+.flex-center {
+    display: flex;
+    align-items: center;
+}
+
+.flex-center * {
+    margin-bottom: 0;
+}
