@@ -69,6 +69,10 @@ class PostSnippet extends Component<IProps, IState> {
         );
     }
     
+    public componentDidMount() {
+        this.form.inputChange({currentTarget: document.getElementById("language") as HTMLSelectElement});
+    }
+    
     private success() {
         this.props.history.push("/");
     }
