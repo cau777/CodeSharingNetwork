@@ -6,6 +6,7 @@ import Link from "./Link";
 import SimpleLink from "./SimpleLink";
 import {Authenticated} from "./auth/Authenticated";
 import {NotAuthenticated} from "./auth/NotAuthenticated";
+import {AuthService} from "../utils/auth/AuthService";
 
 interface IProps {
 
@@ -32,6 +33,10 @@ class Header extends Component<IProps> {
                                         </Dropdown.Toggle>
                                         
                                         <Dropdown.Menu variant="dark">
+                                            <Dropdown.ItemText>
+                                                {AuthService.credentials?.username}
+                                            </Dropdown.ItemText>
+                                            <Dropdown.Divider/>
                                             <SimpleLink to="/profile">
                                                 <Dropdown.Item>
                                                     Profile

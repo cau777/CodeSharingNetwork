@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Api.Controllers.DataTransferObjects;
 using Api.Services.Database;
+using Api.Utils.Extensions;
 
 namespace Api.Controllers
 {
@@ -54,7 +55,10 @@ namespace Api.Controllers
         [Route("info")]
         public IActionResult GetInfo()
         {
-            return Json(User.Claims.Select(o => new { type = o.ValueType, value = o.Value }).ToArray());
+            return Json(new
+            {
+                username = User.GetName(),
+            });
         }
 
         private object PrepareToken(User user)

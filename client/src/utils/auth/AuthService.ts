@@ -1,12 +1,13 @@
-import {IClaim} from "./ICredentials";
 import CookieManager from "../CookieManager";
 import api from "../api";
+import {ICredentials} from "./ICredentials";
 
 export class AuthService {
+    public static credentials?: ICredentials;
+    
     private static readonly authenticationEvents: ((authenticated: boolean) => void)[] = [];
     private static readonly CookieName = "jwt";
-    private static claims: IClaim[] | undefined;
-    private static token: string | undefined;
+    private static token?: string;
     
     public static isAuthenticated() {
         return AuthService.token !== undefined;
@@ -26,9 +27,9 @@ export class AuthService {
     public static async authenticate(token: string) {
         let authorization = "Bearer " + token;
         
-        await api.get<IClaim[]>("auth/info", {headers: {Authorization: authorization}}).then(response => {
+        await api.get<ICredentials>("auth/info", {headers: {Authorization: authorization}}).then(response => {
             AuthService.token = token;
-            AuthService.claims = response.data;
+            AuthService.credentials = response.data;
             api.defaults.headers.Authorization = authorization;
             
             CookieManager.setCookie(AuthService.CookieName, AuthService.token, 3600 * 4);
@@ -38,7 +39,7 @@ export class AuthService {
     
     public static logout() {
         AuthService.token = undefined;
-        AuthService.claims = undefined;
+        AuthService.credentials = undefined;
         api.defaults.headers.Authorization = undefined;
         CookieManager.clearCookie(AuthService.CookieName);
         AuthService.authenticationEvents.forEach(o => o(false));

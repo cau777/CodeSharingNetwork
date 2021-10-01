@@ -1,4 +1,3 @@
-export interface IClaim {
-    type: string;
-    value: string;
+export interface ICredentials {
+    username: string;
 }
