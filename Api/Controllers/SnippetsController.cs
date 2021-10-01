@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Api.Controllers.DataTransferObjects;
 using Api.Models;
@@ -42,7 +43,18 @@ namespace Api.Controllers
                     Code = result.Code,
                     LikeCount = result.LikeCount,
                     Language = result.Language,
+                    Posted = result.Posted,
                 });
+        }
+        
+        [HttpPost]
+        [Authorize]
+        [Route("recommended")]
+        public IActionResult PrepareRecommendations()
+        {
+            string username = User.GetName();
+            _snippetsRecommender.PrepareRecommendations(username);
+            return Ok();
         }
 
         [HttpGet]
@@ -52,9 +64,15 @@ namespace Api.Controllers
         {
             // return Json(Enumerable.Repeat(10, 5));
             string username = User.GetName();
-            long[] recommendSnippets = _snippetsRecommender.RecommendSnippets(page, username);
-            
-            return Json(recommendSnippets);
+            try
+            {
+                long[] recommendSnippets = _snippetsRecommender.RecommendSnippets(page, username);
+                return Json(recommendSnippets);
+            }
+            catch (KeyNotFoundException)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPost]

@@ -18,6 +18,7 @@ class Main extends Component<any, IState> {
     public constructor(props: any) {
         super(props);
         this.render = this.render.bind(this);
+        this.prepareRecommendations = this.prepareRecommendations.bind(this);
         this.update = this.update.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
         this.getSnippets = this.getSnippets.bind(this);
@@ -35,7 +36,7 @@ class Main extends Component<any, IState> {
     
     public componentDidMount() {
         window.addEventListener("scroll", this.update);
-        this.update();
+        this.prepareRecommendations().then(() => this.update());
     }
     
     public render() {
@@ -58,6 +59,18 @@ class Main extends Component<any, IState> {
         window.removeEventListener("scroll", this.update);
     }
     
+    private async getSnippets(page: number) {
+        let snippetsIds = await api.get<number[]>("snippets/recommended/" + page);
+        let snippets: ISnippetData[] = [];
+        
+        for (let snippetId of snippetsIds.data) {
+            let response = await api.get<ISnippetData>("snippets/" + snippetId);
+            snippets.push(response.data);
+        }
+        
+        return snippets;
+    }
+    
     private update() {
         const scrollPosition = window.scrollY;
         const scrollLimit = Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight,
@@ -66,6 +79,7 @@ class Main extends Component<any, IState> {
         if (scrollPosition > scrollLimit) {
             if (this.state.loading) return;
             if (!this.canGetSnippets) return;
+            
             this.setState({loading: true});
             
             let currentPage = this.currentPage++;
@@ -90,16 +104,9 @@ class Main extends Component<any, IState> {
         }
     }
     
-    private async getSnippets(page: number) {
-        let snippetsIds = await api.get<number[]>("snippets/recommended/" + page);
-        let snippets: ISnippetData[] = [];
-        
-        for (let snippetId of snippetsIds.data) {
-            let response = await api.get<ISnippetData>("snippets/" + snippetId);
-            snippets.push(response.data);
-        }
-        
-        return snippets;
+    private async prepareRecommendations() {
+        await api.post("/snippets/recommended");
+        this.canGetSnippets = true;
     }
 }
 

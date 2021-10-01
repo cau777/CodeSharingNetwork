@@ -11,24 +11,24 @@ namespace Api.Services
 {
     public class SnippetsRecommenderService
     {
-        private static readonly IDictionary<string, RecommendationHistory> Recommenders;
+        private static readonly IDictionary<string, RecommendationHistory> Histories;
         private readonly DatabaseService<CodeSnippet> _snippetsService;
 
         static SnippetsRecommenderService()
         {
-            Recommenders = new ConcurrentDictionary<string, RecommendationHistory>();
-            
+            Histories = new ConcurrentDictionary<string, RecommendationHistory>();
+
             CancellationTokenSource erasingExpiredHistoryCancellation = new();
             CancellationToken token = erasingExpiredHistoryCancellation.Token;
-            
+
             Task.Run(async () =>
             {
                 while (!token.IsCancellationRequested)
                 {
                     await Task.Delay(30_000, token);
-                    foreach ((string username, RecommendationHistory history) in Recommenders)
+                    foreach ((string username, RecommendationHistory history) in Histories)
                         if (history.IsExpired)
-                            Recommenders.Remove(username);
+                            Histories.Remove(username);
                 }
             }, token);
         }
@@ -37,20 +37,21 @@ namespace Api.Services
         {
             _snippetsService = snippetsService;
         }
-        
+
         private static double CalcSnippetScore(CodeSnippet snippet, DateTime historyCreation)
         {
             double minutes = (historyCreation - snippet.Posted).TotalMinutes;
             return minutes * -0.1;
         }
 
+        public void PrepareRecommendations(string username)
+        {
+            Histories[username] = new RecommendationHistory(username);
+        }
+
         public long[] RecommendSnippets(int page, string username)
         {
-            if (!Recommenders.TryGetValue(username, out RecommendationHistory history))
-            {
-                history = new RecommendationHistory(username);
-                Recommenders.Add(username, history);
-            }
+            RecommendationHistory history = Histories[username];
 
             if (history.ContainsPage(page))
             {
@@ -64,7 +65,7 @@ namespace Api.Services
                 .Where(o => o.Author.Name != username)
                 .Where(o => o.Posted < historyCreation)
                 .AsEnumerable()
-                .OrderBy(o => CalcSnippetScore(o, historyCreation))
+                .OrderByDescending(o => CalcSnippetScore(o, historyCreation))
                 .Select(o => o.Id)
                 .Where(o => !history.ContainsSnippetId(o))
                 .Take(RecommendationHistory.SnippetsPerPage).ToArray();
