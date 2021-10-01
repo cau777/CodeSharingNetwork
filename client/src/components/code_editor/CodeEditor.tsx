@@ -16,10 +16,11 @@ import {DeleteCommand} from "./commands/DeleteCommand";
 import {CommandExecutor} from "./CommandExecutor";
 import {MoveLineUpCommand} from "./commands/MoveLineUpCommand";
 import {MoveLineDownCommand} from "./commands/MoveLineDownCommand";
+import {IFormEvent} from "../../utils/forms/IFormEvent";
 
 interface IProps {
     language: LanguageOptions;
-    onInput?: React.FormEventHandler<HTMLTextAreaElement>;
+    onInput?: (event: IFormEvent<string>) => void;
 }
 
 interface IState {
@@ -151,8 +152,6 @@ class CodeEditor extends Component<IProps, IState> {
                 }
             }
         }
-        
-        this.props.onInput?.(e);
     }
     
     private updateSelectedRow(e: KeyboardEvent<HTMLTextAreaElement>) {
@@ -164,6 +163,7 @@ class CodeEditor extends Component<IProps, IState> {
         let codeInput = document.getElementById("code-input") as HTMLTextAreaElement;
         this.updateRowsAndCols(codeInput);
         this.setState({text: codeInput.value});
+        this.props.onInput?.({currentTarget: codeInput});
     }
 }
 
