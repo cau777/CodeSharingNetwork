@@ -9,6 +9,7 @@ import {PasswordValidator} from "./validators/PasswordValidator";
 import Link from "./Link";
 import {RouteComponentProps, withRouter} from "react-router-dom";
 import {AuthService} from "../utils/auth/AuthService";
+import AppContext from "./app/AppContext";
 
 interface IProps extends RouteComponentProps {
 
@@ -23,6 +24,9 @@ interface IState {
 }
 
 class Register extends Component<IProps, IState> {
+    static contextType = AppContext;
+    context!: React.ContextType<typeof AppContext>;
+    
     public constructor(props: IProps) {
         super(props);
         
@@ -103,7 +107,7 @@ class Register extends Component<IProps, IState> {
     }
     
     private success(response: AxiosResponse<string>) {
-        AuthService.authenticate(response.data).then(() => {
+        this.context.authService.authenticate(response.data).then(() => {
             this.props.history.push("/");
         });
     }

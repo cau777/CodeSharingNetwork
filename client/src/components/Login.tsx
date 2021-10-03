@@ -6,6 +6,7 @@ import {Alert, Button} from "react-bootstrap";
 import {AuthService} from "../utils/auth/AuthService";
 import {RouteComponentProps, withRouter} from "react-router-dom";
 import Link from "./Link";
+import AppContext from "./app/AppContext";
 
 interface State {
     form: FormController<string>;
@@ -17,6 +18,9 @@ interface IProps extends RouteComponentProps {
 }
 
 class Login extends Component<IProps, State> {
+    static contextType = AppContext;
+    context!: React.ContextType<typeof AppContext>;
+    
     public constructor(props: IProps, context: any) {
         super(props, context);
         
@@ -66,7 +70,7 @@ class Login extends Component<IProps, State> {
     }
     
     private success(response: AxiosResponse<string>) {
-        AuthService.authenticate(response.data).then(() => {
+        this.context.authService.authenticate(response.data).then(() => {
             this.props.history.push("/");
         });
     }

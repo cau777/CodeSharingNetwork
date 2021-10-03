@@ -1,26 +1,14 @@
-import {Component} from "react";
-import {AuthService} from "../../utils/auth/AuthService";
+import React, {Component} from "react";
+import AppContext from "../app/AppContext";
 
-interface IState {
-    authenticated: boolean;
-}
-
-export class NotAuthenticated extends Component<any, IState>{
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            authenticated: AuthService.isAuthenticated()
-        };
-    }
+export class NotAuthenticated extends Component{
+    static contextType = AppContext;
+    context!: React.ContextType<typeof AppContext>;
     
     public render() {
-        if (!this.state.authenticated) {
+        if (this.context.credentials === undefined) {
             return this.props.children;
         }
         return ("");
-    }
-    
-    public componentDidMount() {
-        AuthService.addAuthenticationEvent(authenticated => this.setState({authenticated: authenticated}));
     }
 }

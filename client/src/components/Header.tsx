@@ -1,18 +1,20 @@
 import "../css/Header.css";
-import {Component} from "react";
+import React, {Component} from "react";
 import {Navbar, Container, Nav, Dropdown, Button} from "react-bootstrap";
 import default_user from "../img/default_user.png";
-import Link from "./Link";
 import SimpleLink from "./SimpleLink";
 import {Authenticated} from "./auth/Authenticated";
 import {NotAuthenticated} from "./auth/NotAuthenticated";
-import {AuthService} from "../utils/auth/AuthService";
+import AppContext from "./app/AppContext";
 
 interface IProps {
 
 }
 
 class Header extends Component<IProps> {
+    static contextType = AppContext;
+    context !: React.ContextType<typeof AppContext>;
+    
     public render() {
         return (
             <header>
@@ -34,7 +36,7 @@ class Header extends Component<IProps> {
                                         
                                         <Dropdown.Menu variant="dark">
                                             <Dropdown.ItemText>
-                                                {AuthService.credentials?.username}
+                                                {this.context.credentials?.username}
                                             </Dropdown.ItemText>
                                             <Dropdown.Divider/>
                                             <SimpleLink to="/profile">

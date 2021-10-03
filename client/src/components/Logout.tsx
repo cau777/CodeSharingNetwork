@@ -1,10 +1,15 @@
-import {Component} from "react";
+import React, {Component} from "react";
 import {AuthService} from "../utils/auth/AuthService";
 import {Redirect} from "react-router-dom";
+import AppContext from "./app/AppContext";
 
 export class Logout extends Component<any, any> {
+    static contextType = AppContext;
+    context!: React.ContextType<typeof AppContext>;
+    
     public render() {
-        AuthService.logout();
+        this.context.authService.logout();
+        
         return (
             <div>
                 <Redirect to="/login"/>

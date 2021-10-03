@@ -1,47 +1,44 @@
 import CookieManager from "../CookieManager";
 import api from "../api";
 import {ICredentials} from "./ICredentials";
+import React from "react";
+import {IAuthServiceContext} from "./IAuthServiceContext";
 
 export class AuthService {
-    public static credentials?: ICredentials;
-    
-    private static readonly authenticationEvents: ((authenticated: boolean) => void)[] = [];
     private static readonly CookieName = "jwt";
-    private static token?: string;
+    private token?: string;
+    private component: React.Component<any, IAuthServiceContext>;
     
-    public static isAuthenticated() {
-        return AuthService.token !== undefined;
+    public constructor(component: React.Component<any, IAuthServiceContext>) {
+        this.component = component;
     }
     
-    public static addAuthenticationEvent(event: (authenticated: boolean) => void) {
-        AuthService.authenticationEvents.push(event);
-    }
-    
-    public static async authenticateFromCookies() {
+    public async authenticateFromCookies() {
         let cookie = CookieManager.getCookie(AuthService.CookieName);
         if (cookie !== undefined && cookie !== "") {
-            await AuthService.authenticate(cookie);
+            await this.authenticate(cookie);
         }
     }
     
-    public static async authenticate(token: string) {
+    public async authenticate(token: string) {
         let authorization = "Bearer " + token;
         
-        await api.get<ICredentials>("auth/info", {headers: {Authorization: authorization}}).then(response => {
-            AuthService.token = token;
-            AuthService.credentials = response.data;
+        let response = await api.get<ICredentials>("auth/info", {headers: {Authorization: authorization}});
+        if (response.status !== 200) {
+            console.log("token expired"); // Logout if the token is expired
+            this.logout()
+        } else {
+            this.token = token;
+            this.component.setState({credentials: response.data});
             api.defaults.headers.Authorization = authorization;
             
-            CookieManager.setCookie(AuthService.CookieName, AuthService.token, 3600 * 4);
-            AuthService.authenticationEvents.forEach(o => o(true));
-        }, () => AuthService.logout()); // Logout if the token is expired
+            CookieManager.setCookie(AuthService.CookieName, this.token, 3600 * 4);
+        }
     }
     
-    public static logout() {
-        AuthService.token = undefined;
-        AuthService.credentials = undefined;
+    public logout() {
+        this.component.setState({credentials: undefined});
         api.defaults.headers.Authorization = undefined;
         CookieManager.clearCookie(AuthService.CookieName);
-        AuthService.authenticationEvents.forEach(o => o(false));
     }
 }
