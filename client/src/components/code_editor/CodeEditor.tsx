@@ -42,7 +42,7 @@ class CodeEditor extends Component<IProps, IState> {
         new InsertKeyCommand(),
     ];
     
-    private executor?: CommandExecutor;
+    private executor!: CommandExecutor;
     
     public constructor(props: IProps) {
         super(props);
@@ -82,7 +82,7 @@ class CodeEditor extends Component<IProps, IState> {
         
         codeInput.addEventListener("input", () => {
             this.changeText();
-            this.executor?.saveState();
+            this.executor.saveState();
         });
         
         this.executor = new CommandExecutor(codeInput, this.changeText);
@@ -137,17 +137,17 @@ class CodeEditor extends Component<IProps, IState> {
     
     private keyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
         if (!e.altKey && e.ctrlKey && !e.shiftKey && e.key === "z") {
-            this.executor?.undo();
+            this.executor!.undo().then();
             e.preventDefault();
         } else if (!e.altKey && e.ctrlKey && e.shiftKey && e.key === "Z") {
-            this.executor?.redo();
+            this.executor!.redo().then();
             e.preventDefault();
         } else {
             let key = CodeEditor.prepareKey(e.key);
             
             for (let command of CodeEditor.commands) {
                 if (command.canExecute(e.altKey, e.ctrlKey, e.shiftKey, key)) {
-                    this.executor?.execute(command, e, this.props.language);
+                    this.executor!.execute(command, e, this.props.language).then();
                     break;
                 }
             }
