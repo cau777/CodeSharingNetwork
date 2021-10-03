@@ -6,4 +6,5 @@ export interface ISnippetData {
     code: string;
     likeCount: number;
     language: string;
+    posted: string;
 }

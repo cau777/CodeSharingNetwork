@@ -1,4 +1,6 @@
-﻿namespace Api.Controllers.DataTransferObjects
+﻿using System;
+
+namespace Api.Controllers.DataTransferObjects
 {
     public class GetSnippetDTO
     {
@@ -9,5 +11,6 @@
         public string Code { get; set; }
         public string Language { get; set; }
         public long LikeCount { get; set; }
+        public DateTime Posted { get; set; }
     }
 }

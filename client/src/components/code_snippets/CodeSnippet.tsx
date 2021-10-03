@@ -8,6 +8,7 @@ import {checkVisible} from "../../utils/DOMUtils";
 import {capitalize} from "../../utils/StringUtils";
 import {SyntaxHighlighter} from "../SyntaxHighlighter";
 import {Languages} from "../code_editor/languages/Languages";
+import {formatDateTime} from "../../utils/DateUtils";
 
 interface IProps {
     order: number;
@@ -79,6 +80,9 @@ export class CodeSnippet extends Component<IProps, IState> {
                                 {tableRows}
                                 </tbody>
                             </table>
+                        </div>
+                        <div className="flex-center mt-2">
+                            <h6 className="ms-auto">{formatDateTime(snippet.posted)}</h6>
                         </div>
                     </div>
                 </Card>
