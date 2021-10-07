@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import '../css/Main.css';
 import api from "../utils/api";
-import {ISnippetData} from "./code_snippets/ISnippetData";
 import {CodeSnippet} from "./code_snippets/CodeSnippet";
 
 interface IState {
@@ -14,6 +13,7 @@ class Main extends Component<any, IState> {
     private currentPage: number;
     private elementPosition: number;
     private canGetSnippets: boolean;
+    private componentExists: boolean;
     
     public constructor(props: any) {
         super(props);
@@ -21,7 +21,6 @@ class Main extends Component<any, IState> {
         this.prepareRecommendations = this.prepareRecommendations.bind(this);
         this.update = this.update.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
-        this.getSnippets = this.getSnippets.bind(this);
         
         this.state = {
             loading: false,
@@ -32,11 +31,12 @@ class Main extends Component<any, IState> {
         this.currentPage = 0;
         this.elementPosition = 0;
         this.canGetSnippets = true;
+        this.componentExists = true;
     }
     
     public componentDidMount() {
         window.addEventListener("scroll", this.update);
-        this.prepareRecommendations().then(() => this.update());
+        this.prepareRecommendations().then();
     }
     
     public render() {
@@ -56,19 +56,18 @@ class Main extends Component<any, IState> {
     }
     
     public componentWillUnmount() {
+        this.componentExists = false;
         window.removeEventListener("scroll", this.update);
     }
     
-    private async getSnippets(page: number) {
-        let snippetsIds = await api.get<number[]>("snippets/recommended/" + page);
-        let snippets: ISnippetData[] = [];
+    private static async getSnippetsIds(page: number) {
+        let response = await api.get<number[]>("snippets/recommended/" + page);
         
-        for (let snippetId of snippetsIds.data) {
-            let response = await api.get<ISnippetData>("snippets/" + snippetId);
-            snippets.push(response.data);
+        if (response.status === 200) {
+            return response.data;
         }
         
-        return snippets;
+        return undefined;
     }
     
     private update() {
@@ -83,30 +82,35 @@ class Main extends Component<any, IState> {
             this.setState({loading: true});
             
             let currentPage = this.currentPage++;
-            this.getSnippets(currentPage).then(data => {
-                let content = this.state.content;
-                
-                if (data.length === 0) {
+            
+            Main.getSnippetsIds(currentPage).then(data => {
+                if (data === undefined || data.length === 0) {
                     this.canGetSnippets = false;
                     this.setState({loading: false});
                 } else {
-                    for (let snippet of data) {
+                    let content = this.state.content;
+                    
+                    for (let snippetId of data) {
                         let elementPosition = this.elementPosition++;
                         content.push(
                             <CodeSnippet key={"snippet-" + elementPosition} order={elementPosition}
-                                         snippet={snippet}/>
+                                         snippetId={snippetId}/>
                         );
                     }
                     
                     this.setState({loading: false, content: content});
                 }
-            }, () => this.setState({loading: false}));
+            })
         }
     }
     
     private async prepareRecommendations() {
         await api.post("/snippets/recommended");
         this.canGetSnippets = true;
+        
+        if (this.componentExists) {
+            this.update();
+        }
     }
 }
 

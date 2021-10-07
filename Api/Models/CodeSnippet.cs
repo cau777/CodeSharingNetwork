@@ -33,8 +33,8 @@ namespace Api.Models
 
         public long LikeCount { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore, JsonIgnore]
-        [InverseProperty(nameof(Like.Snippet))]
-        public List<Like> Likes { get; set; }
+        // [Newtonsoft.Json.JsonIgnore, JsonIgnore]
+        // [InverseProperty(nameof(Like.Snippet))]
+        // public List<Like> Likes { get; set; }
     }
 }

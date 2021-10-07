@@ -14,7 +14,7 @@ namespace Api.Services.Database
     {
         public IEnumerable<T> Elements => IncludingAll;
         public virtual IQueryable<T> IncludingAll => ItemSet;
-        
+
         protected readonly DbSet<T> ItemSet;
         protected readonly DatabaseContext Context;
         private readonly ILogger<DatabaseService<T>> _logger;
@@ -40,6 +40,22 @@ namespace Api.Services.Database
             catch (Exception e)
             {
                 LogFailure("ADD", element, e);
+                return false;
+            }
+        }
+
+        public virtual async Task<bool> Remove([NotNull] T element)
+        {
+            try
+            {
+                ItemSet.Remove(element);
+                await Context.SaveChangesAsync();
+                LogSuccess("REMOVE", element);
+                return true;
+            }
+            catch (Exception e)
+            {
+                LogFailure("REMOVE", element, e);
                 return false;
             }
         }

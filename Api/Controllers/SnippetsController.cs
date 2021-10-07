@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Api.Controllers.DataTransferObjects;
 using Api.Models;
@@ -17,12 +18,15 @@ namespace Api.Controllers
         private readonly CodeSnippetService _codeSnippetService;
         private readonly UserService _userService;
         private readonly SnippetsRecommenderService _snippetsRecommender;
+        private readonly LikeService _likeService;
 
-        public SnippetsController(CodeSnippetService codeSnippetService, UserService userService, SnippetsRecommenderService snippetsRecommender)
+        public SnippetsController(CodeSnippetService codeSnippetService, UserService userService,
+            SnippetsRecommenderService snippetsRecommender, LikeService likeService)
         {
             _codeSnippetService = codeSnippetService;
             _userService = userService;
             _snippetsRecommender = snippetsRecommender;
+            _likeService = likeService;
         }
 
         [HttpGet]
@@ -31,6 +35,9 @@ namespace Api.Controllers
         public async Task<IActionResult> GetSnippet(long id)
         {
             CodeSnippet result = await _codeSnippetService.FindById(id);
+            User currentUser = await _userService.FindByName(User.GetName());
+
+            if (currentUser is null) return Unauthorized();
 
             return result is null
                 ? BadRequest(id)
@@ -42,11 +49,12 @@ namespace Api.Controllers
                     Description = result.Description,
                     Code = result.Code,
                     LikeCount = result.LikeCount,
+                    UserLiked = await _likeService.UserLikedSnippet(currentUser, result),
                     Language = result.Language,
                     Posted = result.Posted,
                 });
         }
-        
+
         [HttpPost]
         [Authorize]
         [Route("recommended")]
@@ -62,7 +70,6 @@ namespace Api.Controllers
         [Route("recommended/{page:int}")]
         public IActionResult GetRecommendedSnippets(int page)
         {
-            // return Json(Enumerable.Repeat(10, 5));
             string username = User.GetName();
             try
             {
@@ -94,6 +101,42 @@ namespace Api.Controllers
                 LikeCount = 0,
                 Language = data.Language.ToLower(),
             });
+
+            return result ? Ok() : BadRequest();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("{id:long}/like")]
+        public async Task<IActionResult> Like(long id)
+        {
+            User user = await _userService.FindByName(User.GetName());
+            CodeSnippet snippet = await _codeSnippetService.FindById(id);
+            
+            if (user is null) return Unauthorized();
+            if (snippet is null) return BadRequest(id);
+
+            bool result = await _likeService.Add(new Like
+            {
+                Snippet = snippet,
+                User = user,
+            });
+
+            return result ? Ok() : BadRequest();
+        }
+        
+        [HttpPost]
+        [Authorize]
+        [Route("{id:long}/unlike")]
+        public async Task<IActionResult> Unlike(long id)
+        {
+            User user = await _userService.FindByName(User.GetName());
+            CodeSnippet snippet = await _codeSnippetService.FindById(id);
+
+            if (user is null) return Unauthorized();
+            if (snippet is null) return BadRequest(id);
+            
+            bool result = await _likeService.RemoveByUserAndSnippet(user, snippet);
 
             return result ? Ok() : BadRequest();
         }

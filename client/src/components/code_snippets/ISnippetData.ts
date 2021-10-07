@@ -4,7 +4,8 @@ export interface ISnippetData {
     authorName: string;
     description: string;
     code: string;
-    likeCount: number;
     language: string;
+    likeCount: number;
+    userLiked: boolean;
     posted: string;
 }

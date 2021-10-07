@@ -59,6 +59,7 @@ namespace Api
             services.AddTransient<UserService>();
             services.AddTransient<TokenService>();
             services.AddTransient<CodeSnippetService>();
+            services.AddTransient<LikeService>();
 
             services.AddTransient<SnippetsRecommenderService>();
         }

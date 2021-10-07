@@ -9,33 +9,64 @@ import {capitalize} from "../../utils/StringUtils";
 import {SyntaxHighlighter} from "../SyntaxHighlighter";
 import {Languages} from "../code_editor/languages/Languages";
 import {formatDateTime} from "../../utils/DateUtils";
+import {Heart} from "../../svg/Icons";
+import api from "../../utils/api";
 
 interface IProps {
     order: number;
-    snippet: ISnippetData;
+    snippetId: number;
 }
 
 interface IState {
     visible: boolean;
+    snippet?: ISnippetData;
 }
 
 export class CodeSnippet extends Component<IProps, IState> {
+    private componentExists!: boolean;
+    private firstLoad: boolean;
+    
     public constructor(props: IProps) {
         super(props);
         
         this.componentDidMount = this.componentDidMount.bind(this);
         this.updateVisibility = this.updateVisibility.bind(this);
+        this.updateSnippetData = this.updateSnippetData.bind(this);
         
         this.state = {
-            visible: true
+            visible: true,
+        }
+        this.firstLoad = true;
+        this.componentExists = true;
+    }
+    
+    public componentDidMount() {
+        this.updateSnippetData().then();
+    }
+    
+    public componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any) {
+        if (this.firstLoad) {
+            // Locks the height of the element
+            let mainDiv = document.getElementById("snippet-" + this.props.order) as HTMLDivElement;
+            mainDiv.style.minHeight = mainDiv.clientHeight + "px";
+            
+            window.addEventListener("scroll", this.updateVisibility);
+            this.firstLoad = false;
         }
     }
     
     public render() {
+        let snippet = this.state.snippet;
+        
+        if (!snippet) return (
+            <div>Loading</div>
+        );
+        
         let content: JSX.Element;
         
-        if (this.state.visible) {
-            let snippet = this.props.snippet;
+        if (!this.state.visible) {
+            content = <div/>;
+        } else {
             let tableRows: JSX.Element[] = [];
             let language = capitalize(snippet.language);
             
@@ -82,13 +113,20 @@ export class CodeSnippet extends Component<IProps, IState> {
                             </table>
                         </div>
                         <div className="flex-center mt-2">
+                            <span className="like" onClick={() => this.likeClick()}>
+                                <span className="like-icon">
+                                    <Heart active={snippet.userLiked}/>
+                                </span>
+                                <span className="like-number">
+                                    {snippet.likeCount}
+                                </span>
+                            </span>
+                            
                             <h6 className="ms-auto">{formatDateTime(snippet.posted)}</h6>
                         </div>
                     </div>
                 </Card>
             );
-        } else {
-            content = <div/>;
         }
         
         return (
@@ -98,16 +136,19 @@ export class CodeSnippet extends Component<IProps, IState> {
         );
     }
     
-    public componentDidMount() {
-        // Locks the height of the element
-        let mainDiv = document.getElementById("snippet-" + this.props.order) as HTMLDivElement;
-        mainDiv.style.minHeight = mainDiv.clientHeight + "px";
-        
-        window.addEventListener("scroll", this.updateVisibility);
+    public componentWillUnmount() {
+        this.componentExists = false;
+        window.removeEventListener("scroll", this.updateVisibility);
     }
     
-    public componentWillUnmount() {
-        window.removeEventListener("scroll", this.updateVisibility);
+    private async updateSnippetData() {
+        let result = await api.get<ISnippetData>("/snippets/" + this.props.snippetId);
+        
+        if (!this.componentExists) return;
+        
+        if (result.status === 200) {
+            this.setState({snippet: result.data})
+        }
     }
     
     private updateVisibility() {
@@ -115,4 +156,15 @@ export class CodeSnippet extends Component<IProps, IState> {
         
         this.setState({visible: checkVisible(mainDiv)});
     }
+    
+    private async likeClick() {
+        if (this.state.snippet === undefined) return;
+        
+        await api.post("/snippets/" + this.props.snippetId + "/" + (this.state.snippet.userLiked ? "unlike" : "like"));
+    
+        if (!this.componentExists) return;
+    
+        await this.updateSnippetData();
+    }
+    
 }
