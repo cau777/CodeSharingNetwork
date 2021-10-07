@@ -11,6 +11,7 @@ namespace Api.Controllers.DataTransferObjects
         public string Code { get; set; }
         public string Language { get; set; }
         public long LikeCount { get; set; }
+        public bool UserLiked { get; set; }
         public DateTime Posted { get; set; }
     }
 }

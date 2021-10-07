@@ -61,3 +61,17 @@
 .snippet-title {
     margin-bottom: 0;
 }
+
+.like {
+    cursor: pointer;
+}
+
+.like-icon {
+    margin-right: 0.35rem;
+    color: var(--primary);
+}
+
+.like-icon svg {
+    margin-bottom: 2px;
+}
+

@@ -12,12 +12,14 @@ namespace Api.Services.Database
 {
     public class UserService : DatabaseService<User>, IContainsUserChecker
     {
-        public override IQueryable<User> IncludingAll =>
-            ItemSet.Include(o => o.LikesGiven).Include(o => o.SnippetsPosted);
-        
+        public override IQueryable<User> IncludingAll => ItemSet
+            //.Include(o => o.LikesGiven)
+            .Include(o => o.SnippetsPosted);
+
         private readonly ISet<string> _namesInUse;
 
-        public UserService(DatabaseContext databaseContext, ILogger<DatabaseService<User>> logger) : base(databaseContext, databaseContext.Users, logger)
+        public UserService(DatabaseContext databaseContext, ILogger<DatabaseService<User>> logger) : base(
+            databaseContext, databaseContext.Users, logger)
         {
             _namesInUse = new HashSet<string>(ItemSet.Select(o => o.Name));
         }
@@ -27,7 +29,7 @@ namespace Api.Services.Database
             return _namesInUse.Contains(name);
         }
 
-        public override async Task<bool> Add(User element)
+        public override async Task<bool> Add([NotNull] User element)
         {
             try
             {
@@ -45,14 +47,14 @@ namespace Api.Services.Database
         }
 
         [ItemCanBeNull]
-        public Task<User> FindByLogin([System.Diagnostics.CodeAnalysis.NotNull]string name, [System.Diagnostics.CodeAnalysis.NotNull]string password)
+        public Task<User> FindByLogin([NotNull] string name, [NotNull] string password)
         {
             byte[] passwordBytes = User.EncodePassword(password);
             return ItemSet.FirstOrDefaultAsync(o => o.Name == name && o.Password.SequenceEqual(passwordBytes));
         }
 
         [ItemCanBeNull]
-        public Task<User> FindByName([System.Diagnostics.CodeAnalysis.NotNull]string name)
+        public Task<User> FindByName([NotNull] string name)
         {
             return ItemSet.FirstOrDefaultAsync(o => o.Name == name);
         }
