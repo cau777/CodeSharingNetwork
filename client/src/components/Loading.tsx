@@ -1,9 +1,12 @@
 import {Component} from "react";
+import {LoadingIcon} from "../svg/AnimatedIcons";
 
-class Loading extends Component{
+class Loading extends Component {
     public render() {
         return (
-            <p>Loading</p>
+            <div className={"d-flex justify-content-center"}>
+                <LoadingIcon/>
+            </div>
         );
     }
 }

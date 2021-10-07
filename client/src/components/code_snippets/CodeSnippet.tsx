@@ -11,6 +11,7 @@ import {Languages} from "../code_editor/languages/Languages";
 import {formatDateTime} from "../../utils/DateUtils";
 import {Heart} from "../../svg/Icons";
 import api from "../../utils/api";
+import Loading from "../Loading";
 
 interface IProps {
     order: number;
@@ -59,7 +60,7 @@ export class CodeSnippet extends Component<IProps, IState> {
         let snippet = this.state.snippet;
         
         if (!snippet) return (
-            <div>Loading</div>
+            <Loading/>
         );
         
         let content: JSX.Element;

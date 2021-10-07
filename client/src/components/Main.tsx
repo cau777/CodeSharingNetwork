@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import '../css/Main.css';
 import api from "../utils/api";
 import {CodeSnippet} from "./code_snippets/CodeSnippet";
+import Loading from "./Loading";
 
 interface IState {
     loading: boolean;
@@ -49,7 +50,7 @@ class Main extends Component<any, IState> {
                     <p>No more snippets. Sorry</p>
                 </div>
                 <div hidden={!this.state.loading}>
-                    <p>Loading</p>
+                    <Loading/>
                 </div>
             </div>
         );
