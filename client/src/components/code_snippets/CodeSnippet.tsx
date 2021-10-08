@@ -16,6 +16,7 @@ import Loading from "../Loading";
 interface IProps {
     order: number;
     snippetId: number;
+    onLoad?: () => void;
 }
 
 interface IState {
@@ -52,6 +53,7 @@ export class CodeSnippet extends Component<IProps, IState> {
             mainDiv.style.minHeight = mainDiv.clientHeight + "px";
             
             window.addEventListener("scroll", this.updateVisibility);
+            this.props.onLoad?.();
             this.firstLoad = false;
         }
     }

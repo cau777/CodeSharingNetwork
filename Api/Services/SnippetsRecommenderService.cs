@@ -6,72 +6,39 @@ using System.Threading;
 using System.Threading.Tasks;
 using Api.Models;
 using Api.Services.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Services
 {
     public class SnippetsRecommenderService
     {
-        private static readonly IDictionary<string, RecommendationHistory> Histories;
-        private readonly DatabaseService<CodeSnippet> _snippetsService;
+        private const int SnippetsPerPage = 10;
+        private readonly CodeSnippetService _snippetsService;
 
-        static SnippetsRecommenderService()
-        {
-            Histories = new ConcurrentDictionary<string, RecommendationHistory>();
-
-            CancellationTokenSource erasingExpiredHistoryCancellation = new();
-            CancellationToken token = erasingExpiredHistoryCancellation.Token;
-
-            Task.Run(async () =>
-            {
-                while (!token.IsCancellationRequested)
-                {
-                    await Task.Delay(30_000, token);
-                    foreach ((string username, RecommendationHistory history) in Histories)
-                        if (history.IsExpired)
-                            Histories.Remove(username);
-                }
-            }, token);
-        }
-
-        public SnippetsRecommenderService(DatabaseService<CodeSnippet> snippetsService)
+        public SnippetsRecommenderService(CodeSnippetService snippetsService)
         {
             _snippetsService = snippetsService;
         }
 
-        private static double CalcSnippetScore(CodeSnippet snippet, DateTime historyCreation)
+        private static double CalcSnippetScore(CodeSnippet snippet, DateTime referenceDateTime)
         {
-            double minutes = (historyCreation - snippet.Posted).TotalMinutes;
+            double minutes = (referenceDateTime - snippet.Posted).TotalMinutes;
             return minutes * -0.1;
         }
 
-        public void PrepareRecommendations(string username)
+        public async Task<long[]> RecommendSnippets(DateTime start, DateTime end, string username)
         {
-            Histories[username] = new RecommendationHistory(username);
-        }
-
-        public long[] RecommendSnippets(int page, string username)
-        {
-            RecommendationHistory history = Histories[username];
-
-            if (history.ContainsPage(page))
-            {
-                history.ResetExpiring();
-                return history.GetPage(page);
-            }
-
-            DateTime historyCreation = history.CreationDate;
-
-            long[] newPage = _snippetsService.IncludingAll
+            CodeSnippet[] snippets = await _snippetsService.IncludingAll
+                .Where(o => o.Posted >= start).Where(o => o.Posted < end)
                 .Where(o => o.Author.Name != username)
-                .Where(o => o.Posted < historyCreation)
-                .AsEnumerable()
-                .OrderByDescending(o => CalcSnippetScore(o, historyCreation))
+                .ToArrayAsync();
+            
+            long[] newPage = snippets
+                .OrderBy(o => CalcSnippetScore(o, end))
                 .Select(o => o.Id)
-                .Where(o => !history.ContainsSnippetId(o))
-                .Take(RecommendationHistory.SnippetsPerPage).ToArray();
+                .Take(SnippetsPerPage)
+                .ToArray();
 
-            history.ResetExpiring();
-            history.AddPage(newPage);
             return newPage;
         }
     }

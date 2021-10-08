@@ -55,31 +55,20 @@ namespace Api.Controllers
                 });
         }
 
-        [HttpPost]
-        [Authorize]
-        [Route("recommended")]
-        public IActionResult PrepareRecommendations()
-        {
-            string username = User.GetName();
-            _snippetsRecommender.PrepareRecommendations(username);
-            return Ok();
-        }
-
         [HttpGet]
         [Authorize]
-        [Route("recommended/{page:int}")]
-        public IActionResult GetRecommendedSnippets(int page)
+        [Route("recommended")]
+        public async Task<IActionResult> GetRecommendedSnippets(int page, [FromQuery] DateTime start,
+            [FromQuery] DateTime end)
         {
             string username = User.GetName();
-            try
-            {
-                long[] recommendSnippets = _snippetsRecommender.RecommendSnippets(page, username);
-                return Json(recommendSnippets);
-            }
-            catch (KeyNotFoundException)
-            {
-                return BadRequest();
-            }
+            Console.WriteLine(start);
+            long[] recommendSnippets = await _snippetsRecommender.RecommendSnippets(start, end, username);
+
+            if (recommendSnippets.Length == 0 && !await _codeSnippetService.HasElementsBefore(end))
+                return NoContent();
+
+            return Json(Enumerable.Repeat(recommendSnippets, 2).SelectMany(o => o));
         }
 
         [HttpPost]
@@ -112,7 +101,7 @@ namespace Api.Controllers
         {
             User user = await _userService.FindByName(User.GetName());
             CodeSnippet snippet = await _codeSnippetService.FindById(id);
-            
+
             if (user is null) return Unauthorized();
             if (snippet is null) return BadRequest(id);
 
@@ -124,7 +113,7 @@ namespace Api.Controllers
 
             return result ? Ok() : BadRequest();
         }
-        
+
         [HttpPost]
         [Authorize]
         [Route("{id:long}/unlike")]
@@ -135,7 +124,7 @@ namespace Api.Controllers
 
             if (user is null) return Unauthorized();
             if (snippet is null) return BadRequest(id);
-            
+
             bool result = await _likeService.RemoveByUserAndSnippet(user, snippet);
 
             return result ? Ok() : BadRequest();

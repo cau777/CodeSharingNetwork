@@ -3,114 +3,153 @@ import '../css/Main.css';
 import api from "../utils/api";
 import {CodeSnippet} from "./code_snippets/CodeSnippet";
 import Loading from "./Loading";
+import {copyDate, minDate, subtractDays} from "../utils/DateUtils";
 
 interface IState {
-    loading: boolean;
-    scrollPosition: number;
+    loadingNewSnippets: boolean;
     content: JSX.Element[];
 }
 
 class Main extends Component<any, IState> {
-    private currentPage: number;
-    private elementPosition: number;
-    private canGetSnippets: boolean;
+    private elementPosition: number; // Element position in the list to serve as keys
+    private snippetsAvailable?: boolean;
     private componentExists: boolean;
-    
+    private feedStart!: Date;
+    private postsDateStart!: Date;
+    private postsDateEnd!: Date;
+    private snippetsLoading: number;
+
     public constructor(props: any) {
         super(props);
         this.render = this.render.bind(this);
-        this.prepareRecommendations = this.prepareRecommendations.bind(this);
-        this.update = this.update.bind(this);
+        this.startFeed = this.startFeed.bind(this);
+        this.updateSnippets = this.updateSnippets.bind(this);
+        this.updateWindow = this.updateWindow.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
-        
+        this.snippetLoaded = this.snippetLoaded.bind(this);
+
         this.state = {
-            loading: false,
-            scrollPosition: 0,
+            loadingNewSnippets: false,
             content: []
         };
-        
-        this.currentPage = 0;
+
         this.elementPosition = 0;
-        this.canGetSnippets = true;
         this.componentExists = true;
+        this.snippetsLoading = 0;
     }
-    
+
     public componentDidMount() {
-        window.addEventListener("scroll", this.update);
-        this.prepareRecommendations().then();
+        window.addEventListener("scroll", this.updateWindow);
+        this.startFeed().then();
     }
-    
+
     public render() {
         return (
             <div>
                 <div className="snippets-display" id="snippets-display">
                     {this.state.content}
                 </div>
-                <div hidden={this.state.loading}>
+                <div hidden={this.state.loadingNewSnippets}>
                     <p>No more snippets. Sorry</p>
                 </div>
-                <div hidden={!this.state.loading}>
+                <div hidden={!this.state.loadingNewSnippets}>
                     <Loading/>
                 </div>
             </div>
         );
     }
-    
+
     public componentWillUnmount() {
         this.componentExists = false;
-        window.removeEventListener("scroll", this.update);
+        window.removeEventListener("scroll", this.updateWindow);
     }
-    
-    private static async getSnippetsIds(page: number) {
-        let response = await api.get<number[]>("snippets/recommended/" + page);
-        
-        if (response.status === 200) {
-            return response.data;
-        }
-        
-        return undefined;
-    }
-    
-    private update() {
-        const scrollPosition = window.scrollY;
-        const scrollLimit = Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight,
-            document.documentElement.scrollHeight, document.documentElement.offsetHeight) - window.innerHeight * 1.4;
-        
+
+    private updateWindow() {
+        let scrollPosition = window.scrollY;
+
+        // Cross-browser solution to find the total document height
+        let documentHeight = Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight,
+            document.documentElement.scrollHeight, document.documentElement.offsetHeight);
+        let scrollLimit = documentHeight - window.innerHeight * 1.4;
+
         if (scrollPosition > scrollLimit) {
-            if (this.state.loading) return;
-            if (!this.canGetSnippets) return;
-            
-            this.setState({loading: true});
-            
-            let currentPage = this.currentPage++;
-            
-            Main.getSnippetsIds(currentPage).then(data => {
-                if (data === undefined || data.length === 0) {
-                    this.canGetSnippets = false;
-                    this.setState({loading: false});
-                } else {
+            if (this.state.loadingNewSnippets) return;
+            if (!this.snippetsAvailable) return;
+            if (this.snippetsLoading !== 0) return;
+
+            this.setState({loadingNewSnippets: true});
+
+            this.updateSnippets().then();
+        }
+    }
+
+    private async updateSnippets() {
+        // Loops until it gets snippets or 204 No Content (to show that there are no more snippets)
+        while (true) {
+            let start = this.postsDateStart;
+            let end = minDate(this.feedStart, this.postsDateEnd);
+
+            let response = await api.get<number[]>("snippets/recommended/", {params: {start: start, end: end}});
+
+            if (response.status === 200) { // Success
+                let emptyResponse = response.data.length === 0;
+
+                if (!emptyResponse) {
+                    let data = response.data;
                     let content = this.state.content;
-                    
+                    this.snippetsLoading = data.length;
+
                     for (let snippetId of data) {
                         let elementPosition = this.elementPosition++;
                         content.push(
                             <CodeSnippet key={"snippet-" + elementPosition} order={elementPosition}
-                                         snippetId={snippetId}/>
+                                         snippetId={snippetId} onLoad={this.snippetLoaded}/>
                         );
                     }
-                    
-                    this.setState({loading: false, content: content});
+
+                    this.setState({content: content});
                 }
-            })
+
+                subtractDays(this.postsDateStart, 1);
+                subtractDays(this.postsDateEnd, 1);
+
+                if (emptyResponse) continue;
+            } else if (response.status === 204) { // No content
+                this.snippetsAvailable = false;
+            } else { // Error
+                console.log(response);
+            }
+
+            this.setState({loadingNewSnippets: false});
+            break;
         }
     }
-    
-    private async prepareRecommendations() {
-        await api.post("/snippets/recommended");
-        this.canGetSnippets = true;
-        
-        if (this.componentExists) {
-            this.update();
+
+    private snippetLoaded() {
+        this.snippetsLoading--;
+        if (this.snippetsLoading === 0) {
+            this.updateWindow();
+        }
+    }
+
+    private async startFeed() {
+        this.snippetsAvailable = true;
+        this.feedStart = new Date();
+
+        this.postsDateEnd = copyDate(this.feedStart);
+        this.postsDateEnd.setHours(23);
+        this.postsDateEnd.setMinutes(59);
+        this.postsDateEnd.setSeconds(59);
+        this.postsDateEnd.setMilliseconds(999);
+
+        this.postsDateStart = copyDate(this.feedStart);
+        this.postsDateStart.setHours(0);
+        this.postsDateStart.setMinutes(0);
+        this.postsDateStart.setSeconds(0);
+        this.postsDateStart.setMilliseconds(0);
+
+        if (this.componentExists) { // Avoids error: Can't perform a React state update on an unmounted component
+            this.updateWindow();
         }
     }
 }
