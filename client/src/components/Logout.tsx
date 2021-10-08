@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import {AuthService} from "../utils/auth/AuthService";
 import {Redirect} from "react-router-dom";
 import AppContext from "./app/AppContext";
 

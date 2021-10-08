@@ -3,7 +3,6 @@ import {CardForm} from "./FormComponents";
 import {FormController} from "../utils/forms/FormController";
 import {AxiosResponse} from "axios";
 import {Alert, Button} from "react-bootstrap";
-import {AuthService} from "../utils/auth/AuthService";
 import {RouteComponentProps, withRouter} from "react-router-dom";
 import Link from "./Link";
 import AppContext from "./app/AppContext";

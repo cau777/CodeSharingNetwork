@@ -1,6 +1,6 @@
 import "../css/Header.css";
 import React, {Component} from "react";
-import {Navbar, Container, Nav, Dropdown, Button} from "react-bootstrap";
+import {Navbar, Container, Nav, Dropdown} from "react-bootstrap";
 import default_user from "../img/default_user.png";
 import SimpleLink from "./SimpleLink";
 import {Authenticated} from "./auth/Authenticated";
