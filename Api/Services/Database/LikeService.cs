@@ -27,7 +27,7 @@ namespace Api.Services.Database
         {
             // A user can't like their own post
             if (element.User == element.Snippet.Author) return false;
-            
+
             // If the user has already liked
             if (await UserLikedSnippet(element.User, element.Snippet)) return false;
 
@@ -37,16 +37,20 @@ namespace Api.Services.Database
             return true;
         }
 
+        public override async Task<bool> Remove([NotNull] Like element)
+        {
+            bool result = await base.Remove(element);
+            if (result) await UpdateLikeCount(element.Snippet);
+            return result;
+        }
+
         public async Task<bool> RemoveByUserAndSnippet([NotNull] User user, [NotNull] CodeSnippet snippet)
         {
             Like like = await FindByUserAndSnippet(user, snippet);
 
             if (like is null) return false;
 
-            if (!await Remove(like)) return false;
-
-            await UpdateLikeCount(snippet);
-            return true;
+            return await Remove(like);
         }
 
         private async Task UpdateLikeCount(CodeSnippet snippet)

@@ -15,7 +15,7 @@ namespace Api.Controllers
 
         [HttpPost]
         [Route("isAvailable")]
-        public async Task<IActionResult> IsAvailable([FromBody] string name)
+        public IActionResult IsAvailable([FromBody] string name)
         {
             return Json(!_containsUserChecker.ContainsName(name));
         }

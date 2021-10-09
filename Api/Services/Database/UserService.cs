@@ -13,14 +13,17 @@ namespace Api.Services.Database
     public class UserService : DatabaseService<User>, IContainsUserChecker
     {
         public override IQueryable<User> IncludingAll => ItemSet
-            //.Include(o => o.LikesGiven)
             .Include(o => o.SnippetsPosted);
 
+        /// <summary>
+        /// A set to quickly find whether a name is in use. Probably should be removed if the server runs in multiple instances
+        /// </summary>
         private readonly ISet<string> _namesInUse;
 
         public UserService(DatabaseContext databaseContext, ILogger<DatabaseService<User>> logger) : base(
             databaseContext, databaseContext.Users, logger)
         {
+            // Initializes the set with all names from the database
             _namesInUse = new HashSet<string>(ItemSet.Select(o => o.Name));
         }
 
@@ -31,19 +34,9 @@ namespace Api.Services.Database
 
         public override async Task<bool> Add([NotNull] User element)
         {
-            try
-            {
-                ItemSet.Add(element);
-                await Context.SaveChangesAsync();
-                _namesInUse.Add(element.Name);
-                LogSuccess("ADD", element);
-                return true;
-            }
-            catch (Exception e)
-            {
-                LogFailure("ADD", element, e);
-                return false;
-            }
+            bool result = await base.Add(element);
+            if (result) _namesInUse.Add(element.Name);
+            return result;
         }
 
         [ItemCanBeNull]

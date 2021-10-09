@@ -1,6 +1,7 @@
 using System.Text;
 using Api.Attributes;
 using Api.DatabaseContexts;
+using Api.Filters;
 using Api.Models;
 using Api.Services;
 using Api.Services.Database;
@@ -49,7 +50,7 @@ namespace Api
             });
             
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" }); });
-            services.AddMvc(o => { o.Filters.Add<AutoLoggingAttribute>(); });
+            services.AddMvc(o => { o.Filters.Add<AutoLoggingFilter>(); });
 
             services.AddDbContext<DatabaseContext>(o => o.UseSqlite(Configuration["Database:ConnectionString"]));
 

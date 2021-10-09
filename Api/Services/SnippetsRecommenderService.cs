@@ -26,15 +26,24 @@ namespace Api.Services
             return minutes * -0.1;
         }
 
-        public async Task<long[]> RecommendSnippets(DateTime start, DateTime end, string username)
+        /// <summary>
+        /// Finds the ids of the most relevant posts of the time period. Right now, it only sorts the by their date,
+        /// but in the future it'll consider the user's favorite language and topics
+        /// </summary>
+        /// <param name="start">The start of the time period to search</param>
+        /// <param name="end">The end of the time period to search</param>
+        /// <param name="user">The user that is requesting the snippets</param>
+        /// <returns>An array with the most relevant posts of the time period</returns>
+        public async Task<long[]> RecommendSnippets(DateTime start, DateTime end, User user)
         {
             CodeSnippet[] snippets = await _snippetsService.IncludingAll
-                .Where(o => o.Posted >= start).Where(o => o.Posted < end)
-                .Where(o => o.Author.Name != username)
+                .Where(o => o.Posted >= start)
+                .Where(o => o.Posted < end)
+                .Where(o => o.Author != user) //Don't recommend the user's own posts
                 .ToArrayAsync();
-            
+
             long[] newPage = snippets
-                .OrderBy(o => CalcSnippetScore(o, end))
+                .OrderByDescending(o => CalcSnippetScore(o, end))
                 .Select(o => o.Id)
                 .Take(SnippetsPerPage)
                 .ToArray();

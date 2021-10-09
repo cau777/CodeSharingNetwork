@@ -50,14 +50,18 @@ namespace Api.Controllers
             return Conflict();
         }
 
+        /// <summary>
+        /// Gets information about the current authenticated user
+        /// </summary>
+        /// <returns>A user DTO object containing all relevant data to the client</returns>
         [HttpGet]
         [Authorize]
         [Route("info")]
         public IActionResult GetInfo()
         {
-            return Json(new
+            return Json(new UserInfoDTO
             {
-                username = User.GetName(),
+                Username = User.GetName(),
             });
         }
 

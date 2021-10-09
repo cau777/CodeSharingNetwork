@@ -3,6 +3,12 @@ using System.Text.RegularExpressions;
 
 namespace Api.Attributes
 {
+    /// <summary>
+    /// Validates passwords. To be considered valid, a password must:
+    /// - Contain at least one number
+    /// - Contain at least one uppercase letter
+    /// - Contain at least one lowercase letter
+    /// </summary>
     public class PasswordAttribute : ValidationAttribute
     {
         public override bool IsValid(object value)
