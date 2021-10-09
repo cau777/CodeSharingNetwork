@@ -12,12 +12,23 @@ namespace Api.Services.Database
 {
     public abstract class DatabaseService<T> where T : class
     {
+        /// <summary>
+        /// IEnumerable of all element in the table
+        /// </summary>
         public IEnumerable<T> Elements => IncludingAll;
+        
+        /// <summary>
+        /// IQueryable including values from related tables. Example: Author.Name of CodeSnippet
+        /// </summary>
         public virtual IQueryable<T> IncludingAll => ItemSet;
 
         protected readonly DbSet<T> ItemSet;
         protected readonly DatabaseContext Context;
         private readonly ILogger<DatabaseService<T>> _logger;
+        
+        /// <summary>
+        /// Table name to write on logs
+        /// </summary>
         private readonly string _tableName;
 
         protected DatabaseService(DatabaseContext context, DbSet<T> itemSet, ILogger<DatabaseService<T>> logger)
@@ -28,6 +39,11 @@ namespace Api.Services.Database
             _tableName = typeof(T).Name + "s";
         }
 
+        /// <summary>
+        /// Adds an element to the table and logs the operation
+        /// </summary>
+        /// <param name="element">The element to add</param>
+        /// <returns>True if the operation was successful</returns>
         public virtual async Task<bool> Add([NotNull] T element)
         {
             try
@@ -44,6 +60,11 @@ namespace Api.Services.Database
             }
         }
 
+        /// <summary>
+        /// Removes an element from the table and logs the operation
+        /// </summary>
+        /// <param name="element">The element to remove</param>
+        /// <returns>True if the operation was successful</returns>
         public virtual async Task<bool> Remove([NotNull] T element)
         {
             try
@@ -68,6 +89,7 @@ namespace Api.Services.Database
 
         protected void LogFailure(string operation, T element, Exception reason)
         {
+            // Joins messages from all inner exceptions
             string message = reason.Message;
             Exception inner = reason.InnerException;
             while (inner is not null)

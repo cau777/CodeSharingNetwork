@@ -32,9 +32,5 @@ namespace Api.Models
         public DateTime Posted { get; set; }
 
         public long LikeCount { get; set; }
-
-        // [Newtonsoft.Json.JsonIgnore, JsonIgnore]
-        // [InverseProperty(nameof(Like.Snippet))]
-        // public List<Like> Likes { get; set; }
     }
 }

@@ -16,6 +16,11 @@ namespace Api.Services
             _keyBytes = Encoding.ASCII.GetBytes(configuration["Security:JwtKey"]);
         }
 
+        /// <summary>
+        /// Generates a JWT token to authenticate a user
+        /// </summary>
+        /// <param name="user">The user to generate the token</param>
+        /// <returns>The generated token as a string</returns>
         public string GenerateToken(User user)
         {
             DateTime expiringDate = DateTime.UtcNow.AddHours(4);

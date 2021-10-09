@@ -20,10 +20,6 @@ namespace Api.Models
         [InverseProperty(nameof(CodeSnippet.Author))]
         public List<CodeSnippet> SnippetsPosted { get; set; }
 
-        // [Newtonsoft.Json.JsonIgnore, JsonIgnore]
-        // [InverseProperty(nameof(Like.User))]
-        // public List<Like> LikesGiven { get; set; }
-
         public User() { }
 
         public User(string name, string password)
