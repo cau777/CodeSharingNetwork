@@ -2,11 +2,11 @@ import React from "react";
 import {IAppContext} from "./IAppContext";
 import Header from "../Header";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
-import Login from "../Login";
+import Login from "../forms/Login";
 import Loading from "../Loading";
-import Register from "../Register";
+import Register from "../forms/Register";
 import {RedirectNotAuthenticated} from "../auth/RedirectNotAuthenticated";
-import PostSnippet from "../PostSnippet";
+import PostSnippet from "../forms/PostSnippet";
 import {Logout} from "../Logout";
 import Main from "../Main";
 import NotFound from "../../NotFound";
@@ -86,7 +86,11 @@ export class App extends React.Component<any, IState> {
     public componentDidMount() {
         this.prepare().then();
     }
-    
+
+    /**
+     * @summary Initializes the necessary services
+     * @private
+     */
     private async prepare() {
         await this.state.authService.authenticateFromCookies();
         this.setState({loading: false});

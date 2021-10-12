@@ -3,6 +3,9 @@ import {countOccurrences} from "../../../utils/StringUtils";
 import {LanguageOptions} from "../languages/LanguageOptions";
 import {OpenCloseSet} from "../../../utils/OpenCloseSet";
 
+/**
+ * @summary Base class for all the commands for the command pattern
+ */
 export abstract class CodeEditorCommand {
     public savesStateBefore: boolean;
     public savesStateAfter: boolean;
@@ -21,7 +24,13 @@ export abstract class CodeEditorCommand {
         this.calcIndentationLevel = this.calcIndentationLevel.bind(this);
         this.generateIndentation = this.generateIndentation.bind(this);
     }
-    
+
+    /**
+     * @summary Inserts the given value in the textarea, replacing the selection with the new value
+     * @param target
+     * @param value
+     * @protected
+     */
     protected insertValue(target: HTMLTextAreaElement, value: string) {
         let start = target.selectionStart;
         

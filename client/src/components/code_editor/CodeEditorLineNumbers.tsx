@@ -7,7 +7,7 @@ interface IProps {
 export class CodeEditorLineNumbers extends Component<IProps, any> {
     public render() {
         let children: JSX.Element[] = [];
-        
+
         for (let i = 0; i < this.props.lineCount; i++) {
             children.push(
                 <tr key={"line " + i} className={"line-number"}>
@@ -15,7 +15,7 @@ export class CodeEditorLineNumbers extends Component<IProps, any> {
                 </tr>
             );
         }
-        
+
         return (
             <div id="line-numbers-wrapper">
                 <table id="line-numbers" className="line-numbers">
@@ -25,9 +25,7 @@ export class CodeEditorLineNumbers extends Component<IProps, any> {
                     <tbody>
                     {children}
                     <tr>
-                        <td height={20}>
-                        
-                        </td>
+                        <td height={20}/>
                     </tr>
                     </tbody>
                 </table>

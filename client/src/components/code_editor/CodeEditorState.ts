@@ -1,3 +1,6 @@
+/**
+ * @summary Representation of the code editor state to be used in undo and redo operations
+ */
 export class CodeEditorState {
     private readonly text?: string;
     private readonly selectionStart?: number;

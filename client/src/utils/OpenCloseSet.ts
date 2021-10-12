@@ -1,3 +1,6 @@
+/**
+ * @summary A utility class to store pairs of strings
+ */
 export class OpenCloseSet {
     public readonly elements: [string, string][];
     

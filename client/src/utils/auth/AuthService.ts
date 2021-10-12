@@ -4,9 +4,11 @@ import {ICredentials} from "./ICredentials";
 import React from "react";
 import {IAuthServiceContext} from "./IAuthServiceContext";
 
+/**
+ * @summary Class to control authentication and set the credentials to a component state
+ */
 export class AuthService {
     private static readonly CookieName = "jwt";
-    private token?: string;
     private component: React.Component<any, IAuthServiceContext>;
     
     public constructor(component: React.Component<any, IAuthServiceContext>) {
@@ -22,17 +24,17 @@ export class AuthService {
     
     public async authenticate(token: string) {
         let authorization = "Bearer " + token;
-        
-        let response = await api.get<ICredentials>("auth/info", {headers: {Authorization: authorization}});
+
+        // Tries getting the credentials of the current user
+        let response = await api.get<ICredentials>("auth/credentials", {headers: {Authorization: authorization}});
         if (response.status !== 200) {
-            console.log("token expired"); // Logout if the token is expired
+            // Logout if the token is invalid or expired
             this.logout()
         } else {
-            this.token = token;
             this.component.setState({credentials: response.data});
             api.defaults.headers.Authorization = authorization;
             
-            CookieManager.setCookie(AuthService.CookieName, this.token, 3600 * 4);
+            CookieManager.setCookie(AuthService.CookieName, token, 3600 * 4);
         }
     }
     

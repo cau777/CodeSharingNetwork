@@ -56,9 +56,12 @@ class CodeEditor extends Component<IProps, IState> {
         this.updateSelectedRow = this.updateSelectedRow.bind(this);
         this.updateRowsAndCols = this.updateRowsAndCols.bind(this);
     }
-    
+
+    /**
+     * @summary To display the code editor, this method creates an invisible textarea and a table containing the code with syntax highlighting behind it
+     */
     public render() {
-        // noinspection JSJQueryEfficiency
+        // noinspection JSJQueryEfficiency => ignore incorect WebStorm inspection
         return (
             <div className="code-editor selected-border">
                 <CodeEditorLineNumbers lineCount={this.state.rows}/>
@@ -137,17 +140,17 @@ class CodeEditor extends Component<IProps, IState> {
     
     private keyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
         if (!e.altKey && e.ctrlKey && !e.shiftKey && e.key === "z") {
-            this.executor!.undo().then();
+            this.executor.undo().then();
             e.preventDefault();
         } else if (!e.altKey && e.ctrlKey && e.shiftKey && e.key === "Z") {
-            this.executor!.redo().then();
+            this.executor.redo().then();
             e.preventDefault();
         } else {
             let key = CodeEditor.prepareKey(e.key);
             
-            for (let command of CodeEditor.commands) {
+            for (let command of CodeEditor.commands) { // Chooses the appropriate and passes it to the executor
                 if (command.canExecute(e.altKey, e.ctrlKey, e.shiftKey, key)) {
-                    this.executor!.execute(command, e, this.props.language).then();
+                    this.executor.execute(command, e, this.props.language).then();
                     break;
                 }
             }

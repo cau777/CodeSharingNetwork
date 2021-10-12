@@ -1,10 +1,10 @@
 import {Component, FormEvent} from "react";
-import {CardForm} from "./FormComponents";
-import {FormController} from "../utils/forms/FormController";
+import {CardForm} from "./CardForm";
+import {FormController} from "../../utils/forms/FormController";
 import {Button} from "react-bootstrap";
-import {CodeEditor} from "./code_editor/CodeEditor";
+import {CodeEditor} from "../code_editor/CodeEditor";
 import {RouteComponentProps, withRouter} from "react-router-dom";
-import {Languages} from "./code_editor/languages/Languages";
+import {Languages} from "../code_editor/languages/Languages";
 
 interface IState {
     busy: boolean;

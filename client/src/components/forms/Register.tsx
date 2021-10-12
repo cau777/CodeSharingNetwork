@@ -1,60 +1,70 @@
 import React, {Component, FormEvent} from "react";
-import {FormController} from "../utils/forms/FormController";
-import {CardForm} from "./FormComponents";
+import {FormController} from "../../utils/forms/FormController";
+import {CardForm} from "./CardForm";
 import {AxiosResponse} from "axios";
-import RequirementItem from "./RequirementItem";
+import RequirementItem from "../RequirementItem";
 import {Alert, Button} from "react-bootstrap";
 import {UsernameValidator} from "./validators/UsernameValidator";
 import {PasswordValidator} from "./validators/PasswordValidator";
-import Link from "./Link";
+import Link from "../Link";
 import {RouteComponentProps, withRouter} from "react-router-dom";
-import AppContext from "./app/AppContext";
+import AppContext from "../app/AppContext";
 
 interface IProps extends RouteComponentProps {
 
 }
 
 interface IState {
-    form: FormController<string>;
     busy: boolean;
     success: boolean;
-    usernameValidator: UsernameValidator;
-    passwordValidator: PasswordValidator;
 }
 
 class Register extends Component<IProps, IState> {
     static contextType = AppContext;
     context!: React.ContextType<typeof AppContext>;
-    
+
+    private passwordInput!: HTMLInputElement;
+    private passwordRepeatInput!: HTMLInputElement;
+
+    private readonly form: FormController<string>;
+    private readonly passwordValidator: PasswordValidator;
+    private readonly usernameValidator: UsernameValidator;
+
     public constructor(props: IProps) {
         super(props);
-        
+
         this.startSending = this.startSending.bind(this);
         this.success = this.success.bind(this);
         this.failed = this.failed.bind(this);
         this.validatePassword = this.validatePassword.bind(this);
         this.validateUser = this.validateUser.bind(this);
-        
+
         this.state = {
-            form: new FormController<string>("auth/register", "post", this.startSending, this.success, this.failed),
             busy: false,
             success: true,
-            passwordValidator: new PasswordValidator(),
-            usernameValidator: new UsernameValidator()
         }
+
+        this.form = new FormController<string>("auth/register", "post", this.startSending, this.success, this.failed);
+        this.passwordValidator = new PasswordValidator();
+        this.usernameValidator = new UsernameValidator();
     }
-    
+
+    public componentDidMount() {
+        this.passwordInput = document.getElementById("password") as HTMLInputElement;
+        this.passwordRepeatInput = document.getElementById("password2") as HTMLInputElement;
+    }
+
     public render() {
-        let form = this.state.form;
-        let usernameValidator = this.state.usernameValidator;
-        let passwordValidator = this.state.passwordValidator;
-        
+        let form = this.form;
+        let usernameValidator = this.usernameValidator;
+        let passwordValidator = this.passwordValidator;
+
         return (
             <CardForm name="Register" target={form}>
-                <Alert variant={"danger"} hidden={this.state.success}>
+                <Alert variant="danger" hidden={this.state.success}>
                     Invalid request
                 </Alert>
-                
+
                 <div className="form-section">
                     <label className="form-label" htmlFor="name">Username</label><br/>
                     <input className="selected-border" onInput={this.validateUser} name="name" type="text" id="name"
@@ -69,13 +79,14 @@ class Register extends Component<IProps, IState> {
                 </div>
                 <div className="form-section">
                     <label className="form-label" htmlFor="password">Password</label><br/>
-                    <input className="selected-border" onInput={this.validatePassword} name="password" type="password" id="password"
+                    <input className="selected-border" onInput={this.validatePassword} name="password" type="password"
+                           id="password"
                            required={true} maxLength={9999} spellCheck="false"/><br/>
-                    
+
                     <label className="form-label" htmlFor="password2">Repeat the password</label><br/>
                     <input className="selected-border" onInput={this.validatePassword} type="password" id="password2"
                            required={true} maxLength={9999} spellCheck="false"/>
-                    
+
                     <div>
                         <RequirementItem message="At least 8 characters long"
                                          fulfilled={passwordValidator.isRequiredLength}/>
@@ -88,7 +99,7 @@ class Register extends Component<IProps, IState> {
                 </div>
                 <div>
                     <Button
-                        disabled={this.state.busy || !this.state.usernameValidator.isValid() || !this.state.passwordValidator.isValid()}
+                        disabled={this.state.busy || !usernameValidator.isValid() || !passwordValidator.isValid()}
                         type="submit">Submit
                     </Button>
                 </div>
@@ -100,45 +111,38 @@ class Register extends Component<IProps, IState> {
             </CardForm>
         );
     }
-    
+
     private startSending() {
         this.setState({busy: true});
     }
-    
+
     private success(response: AxiosResponse<string>) {
         this.context.authService.authenticate(response.data).then(() => {
             this.props.history.push("/");
         });
     }
-    
+
     private failed() {
-        this.setState({busy: false});
-        this.setState({success: false});
-        
-        let password = document.getElementById("password") as HTMLInputElement;
-        let password2 = document.getElementById("password2") as HTMLInputElement;
-        
-        password.value = "";
-        password2.value = "";
+        this.setState({busy: false, success: false});
+
+        this.passwordInput.value = "";
+        this.passwordRepeatInput.value = "";
     }
-    
+
     private validatePassword(event: FormEvent<HTMLInputElement>) {
-        this.state.form.inputChange(event);
-        
-        let password = (document.getElementById("password") as HTMLInputElement).value;
-        let password2 = (document.getElementById("password2") as HTMLInputElement).value;
-        
-        this.state.passwordValidator.validate(password, password2);
-        this.setState({passwordValidator: this.state.passwordValidator});
+        this.form.inputChange(event);
+
+        this.passwordValidator.validate(this.passwordInput.value, this.passwordRepeatInput.value);
+        this.forceUpdate();
     }
-    
+
     private async validateUser(event: FormEvent<HTMLInputElement>) {
-        this.state.form.inputChange(event);
-        
+        this.form.inputChange(event);
+
         let name = (document.getElementById("name") as HTMLInputElement).value;
-        
-        await this.state.usernameValidator.validate(name);
-        this.setState({usernameValidator: this.state.usernameValidator});
+
+        await this.usernameValidator.validate(name);
+        this.forceUpdate();
     }
 }
 

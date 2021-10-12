@@ -31,7 +31,7 @@ class Header extends Component<IProps> {
                                 <Authenticated>
                                     <Dropdown>
                                         <Dropdown.Toggle className="simple-dropdown-toggle">
-                                            <img className={"round-img"} id="user-img" src={default_user} alt="user"/>
+                                            <img className="round-img" id="user-img" src={default_user} alt="user"/>
                                         </Dropdown.Toggle>
                                         
                                         <Dropdown.Menu variant="dark">
@@ -55,8 +55,8 @@ class Header extends Component<IProps> {
                                     </Dropdown>
                                 </Authenticated>
                                 <NotAuthenticated>
-                                    <SimpleLink to={"/login"}><Nav.Link>Log in</Nav.Link></SimpleLink>
-                                    <SimpleLink to={"/register"}><Nav.Link>Register</Nav.Link></SimpleLink>
+                                    <SimpleLink to="/login"><Nav.Link>Log in</Nav.Link></SimpleLink>
+                                    <SimpleLink to="/register"><Nav.Link>Register</Nav.Link></SimpleLink>
                                 </NotAuthenticated>
                             </Nav>
                         </Navbar.Collapse>

@@ -1,6 +1,4 @@
-import {IValidator} from "./IValidator";
-
-export class PasswordValidator implements IValidator {
+export class PasswordValidator {
     private static readonly numbersRegex = new RegExp(".*\\d.*");
     private static readonly uppercaseRegex = new RegExp(".*[A-Z].*");
     private static readonly lowercaseRegex = new RegExp(".*[a-z].*");

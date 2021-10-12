@@ -3,15 +3,25 @@ import {ISubmittable} from "./ISubmittable";
 import api from "../api";
 import {IFormEvent} from "./IFormEvent";
 
+/**
+ * @summary Utility class to work with forms
+ */
 class FormController<TResponse> implements ISubmittable {
+    public readonly values: Map<string, any>;
     private readonly url: string;
     private readonly method: "get" | "post";
-    public readonly values: Map<string, any>;
-    
+
     private readonly onStart: (() => void) | undefined;
     private readonly onFulfilled: ((response: AxiosResponse<TResponse>) => void) | undefined;
     private readonly onRejected: ((reason: any) => void) | undefined;
-    
+
+    /**
+     * @param url
+     * @param method
+     * @param onStart Triggered when the controller starts sending the value to the api
+     * @param onFulfilled Triggered if the api responded with success
+     * @param onRejected Triggered if the api responded with failure
+     */
     public constructor(url: string, method: "get" | "post",
                        onStart: (() => void) | undefined = undefined,
                        onFulfilled: ((response: AxiosResponse<TResponse>) => void) | undefined = undefined,
@@ -23,13 +33,16 @@ class FormController<TResponse> implements ISubmittable {
         
         this.onStart = onStart;
         this.onFulfilled = onFulfilled;
-        this.onRejected = onRejected
-        
+        this.onRejected = onRejected;
+
         this.submit = this.submit.bind(this);
         this.inputChange = this.inputChange.bind(this);
     }
-    
-    public submit(): void {
+
+    /**
+     * @summary Sends the values to the api
+     */
+    public submit() {
         this.onStart?.();
         
         let requestData = Object.fromEntries(this.values);
@@ -40,8 +53,12 @@ class FormController<TResponse> implements ISubmittable {
         
         promise.then(this.onFulfilled, this.onRejected);
     }
-    
-    public inputChange(event: IFormEvent<string>) {
+
+    /**
+     * @summary Should be triggered when the form element has its value changed
+     * @param event
+     */
+    public inputChange(event: IFormEvent<any>) {
         const target = event.currentTarget;
         this.values.set(target.name, target.value);
     }

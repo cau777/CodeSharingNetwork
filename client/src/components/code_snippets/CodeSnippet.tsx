@@ -147,7 +147,7 @@ export class CodeSnippet extends Component<IProps, IState> {
     private async updateSnippetData() {
         let result = await api.get<ISnippetData>("/snippets/" + this.props.snippetId);
         
-        if (!this.componentExists) return;
+        if (!this.componentExists) return; // Avoids error: Can't perform a React state update on an unmounted component
         
         if (result.status === 200) {
             this.setState({snippet: result.data})
@@ -165,7 +165,7 @@ export class CodeSnippet extends Component<IProps, IState> {
         
         await api.post("/snippets/" + this.props.snippetId + "/" + (this.state.snippet.userLiked ? "unlike" : "like"));
     
-        if (!this.componentExists) return;
+        if (!this.componentExists) return; // Avoids error: Can't perform a React state update on an unmounted component
     
         await this.updateSnippetData();
     }

@@ -1,13 +1,13 @@
 import {Component, FormEvent} from "react";
-import "../css/FormComponents.css";
-import {ISubmittable} from "../utils/forms/ISubmittable";
+import "../../css/FormComponents.css";
+import {ISubmittable} from "../../utils/forms/ISubmittable";
 
 interface IProps {
     name: string;
     target: ISubmittable;
 }
 
-class CardForm extends Component<IProps> {
+export class CardForm extends Component<IProps> {
     public constructor(props: IProps) {
         super(props);
         this.submit = this.submit.bind(this);
@@ -31,5 +31,3 @@ class CardForm extends Component<IProps> {
         this.props.target.submit();
     }
 }
-
-export {CardForm};

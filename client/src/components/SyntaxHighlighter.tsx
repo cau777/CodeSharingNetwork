@@ -12,7 +12,11 @@ export class SyntaxHighlighter {
     public constructor(options: LanguageOptions) {
         this.options = options;
     }
-    
+
+    /**
+     * @summary Creates an array containing the color of each character of the text
+     * @param text The text to highlight
+     */
     public highlight(text: string) {
         let charColors: string[] = [];
         
@@ -33,10 +37,10 @@ export class SyntaxHighlighter {
         }
         
         if (this.options.stringHighlight) {
-            let enclosedBy = "";
+            let enclosedBy = ""; // Can be either " or '
             for (let i = 0; i < text.length; i++) {
                 let char = text.charAt(i);
-                let escaping = i !== 0 && text.charAt(i - 1) === "\\";
+                let escaping = i !== 0 && text.charAt(i - 1) === "\\"; // Don't consider quotes if the previous character is \
                 
                 if (enclosedBy === "") {
                     if ((char === "\"" || char === "'") && !escaping) {
@@ -64,7 +68,12 @@ export class SyntaxHighlighter {
         
         return charColors;
     }
-    
+
+    /**
+     * @summary Generates arrays of colored <span> elements for each line
+     * @param text
+     * @param charColors
+     */
     public generateLines(text: string, charColors: string[]) {
         let lineResult: JSX.Element[] = [];
         let lines: JSX.Element[][] = [];
@@ -78,16 +87,19 @@ export class SyntaxHighlighter {
             if (char === "\n" || i === text.length) {
                 if (textBuffer !== "")
                     lineResult.push(<span key={spanIndex++} className={"code-" + currentColor}>{textBuffer}</span>);
-                
+
+                // Add a space if the line is empty because the height of empty table lines is always empty
                 if (lineResult.length === 0) lineResult.push(<span key={spanIndex++}>{" "}</span>);
+
                 lines.push(lineResult);
                 lineResult = [];
                 textBuffer = "";
                 currentColor = "";
             } else {
                 let color = charColors[i];
-                
-                if (currentColor !== color) {
+
+                // If the color of the current character is different from the previous
+                if (char !== " " && currentColor !== color) {
                     if (textBuffer !== "")
                         lineResult.push(<span key={spanIndex++} className={"code-" + currentColor}>{textBuffer}</span>);
                     currentColor = color;

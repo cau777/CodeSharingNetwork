@@ -1,5 +1,6 @@
-import {ITarget} from "./ITarget";
-
 export interface IFormEvent<TValue> {
-    currentTarget: ITarget<TValue>;
+    currentTarget: {
+        name: string;
+        value: TValue;
+    };
 }

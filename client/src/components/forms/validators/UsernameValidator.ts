@@ -1,7 +1,6 @@
-import api from "../../utils/api";
-import {IValidator} from "./IValidator";
+import api from "../../../utils/api";
 
-export class UsernameValidator implements IValidator {
+export class UsernameValidator {
     private static readonly charactersRegex = new RegExp("^\\w+$");
     
     public isRequiredLength: boolean;

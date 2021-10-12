@@ -4,6 +4,7 @@ import api from "../utils/api";
 import {CodeSnippet} from "./code_snippets/CodeSnippet";
 import Loading from "./Loading";
 import {copyDate, minDate, subtractDays} from "../utils/DateUtils";
+import {getDocumentHeight} from "../utils/DOMUtils";
 
 interface IState {
     loadingNewSnippets: boolean;
@@ -67,9 +68,7 @@ class Main extends Component<any, IState> {
     private updateWindow() {
         let scrollPosition = window.scrollY;
 
-        // Cross-browser solution to find the total document height
-        let documentHeight = Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight,
-            document.documentElement.scrollHeight, document.documentElement.offsetHeight);
+        let documentHeight = getDocumentHeight();
         let scrollLimit = documentHeight - window.innerHeight * 1.4;
 
         if (scrollPosition > scrollLimit) {

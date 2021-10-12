@@ -1,11 +1,11 @@
 import React, {Component} from "react";
-import {CardForm} from "./FormComponents";
-import {FormController} from "../utils/forms/FormController";
+import {CardForm} from "./CardForm";
+import {FormController} from "../../utils/forms/FormController";
 import {AxiosResponse} from "axios";
 import {Alert, Button} from "react-bootstrap";
 import {RouteComponentProps, withRouter} from "react-router-dom";
-import Link from "./Link";
-import AppContext from "./app/AppContext";
+import Link from "../Link";
+import AppContext from "../app/AppContext";
 
 interface State {
     form: FormController<string>;
