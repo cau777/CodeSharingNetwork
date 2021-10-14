@@ -8,10 +8,11 @@ import Register from "../forms/Register";
 import {RedirectNotAuthenticated} from "../auth/RedirectNotAuthenticated";
 import PostSnippet from "../forms/PostSnippet";
 import {Logout} from "../Logout";
-import Main from "../Main";
+import SnippetsFeed from "../code_snippets/SnippetsFeed";
 import NotFound from "../../NotFound";
 import AppContext from "./AppContext";
 import {AuthService} from "../../utils/auth/AuthService";
+import {generateSnippetsByDay} from "../code_snippets/SnippetsGenerators";
 
 interface IState extends IAppContext {
     loading: boolean;
@@ -68,7 +69,7 @@ export class App extends React.Component<any, IState> {
                                 
                                 <Route path="/" exact={true}>
                                     <RedirectNotAuthenticated/>
-                                    <Main/>
+                                    <SnippetsFeed snippetsIdGenerator={generateSnippetsByDay()}/>
                                 </Route>
                                 
                                 {/* Not found */}
