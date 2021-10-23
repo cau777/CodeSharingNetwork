@@ -39,6 +39,21 @@ namespace Api.Services.Database
             _tableName = typeof(T).Name + "s";
         }
 
+        public virtual async Task<bool> Edit([NotNull] T element)
+        {
+            try
+            {
+                await Context.SaveChangesAsync();
+                LogSuccess("EDIT", element);
+                return true;
+            }
+            catch (Exception e)
+            {
+                LogFailure("EDIT", element, e);
+                return false;
+            }
+        }
+
         /// <summary>
         /// Adds an element to the table and logs the operation
         /// </summary>
@@ -81,13 +96,13 @@ namespace Api.Services.Database
             }
         }
 
-        protected void LogSuccess(string operation, T element)
+        protected void LogSuccess(string operation, object element)
         {
             _logger.LogInformation(
                 $"Success on operation {operation} on table {_tableName}: {JsonConvert.SerializeObject(element)}");
         }
 
-        protected void LogFailure(string operation, T element, Exception reason)
+        protected void LogFailure(string operation, object element, Exception reason)
         {
             // Joins messages from all inner exceptions
             string message = reason.Message;

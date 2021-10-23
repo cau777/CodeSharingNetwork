@@ -24,17 +24,21 @@ export class AuthService {
     
     public async authenticate(token: string) {
         let authorization = "Bearer " + token;
-
+        
         // Tries getting the credentials of the current user
-        let response = await api.get<ICredentials>("auth/credentials", {headers: {Authorization: authorization}});
-        if (response.status !== 200) {
-            // Logout if the token is invalid or expired
-            this.logout()
-        } else {
-            this.component.setState({credentials: response.data});
-            api.defaults.headers.Authorization = authorization;
-            
-            CookieManager.setCookie(AuthService.CookieName, token, 3600 * 4);
+        try {
+            let response = await api.get<ICredentials>("auth/credentials", {headers: {Authorization: authorization}});
+            if (response.status !== 200) {
+                // Logout if the token is invalid or expired
+                this.logout()
+            } else {
+                api.defaults.headers.Authorization = authorization;
+                
+                CookieManager.setCookie(AuthService.CookieName, token, 3600 * 4);
+                this.component.setState({credentials: response.data});
+            }
+        } catch (e) {
+            this.logout();
         }
     }
     

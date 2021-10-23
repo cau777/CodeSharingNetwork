@@ -42,13 +42,20 @@ namespace Api.Services
                 .Where(o => o.Author != user) //Don't recommend the user's own posts
                 .ToArrayAsync();
 
-            long[] newPage = snippets
+            return snippets
                 .OrderByDescending(o => CalcSnippetScore(o, end))
                 .Select(o => o.Id)
                 .Take(SnippetsPerPage)
                 .ToArray();
 
-            return newPage;
+            // return _snippetsService.IncludingAll
+            //     .Where(o => o.Posted >= start)
+            //     .Where(o => o.Posted < end)
+            //     .Where(o => o.Author != user)
+            //     .OrderByDescending(o => (end - o.Posted.).TotalMilliseconds)
+            //     .Select(o => o.Id)
+            //     .Take(SnippetsPerPage)
+            //     .ToArray();
         }
     }
 }

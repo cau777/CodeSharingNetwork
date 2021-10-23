@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {CardForm} from "./CardForm";
-import {FormController} from "../../utils/forms/FormController";
+import {FormBodyController} from "../../utils/forms/FormBodyController";
 import {AxiosResponse} from "axios";
 import {Alert, Button} from "react-bootstrap";
 import {RouteComponentProps, withRouter} from "react-router-dom";
@@ -8,7 +8,7 @@ import Link from "../Link";
 import AppContext from "../app/AppContext";
 
 interface State {
-    form: FormController<string>;
+    form: FormBodyController<string>;
     busy: boolean;
     success: boolean;
 }
@@ -27,7 +27,7 @@ class Login extends Component<IProps, State> {
         this.success = this.success.bind(this);
         this.failed = this.failed.bind(this);
         this.state = {
-            form: new FormController<string>("auth/login", "post", this.startSending, this.success, this.failed),
+            form: new FormBodyController<string>("auth/login", "post", this.startSending, this.success, this.failed),
             busy: false,
             success: true
         };

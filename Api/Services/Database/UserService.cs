@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Api.DatabaseContexts;
@@ -20,7 +21,7 @@ namespace Api.Services.Database
         /// </summary>
         private readonly ISet<string> _namesInUse;
 
-        public UserService(DatabaseContext databaseContext, ILogger<DatabaseService<User>> logger) : base(
+        public UserService(DatabaseContext databaseContext, ILogger<UserService> logger) : base(
             databaseContext, databaseContext.Users, logger)
         {
             // Initializes the set with all names from the database
@@ -37,6 +38,18 @@ namespace Api.Services.Database
             bool result = await base.Add(element);
             if (result) _namesInUse.Add(element.Name);
             return result;
+        }
+
+        public async Task<bool> EditByName([NotNull] string name,  string newName = null,  byte[] newPassword = null, byte[] newImage = null)
+        {
+            User user = await FindByName(name);
+            if (user is null) return false;
+
+            if (newName is not null) user.Name = newName;
+            if (newPassword is not null) user.Password = newPassword;
+            if (newImage is not null) user.ImageBytes = newImage;
+
+            return await Edit(user);
         }
 
         [ItemCanBeNull]

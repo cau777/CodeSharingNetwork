@@ -82,3 +82,12 @@ form select {
 .fill-area-form form {
     display: block;
 }
+
+.simple-form .wrapper {
+    padding: 1.5rem;
+}
+
+
+.label-file-input input {
+    display: none;
+}

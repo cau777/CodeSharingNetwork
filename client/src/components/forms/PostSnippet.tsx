@@ -1,6 +1,6 @@
 import {Component, FormEvent} from "react";
 import {CardForm} from "./CardForm";
-import {FormController} from "../../utils/forms/FormController";
+import {FormBodyController} from "../../utils/forms/FormBodyController";
 import {Button} from "react-bootstrap";
 import {CodeEditor} from "../code_editor/CodeEditor";
 import {RouteComponentProps, withRouter} from "react-router-dom";
@@ -16,7 +16,7 @@ interface IProps extends RouteComponentProps {
 }
 
 class PostSnippet extends Component<IProps, IState> {
-    private readonly form: FormController<any>;
+    private readonly form: FormBodyController<any>;
     
     public constructor(props: IProps) {
         super(props);
@@ -26,7 +26,7 @@ class PostSnippet extends Component<IProps, IState> {
         this.startSending = this.startSending.bind(this);
         this.changeLanguage = this.changeLanguage.bind(this);
         
-        this.form = new FormController<any>("snippets", "post", this.success, this.failure, this.startSending);
+        this.form = new FormBodyController<any>("snippets", "post", this.success, this.failure, this.startSending);
         this.state = {
             busy: false,
             language: "None"

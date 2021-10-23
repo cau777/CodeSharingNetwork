@@ -1,11 +1,11 @@
 import "../css/Header.css";
 import React, {Component} from "react";
 import {Navbar, Container, Nav, Dropdown} from "react-bootstrap";
-import default_user from "../img/default_user.png";
 import SimpleLink from "./SimpleLink";
 import {Authenticated} from "./auth/Authenticated";
 import {NotAuthenticated} from "./auth/NotAuthenticated";
 import AppContext from "./app/AppContext";
+import {UserImage} from "./UserImage";
 
 interface IProps {
 
@@ -16,6 +16,8 @@ class Header extends Component<IProps> {
     context !: React.ContextType<typeof AppContext>;
     
     public render() {
+        let credentials = this.context.credentials;
+        
         return (
             <header>
                 <Navbar variant="dark" expand="lg" className="mb-3">
@@ -31,17 +33,25 @@ class Header extends Component<IProps> {
                                 <Authenticated>
                                     <Dropdown>
                                         <Dropdown.Toggle className="simple-dropdown-toggle">
-                                            <img className="round-img" id="user-img" src={default_user} alt="user"/>
+                                            <UserImage username={credentials?.username} width="4vmin"/>
                                         </Dropdown.Toggle>
                                         
                                         <Dropdown.Menu variant="dark">
                                             <Dropdown.ItemText>
-                                                {this.context.credentials?.username}
+                                                {credentials?.username}
                                             </Dropdown.ItemText>
+                                            
                                             <Dropdown.Divider/>
+                                            
                                             <SimpleLink to="/profile">
                                                 <Dropdown.Item>
                                                     Profile
+                                                </Dropdown.Item>
+                                            </SimpleLink>
+                                            
+                                            <SimpleLink to="/settings">
+                                                <Dropdown.Item>
+                                                    Settings
                                                 </Dropdown.Item>
                                             </SimpleLink>
                                             

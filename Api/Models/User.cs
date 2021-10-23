@@ -17,6 +17,9 @@ namespace Api.Models
         public byte[] Password { get; set; }
 
         [Newtonsoft.Json.JsonIgnore, JsonIgnore]
+        public byte[] ImageBytes { get; set; }
+
+        [Newtonsoft.Json.JsonIgnore, JsonIgnore]
         [InverseProperty(nameof(CodeSnippet.Author))]
         public List<CodeSnippet> SnippetsPosted { get; set; }
 

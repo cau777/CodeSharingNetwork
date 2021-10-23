@@ -12,6 +12,7 @@ import {formatDateTime} from "../../utils/DateUtils";
 import {Heart} from "../../svg/Icons";
 import api from "../../utils/api";
 import Loading from "../Loading";
+import {UserImage} from "../UserImage";
 
 interface IProps {
     order: number;
@@ -92,13 +93,13 @@ export class CodeSnippet extends Component<IProps, IState> {
                     <CardHeader>
                         <div>
                             <div className="snippet-author-header flex-center">
-                                {/* Placeholder */}
-                                <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
-                                     className={"user-img round-img"} alt="author"/>
-                                <h5 className={"snippet-author"}>{snippet.authorName}</h5>
+                                <div className="user-img">
+                                    <UserImage username={snippet.authorName} width="32px" focusable={true}/>
+                                </div>
+                                <h5 className="snippet-author">{snippet.authorName}</h5>
                                 <h6 className="snippet-language ms-auto">{capitalize(snippet.language)}</h6>
-                            
                             </div>
+                            
                             <h4 className="snippet-title">{snippet.title}</h4>
                             <p className="snippet-description">{snippet.description}</p>
                         </div>
@@ -164,9 +165,9 @@ export class CodeSnippet extends Component<IProps, IState> {
         if (this.state.snippet === undefined) return;
         
         await api.post("/snippets/" + this.props.snippetId + "/" + (this.state.snippet.userLiked ? "unlike" : "like"));
-    
+        
         if (!this.componentExists) return; // Avoids error: Can't perform a React state update on an unmounted component
-    
+        
         await this.updateSnippetData();
     }
     

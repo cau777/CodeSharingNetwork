@@ -1,0 +1,26 @@
+.profile {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+@media (min-width: 992px){
+    .profile{
+        flex-direction: row;
+    }
+}
+
+.profile .info-col {
+    width: max(15vw, 15rem);
+}
+
+.profile .snippets-col {
+    min-width: 0;
+    flex-grow: 1;
+}
+
+.profile .vertical-separator {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    margin: 0 1rem;
+    border-radius: 1rem;
+}

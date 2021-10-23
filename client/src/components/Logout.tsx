@@ -1,18 +1,24 @@
 import React, {Component} from "react";
-import {Redirect} from "react-router-dom";
+import {RouteComponentProps, withRouter} from "react-router-dom";
 import AppContext from "./app/AppContext";
 
-export class Logout extends Component<any, any> {
+interface IProps extends RouteComponentProps {
+}
+
+class Logout extends Component<IProps, any> {
     static contextType = AppContext;
     context!: React.ContextType<typeof AppContext>;
     
     public render() {
-        this.context.authService.logout();
-        
         return (
-            <div>
-                <Redirect to="/login"/>
-            </div>
+            <div/>
         );
     }
+    
+    public componentDidMount() {
+        this.context.authService.logout();
+        this.props.history.push("/login");
+    }
 }
+
+export default withRouter(Logout);

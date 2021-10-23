@@ -45,6 +45,18 @@ body {
     border-color: var(--primary-variant);
 }
 
+.modal-content {
+    background-color: rgb(73, 73, 73);
+}
+
+.modal-header {
+    border-color: rgb(31, 31, 31);
+}
+
+.modal-footer {
+    border-color: rgb(31, 31, 31);
+}
+
 .icon {
     color: var(--font);
 }
@@ -104,4 +116,9 @@ html {
 
 .flex-center * {
     margin-bottom: 0;
+}
+
+.btn-icon {
+    line-height: 0;
+    padding: 0.3rem;
 }

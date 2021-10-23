@@ -80,6 +80,9 @@ namespace Api.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
+                    b.Property<byte[]>("ImageBytes")
+                        .HasColumnType("BLOB");
+
                     b.Property<byte[]>("Password")
                         .HasMaxLength(32)
                         .HasColumnType("BLOB");
@@ -103,11 +106,11 @@ namespace Api.Migrations
             modelBuilder.Entity("Api.Models.Like", b =>
                 {
                     b.HasOne("Api.Models.CodeSnippet", "Snippet")
-                        .WithMany("Likes")
+                        .WithMany()
                         .HasForeignKey("SnippetId");
 
                     b.HasOne("Api.Models.User", "User")
-                        .WithMany("LikesGiven")
+                        .WithMany()
                         .HasForeignKey("UserName");
 
                     b.Navigation("Snippet");
@@ -115,15 +118,8 @@ namespace Api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Api.Models.CodeSnippet", b =>
-                {
-                    b.Navigation("Likes");
-                });
-
             modelBuilder.Entity("Api.Models.User", b =>
                 {
-                    b.Navigation("LikesGiven");
-
                     b.Navigation("SnippetsPosted");
                 });
 #pragma warning restore 612, 618

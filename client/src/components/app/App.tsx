@@ -7,12 +7,13 @@ import Loading from "../Loading";
 import Register from "../forms/Register";
 import {RedirectNotAuthenticated} from "../auth/RedirectNotAuthenticated";
 import PostSnippet from "../forms/PostSnippet";
-import {Logout} from "../Logout";
-import SnippetsFeed from "../code_snippets/SnippetsFeed";
+import Logout from "../Logout";
 import NotFound from "../../NotFound";
 import AppContext from "./AppContext";
 import {AuthService} from "../../utils/auth/AuthService";
-import {generateSnippetsByDay} from "../code_snippets/SnippetsGenerators";
+import {Profile} from "../Profile";
+import {Home} from "../Home";
+import {Settings} from "../settings/Settings";
 
 interface IState extends IAppContext {
     loading: boolean;
@@ -26,19 +27,19 @@ export class App extends React.Component<any, IState> {
         
         this.state = {
             loading: true,
-            authService: new AuthService(this)
+            authService: new AuthService(this),
         };
     }
     
     public render() {
-        if (this.state.loading){
+        if (this.state.loading) {
             return <Loading/>;
         }
         
         return (
             <AppContext.Provider value={{
                 credentials: this.state.credentials,
-                authService: this.state.authService,
+                authService: this.state.authService
             }}>
                 <Router>
                     <Header/>
@@ -69,7 +70,17 @@ export class App extends React.Component<any, IState> {
                                 
                                 <Route path="/" exact={true}>
                                     <RedirectNotAuthenticated/>
-                                    <SnippetsFeed snippetsIdGenerator={generateSnippetsByDay()}/>
+                                    <Home/>
+                                </Route>
+                                
+                                <Route path="/profile">
+                                    <RedirectNotAuthenticated/>
+                                    <Profile/>
+                                </Route>
+                                
+                                <Route path="/settings">
+                                    <RedirectNotAuthenticated/>
+                                    <Settings/>
                                 </Route>
                                 
                                 {/* Not found */}
@@ -87,7 +98,7 @@ export class App extends React.Component<any, IState> {
     public componentDidMount() {
         this.prepare().then();
     }
-
+    
     /**
      * @summary Initializes the necessary services
      * @private

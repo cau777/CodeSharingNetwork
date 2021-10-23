@@ -41,4 +41,26 @@ async function* generateSnippetsByDay() {
     }
 }
 
-export {generateSnippetsByDay}
+async function* generateProfileSnippets(username: string) {
+    let page = 0;
+    
+    while (true) {
+        let response = await api.get<number[]>("users/" + username + "/posted", {
+            params: {
+                page: page
+            }
+        });
+        
+        if (response.status === 200) {
+            yield response.data;
+        } else {
+            if (response.status !== 204)
+                console.log(response);
+            break;
+        }
+        
+        page++;
+    }
+}
+
+export {generateSnippetsByDay, generateProfileSnippets}

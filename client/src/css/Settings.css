@@ -1,0 +1,34 @@
+.settings {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.loaded-image-modal .modal-body .square-placeholder svg {
+    width: 100%;
+    height: auto;
+    color: transparent;
+}
+
+.loaded-image-modal .modal-body .circle-mask svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    height: auto;
+    color: rgba(255,255,255,0.7);
+    cursor: move;
+}
+
+.loaded-image-modal .modal-body img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: auto;
+    height: 100%;
+
+}
+
+.loaded-image-modal .image-mask {
+    position: relative;
+    overflow: hidden;
+}

@@ -1,5 +1,5 @@
 import React, {Component, FormEvent} from "react";
-import {FormController} from "../../utils/forms/FormController";
+import {FormBodyController} from "../../utils/forms/FormBodyController";
 import {CardForm} from "./CardForm";
 import {AxiosResponse} from "axios";
 import RequirementItem from "../RequirementItem";
@@ -26,7 +26,7 @@ class Register extends Component<IProps, IState> {
     private passwordInput!: HTMLInputElement;
     private passwordRepeatInput!: HTMLInputElement;
 
-    private readonly form: FormController<string>;
+    private readonly form: FormBodyController<string>;
     private readonly passwordValidator: PasswordValidator;
     private readonly usernameValidator: UsernameValidator;
 
@@ -44,7 +44,7 @@ class Register extends Component<IProps, IState> {
             success: true,
         }
 
-        this.form = new FormController<string>("auth/register", "post", this.startSending, this.success, this.failed);
+        this.form = new FormBodyController<string>("auth/register", "post", this.startSending, this.success, this.failed);
         this.passwordValidator = new PasswordValidator();
         this.usernameValidator = new UsernameValidator();
     }
