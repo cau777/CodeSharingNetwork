@@ -2,6 +2,7 @@
 .logo {
     color: var(--primary) !important;
     font-weight: bolder;
+    cursor: pointer;
 }
 
 #user-img {

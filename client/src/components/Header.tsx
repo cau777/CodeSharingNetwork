@@ -22,7 +22,9 @@ class Header extends Component<IProps> {
             <header>
                 <Navbar variant="dark" expand="lg" className="mb-3">
                     <Container>
-                        <Navbar.Brand className="logo" href="/">CodeSharingNetwork</Navbar.Brand>
+                        <SimpleLink to="/">
+                            <Navbar.Brand className="logo">CodeSharingNetwork</Navbar.Brand>
+                        </SimpleLink>
                         <Navbar.Toggle aria-controls="header-nav-collapse"/>
                         <Navbar.Collapse>
                             <Nav id="header-nav-collapse">
