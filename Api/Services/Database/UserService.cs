@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Api.DatabaseContexts;
 using Api.Models;
+using Api.Utils;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -40,14 +41,17 @@ namespace Api.Services.Database
             return result;
         }
 
-        public async Task<bool> EditByName([NotNull] string name,  string newName = null,  byte[] newPassword = null, byte[] newImage = null)
+        public async Task<bool> EditByName([NotNull] string name, 
+            Optional<string> newName = default, 
+            Optional<byte[]> newPassword = default,
+            Optional<byte[]> newImage = default)
         {
             User user = await FindByName(name);
             if (user is null) return false;
 
-            if (newName is not null) user.Name = newName;
-            if (newPassword is not null) user.Password = newPassword;
-            if (newImage is not null) user.ImageBytes = newImage;
+            if (newName.HasValue) user.Name = newName.Value;
+            if (newPassword.HasValue) user.Password = newPassword.Value;
+            if (newImage.HasValue) user.ImageBytes = newImage.Value;
 
             return await Edit(user);
         }

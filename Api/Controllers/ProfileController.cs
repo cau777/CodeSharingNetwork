@@ -26,6 +26,15 @@ namespace Api.Controllers
             _userService = userService;
             _logger = logger;
         }
+        
+        [HttpDelete]
+        [Authorize]
+        [Route("image")]
+        public async Task<IActionResult> DeleteProfileImage()
+        {
+            bool result = await _userService.EditByName(User.GetName(), newImage: null);
+            return result ? NoContent() : BadRequest();
+        }
 
         [HttpPost]
         [Authorize]

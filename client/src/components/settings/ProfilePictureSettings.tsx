@@ -6,6 +6,7 @@ import AppContext from "../app/AppContext";
 import {CircleMask, Square} from "../../svg/Icons";
 import {clamp} from "../../utils/MathUtils";
 import {FormMultipartController} from "../../utils/forms/FormMultipartController";
+import api from "../../utils/api";
 
 interface IState {
     selectedFile?: string;
@@ -25,7 +26,10 @@ export class ProfilePictureSettings extends Component<any, IState> {
     
     public constructor(props: any) {
         super(props);
+        
         this.fileSelected = this.fileSelected.bind(this);
+        this.removeImage = this.removeImage.bind(this);
+        
         this.clearSelected = this.clearSelected.bind(this);
         this.prepareImage = this.prepareImage.bind(this);
         this.zoom = this.zoom.bind(this);
@@ -93,6 +97,9 @@ export class ProfilePictureSettings extends Component<any, IState> {
                                    id="fileInput" onInput={this.fileSelected}/>
                             Choose Image
                         </label>
+                        <Button variant="primary" className="ms-1" onClick={this.removeImage}>
+                            Remove Image
+                        </Button>
                     </div>
                 </SimpleForm>
                 <hr/>
@@ -128,6 +135,13 @@ export class ProfilePictureSettings extends Component<any, IState> {
         let path = URL.createObjectURL(file);
         this.setState({selectedFile: path})
         this.imageFormController.inputChange({currentTarget: {name: e.currentTarget.name, value: file}});
+    }
+    
+    private removeImage() {
+        api.delete("/profile/image").then(() => {
+            alert("Successfully deleted image");
+            window.location.reload();
+        });
     }
     
     private clearSelected() {
