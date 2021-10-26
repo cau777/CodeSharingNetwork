@@ -16,7 +16,8 @@ interface IState {
 }
 
 export class UserImage extends Component<IProps, IState> {
-    private static preloadedImages = new Map<string, string>();
+    private static loadingImages = new Map<string, Promise<string | undefined>>();
+    
     private componentExists: boolean;
     
     public constructor(props: IProps) {
@@ -66,22 +67,29 @@ export class UserImage extends Component<IProps, IState> {
     }
     
     private async updateImage(username: string) {
-        // let target = document.getElementById(this.props.id) as HTMLImageElement;
-        let data = UserImage.preloadedImages.get(username);
+        let promise = UserImage.loadingImages.get(username);
         
-        if (data === undefined) {
-            let response = await api.get<string>("/users/" + username + "/image");
-            
-            if (response.status === 200) {
-                data = response.data;
-                UserImage.preloadedImages.set(username, data);
-            } else {
-                console.log(response);
-                return;
-            }
+        if (promise === undefined) {
+            promise = UserImage.fetchImage(username);
+            UserImage.loadingImages.set(username, promise);
         }
         
-        if (!this.componentExists) return; // Avoids error: Can't perform a React state update on an unmounted component
+        let data = await promise;
+        
+        // Avoids error: Can't perform a React state update on an unmounted component
+        if (!this.componentExists || data === undefined) return;
+        
         this.setState({src: data})
+    }
+    
+    private static async fetchImage(username: string) {
+        try {
+            let response = await api.get<string>("/users/" + username + "/image");
+            
+            if (response.status === 200) return response.data;
+            console.log(response);
+        } catch (e) {
+            console.log(e)
+        }
     }
 }
