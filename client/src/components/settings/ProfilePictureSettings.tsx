@@ -29,10 +29,17 @@ export class ProfilePictureSettings extends Component<any, IState> {
         this.clearSelected = this.clearSelected.bind(this);
         this.prepareImage = this.prepareImage.bind(this);
         this.zoom = this.zoom.bind(this);
-        this.mouseDown = this.mouseDown.bind(this);
+        
+        this.startDragging = this.startDragging.bind(this);
+        this.stopDragging = this.stopDragging.bind(this);
+        
+        this.dragImageMouse = this.dragImageMouse.bind(this);
+        this.dragImageTouch = this.dragImageTouch.bind(this);
         this.dragImage = this.dragImage.bind(this);
+        
         this.moveAndClamp = this.moveAndClamp.bind(this);
         this.finish = this.finish.bind(this);
+        
         this.state = {};
         this.imageFormController = new FormMultipartController<any>("/profile/image", "post", undefined, () => {
             alert("Successfully updated image");
@@ -63,7 +70,8 @@ export class ProfilePictureSettings extends Component<any, IState> {
                                 <span className="square-placeholder">
                                     <Square/>
                                 </span>
-                                <span className="circle-mask" onMouseDown={this.mouseDown}>
+                                <span className="circle-mask" onTouchStart={this.startDragging}
+                                      onMouseDown={this.startDragging}>
                                     <CircleMask/>
                                 </span>
                                 <img id="loaded-image" className="loaded-image" src={this.state.selectedFile}
@@ -94,6 +102,17 @@ export class ProfilePictureSettings extends Component<any, IState> {
     
     public componentDidMount() {
         this.fileInput = document.getElementById("fileInput") as HTMLInputElement;
+    }
+    
+    public componentWillUnmount() {
+        // Mouse
+        document.removeEventListener("mousemove", this.dragImageMouse);
+        document.removeEventListener("mouseup", this.stopDragging);
+        
+        // Touch
+        document.removeEventListener("touchmove", this.dragImageTouch);
+        document.removeEventListener("touchend", this.stopDragging);
+        document.removeEventListener("touchcancel", this.stopDragging);
     }
     
     private fileSelected(e: React.FormEvent<HTMLInputElement>) {
@@ -132,22 +151,42 @@ export class ProfilePictureSettings extends Component<any, IState> {
         this.imageFormController.inputChange(e);
     }
     
-    private mouseDown(e: React.MouseEvent) { // TODO: mobile
-        document.addEventListener("mousemove", this.dragImage)
-        document.addEventListener("mouseup", () => {
-            document.removeEventListener("mousemove", this.dragImage);
-            this.prevDragX = undefined;
-            this.prevDragY = undefined;
-        });
+    private startDragging() {
+        // Mouse
+        document.addEventListener("mousemove", this.dragImageMouse);
+        document.addEventListener("mouseup", this.stopDragging);
+        
+        // Touch
+        document.addEventListener("touchmove", this.dragImageTouch);
+        document.addEventListener("touchend", this.stopDragging);
+        document.addEventListener("touchcancel", this.stopDragging);
     }
     
-    private dragImage(e: MouseEvent) {
+    private dragImageMouse(e: MouseEvent) {
+        this.dragImage(e.screenX, e.screenY);
+    }
+    
+    private dragImageTouch(e: TouchEvent) {
+        if (e.touches.length !== 1) return;
+        let touch = e.touches[0];
+        this.dragImage(touch.screenX, touch.screenY);
+    }
+    
+    private dragImage(x: number, y: number) {
         if (this.prevDragX !== undefined && this.prevDragY !== undefined) {
-            this.moveAndClamp(e.screenX - this.prevDragX, e.screenY - this.prevDragY);
+            this.moveAndClamp(x - this.prevDragX, y - this.prevDragY);
         }
         
-        this.prevDragX = e.screenX;
-        this.prevDragY = e.screenY;
+        this.prevDragX = x;
+        this.prevDragY = y;
+    }
+    
+    private stopDragging() {
+        document.removeEventListener("mousemove", this.dragImageMouse);
+        document.removeEventListener("touchmove", this.dragImageTouch);
+        
+        this.prevDragX = undefined;
+        this.prevDragY = undefined;
     }
     
     private moveAndClamp(xMove: number, yMove: number) {
