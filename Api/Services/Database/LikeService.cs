@@ -9,7 +9,7 @@ namespace Api.Services.Database
 {
     public class LikeService : LongIdDatabaseService<Like>
     {
-        public LikeService(DatabaseContext context, ILogger<DatabaseService<Like>> logger) : base(context,
+        public LikeService(DatabaseContext context, ILogger<LikeService> logger) : base(context,
             context.Likes, logger) { }
 
         [ItemCanBeNull]

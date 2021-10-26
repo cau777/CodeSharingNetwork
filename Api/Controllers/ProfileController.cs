@@ -32,7 +32,7 @@ namespace Api.Controllers
         [Route("image")]
         public async Task<IActionResult> DeleteProfileImage()
         {
-            bool result = await _userService.EditByName(User.GetName(), newImage: null);
+            bool result = await _userService.EditByName(User.GetName(), image: null);
             return result ? NoContent() : BadRequest();
         }
 
@@ -84,7 +84,7 @@ namespace Api.Controllers
                 {
                     await using MemoryStream outputStream = new();
                     scaledBitmap.Save(outputStream, ImageFormat.Png);
-                    await _userService.EditByName(User.GetName(), newImage: outputStream.ToArray());
+                    await _userService.EditByName(User.GetName(), image: outputStream.ToArray());
                 }
 
                 return Ok();

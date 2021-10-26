@@ -15,7 +15,7 @@ namespace Api.Services.Database
         public override IQueryable<CodeSnippet> IncludingAll => ItemSet
             .Include(o => o.Author);
 
-        public CodeSnippetService(DatabaseContext context, ILogger<DatabaseService<CodeSnippet>> logger) : base(context,
+        public CodeSnippetService(DatabaseContext context, ILogger<CodeSnippetService> logger) : base(context,
             context.CodeSnippets, logger) { }
 
         public Task<bool> HasElementsBefore(DateTime date)

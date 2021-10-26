@@ -40,18 +40,18 @@ namespace Api.Services.Database
             if (result) _namesInUse.Add(element.Name);
             return result;
         }
-
-        public async Task<bool> EditByName([NotNull] string name, 
-            Optional<string> newName = default, 
-            Optional<byte[]> newPassword = default,
-            Optional<byte[]> newImage = default)
+        
+        public async Task<bool> EditByName([NotNull] string currentName, 
+            Optional<string> name = default, 
+            Optional<byte[]> password = default,
+            Optional<byte[]> image = default)
         {
-            User user = await FindByName(name);
+            User user = await FindByName(currentName);
             if (user is null) return false;
-
-            if (newName.HasValue) user.Name = newName.Value;
-            if (newPassword.HasValue) user.Password = newPassword.Value;
-            if (newImage.HasValue) user.ImageBytes = newImage.Value;
+            
+            if (name.HasValue) user.Name = name.Value;
+            if (password.HasValue) user.Password = password.Value;
+            if (image.HasValue) user.ImageBytes = image.Value;
 
             return await Edit(user);
         }
