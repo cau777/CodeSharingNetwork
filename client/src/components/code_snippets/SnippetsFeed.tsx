@@ -96,7 +96,9 @@ class SnippetsFeed extends Component<IProps, IState> {
                                  snippetId={snippetId} onLoad={this.snippetLoaded}/>
                 );
             }
-            
+    
+            // Avoids error: Can't perform a React state update on an unmounted component
+            if (!this.componentExists) return;
             this.setState({content: content});
         }
         
