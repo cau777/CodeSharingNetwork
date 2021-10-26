@@ -47,9 +47,9 @@ namespace Api.Controllers
         [HttpGet]
         [Authorize]
         [Route("{username}/image")]
-        public async Task<IActionResult> GetUserImage([FromQuery] string username)
+        public async Task<IActionResult> GetUserImage([FromRoute] string username)
         {
-            User user = await _userService.FindByName(User.GetName());
+            User user = await _userService.FindByName(username);
             if (user is null) return NotFound();
 
             if (user.ImageBytes is null)
