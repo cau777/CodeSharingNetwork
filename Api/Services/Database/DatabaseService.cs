@@ -16,7 +16,7 @@ namespace Api.Services.Database
         /// IEnumerable of all element in the table
         /// </summary>
         public IEnumerable<T> Elements => IncludingAll;
-        
+
         /// <summary>
         /// IQueryable including values from related tables. Example: Author.Name of CodeSnippet
         /// </summary>
@@ -25,7 +25,7 @@ namespace Api.Services.Database
         protected readonly DbSet<T> ItemSet;
         protected readonly DatabaseContext Context;
         private readonly ILogger<DatabaseService<T>> _logger;
-        
+
         /// <summary>
         /// Table name to write on logs
         /// </summary>
@@ -98,8 +98,8 @@ namespace Api.Services.Database
 
         protected void LogSuccess(string operation, object element)
         {
-            _logger.LogInformation(
-                $"Success on operation {operation} on table {_tableName}: {JsonConvert.SerializeObject(element)}");
+            _logger.LogInformation("Success on operation {Operation} on table {TableName}: {Data}", operation,
+                _tableName, JsonConvert.SerializeObject(element));
         }
 
         protected void LogFailure(string operation, object element, Exception reason)
@@ -113,8 +113,8 @@ namespace Api.Services.Database
                 inner = inner.InnerException;
             }
 
-            _logger.LogWarning(
-                $"Failure on operation {operation} on table {_tableName} because {message}: {JsonConvert.SerializeObject(element)}");
+            _logger.LogWarning("Failure on operation {Operation} on table {TableName} because {Message}: {Data}",
+                operation, _tableName, message, JsonConvert.SerializeObject(element));
         }
     }
 }
