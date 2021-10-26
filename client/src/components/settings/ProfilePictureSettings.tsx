@@ -107,7 +107,6 @@ export class ProfilePictureSettings extends Component<any, IState> {
         }
         
         let path = URL.createObjectURL(file);
-        
         this.setState({selectedFile: path})
         this.imageFormController.inputChange({currentTarget: {name: e.currentTarget.name, value: file}});
     }
@@ -119,6 +118,12 @@ export class ProfilePictureSettings extends Component<any, IState> {
     
     private prepareImage() {
         this.loadedImage = document.getElementById("loaded-image") as HTMLImageElement;
+        let initialScale = this.loadedImage.height / Math.min(this.loadedImage.height, this.loadedImage.width) * 100;
+        this.loadedImage.style.height = initialScale + "%";
+        
+        let scaleInput = document.getElementById("image-scale") as HTMLInputElement;
+        scaleInput.max = (initialScale * 2).toString();
+        scaleInput.min = initialScale.toString();
     }
     
     private zoom(e: React.FormEvent<HTMLInputElement>) {
@@ -127,7 +132,7 @@ export class ProfilePictureSettings extends Component<any, IState> {
         this.imageFormController.inputChange(e);
     }
     
-    private mouseDown(e: React.MouseEvent) {
+    private mouseDown(e: React.MouseEvent) { // TODO: mobile
         document.addEventListener("mousemove", this.dragImage)
         document.addEventListener("mouseup", () => {
             document.removeEventListener("mousemove", this.dragImage);

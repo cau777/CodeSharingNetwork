@@ -25,10 +25,14 @@
     left: 0;
     width: auto;
     height: 100%;
-
+    user-select: none;
 }
 
 .loaded-image-modal .image-mask {
     position: relative;
     overflow: hidden;
+}
+
+.loaded-image-modal .circle-mask {
+    user-select: none;
 }

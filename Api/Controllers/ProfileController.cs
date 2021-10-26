@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Api.Controllers
 {
@@ -18,19 +19,24 @@ namespace Api.Controllers
         private const int ImageSize = 128;
 
         private readonly UserService _userService;
+        private readonly ILogger<ProfileController> _logger;
 
-        public ProfileController(UserService userService)
+        public ProfileController(UserService userService, ILogger<ProfileController> logger)
         {
             _userService = userService;
+            _logger = logger;
         }
 
         [HttpPost]
         [Authorize]
         [Route("image")]
         public async Task<IActionResult> UpdateProfileImage([FromForm] IFormFile file, [FromForm] string top,
-            [FromForm] string left, [FromForm] int scale)
+            [FromForm] string left, [FromForm] string scale)
         {
-            Console.WriteLine(top + " " + left + " " + scale);
+            double topValue = double.Parse(top, CultureInfo.InvariantCulture);
+            double leftValue = double.Parse(left, CultureInfo.InvariantCulture);
+            double scaleValue = double.Parse(scale, CultureInfo.InvariantCulture);
+            
             try
             {
                 await using Stream inputStream = file.OpenReadStream();
@@ -44,10 +50,11 @@ namespace Api.Controllers
 
                 using (Image image = Image.FromStream(inputStream))
                 {
-                    double ratio = scale / 100.0;
+                    double ratio = scaleValue / 100.0;
+
                     viewSize = (int) (image.Height / ratio);
-                    scaledTop = (int) (float.Parse(top, CultureInfo.InvariantCulture) * image.Height / ratio);
-                    scaledLeft = (int) (float.Parse(left, CultureInfo.InvariantCulture) * image.Height / ratio);
+                    scaledTop = (int) (topValue * image.Height / ratio);
+                    scaledLeft = (int) (leftValue * image.Height / ratio);
 
                     bitmap = new Bitmap(image);
                 }
@@ -55,7 +62,7 @@ namespace Api.Controllers
                 using (bitmap)
                 {
                     Rectangle rectangle = new(scaledLeft, scaledTop, viewSize, viewSize);
-                    Console.WriteLine(rectangle);
+                    _logger.LogInformation("Processing image request with dimensions {Rectangle}", rectangle);
                     cutBitmap = bitmap.Clone(rectangle, PixelFormat.Format32bppArgb);
                 }
 
