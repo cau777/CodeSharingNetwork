@@ -38,7 +38,7 @@ export class App extends React.Component<any, IState> {
         
         return (
             <AppContext.Provider value={{
-                credentials: this.state.credentials,
+                userInfo: this.state.userInfo,
                 authService: this.state.authService
             }}>
                 <Router>

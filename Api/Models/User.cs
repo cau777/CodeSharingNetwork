@@ -11,7 +11,10 @@ namespace Api.Models
     public class User
     {
         [Key]
-        public string Name { get; set; }
+        public string Username { get; set; }
+
+        [MaxLength(32)]
+        public string Bio { get; set; }
         
         [MaxLength(32)]
         public byte[] Password { get; set; }
@@ -25,9 +28,9 @@ namespace Api.Models
 
         public User() { }
 
-        public User(string name, string password)
+        public User(string username, string password)
         {
-            Name = name;
+            Username = username;
             Password = EncodePassword(password);
         }
 

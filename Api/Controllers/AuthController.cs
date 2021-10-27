@@ -29,7 +29,7 @@ namespace Api.Controllers
         {
             if (!TryValidateModel(data)) return BadRequest(data);
 
-            User user = await _userService.FindByLogin(data.Name, data.Password);
+            User user = await _userService.FindByLogin(data.Username, data.Password);
             if (user is null) return NotFound();
 
             return Json(PrepareToken(user));
@@ -42,27 +42,12 @@ namespace Api.Controllers
         {
             if (!TryValidateModel(data)) return BadRequest(data);
 
-            User user = new(data.Name, data.Password);
+            User user = new(data.Username, data.Password);
             bool result = await _userService.Add(user);
 
             if (result)
                 return Json(PrepareToken(user));
             return Conflict();
-        }
-
-        /// <summary>
-        /// Gets information about the current authenticated user
-        /// </summary>
-        /// <returns>A user DTO object containing all relevant data to the client</returns>
-        [HttpGet]
-        [Authorize]
-        [Route("credentials")]
-        public IActionResult GetCredentials()
-        {
-            return Json(new UserCredentialsDTO
-            {
-                Username = User.GetName(),
-            });
         }
 
         private object PrepareToken(User user)

@@ -11,7 +11,7 @@ namespace Api.Utils.Extensions
         /// <param name="o">The ClaimsPrincipal to search</param>
         /// <returns>The username</returns>
         [NotNull]
-        public static string GetName(this ClaimsPrincipal o)
+        public static string GetUsername(this ClaimsPrincipal o)
         {
             return o.FindFirstValue(ClaimTypes.Name);
         }

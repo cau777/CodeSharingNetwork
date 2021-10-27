@@ -1,6 +1,6 @@
 import CookieManager from "../CookieManager";
 import api from "../api";
-import {ICredentials} from "./ICredentials";
+import {IUserInfo} from "./IUserInfo";
 import React from "react";
 import {IAuthServiceContext} from "./IAuthServiceContext";
 
@@ -27,7 +27,7 @@ export class AuthService {
         
         // Tries getting the credentials of the current user
         try {
-            let response = await api.get<ICredentials>("auth/credentials", {headers: {Authorization: authorization}});
+            let response = await api.get<IUserInfo>("/profile", {headers: {Authorization: authorization}});
             if (response.status !== 200) {
                 // Logout if the token is invalid or expired
                 this.logout()
@@ -35,7 +35,7 @@ export class AuthService {
                 api.defaults.headers.Authorization = authorization;
                 
                 CookieManager.setCookie(AuthService.CookieName, token, 3600 * 4);
-                this.component.setState({credentials: response.data});
+                this.component.setState({userInfo: response.data});
             }
         } catch (e) {
             this.logout();
@@ -43,7 +43,7 @@ export class AuthService {
     }
     
     public logout() {
-        this.component.setState({credentials: undefined});
+        this.component.setState({userInfo: undefined});
         api.defaults.headers.Authorization = undefined;
         CookieManager.clearCookie(AuthService.CookieName);
     }

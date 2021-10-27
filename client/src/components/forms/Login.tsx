@@ -43,7 +43,7 @@ class Login extends Component<IProps, State> {
                 
                 <div className="form-section">
                     <label className="form-label" htmlFor="name">Username</label><br/>
-                    <input className="selected-border" onInput={form.inputChange} name="name" type="text" id="name"
+                    <input className="selected-border" onInput={form.inputChange} name="username" type="text" id="name"
                            required={true} maxLength={9999} spellCheck="false"/><br/>
                     
                     <label className="form-label" htmlFor="password">Password</label><br/>

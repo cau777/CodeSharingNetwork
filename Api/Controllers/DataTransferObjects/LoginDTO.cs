@@ -8,7 +8,7 @@ namespace Api.Controllers.DataTransferObjects
         [Required]
         [MinLength(4)]
         [RegularExpression("^[\\w]+$")]
-        public string Name { get; set; }
+        public string Username { get; set; }
 
         [Required]
         [Password]

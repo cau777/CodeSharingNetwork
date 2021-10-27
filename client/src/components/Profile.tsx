@@ -13,9 +13,11 @@ export class Profile extends Component<any, any> {
     context!: ContextType<typeof AppContext>;
     
     public render() {
-        if (this.context.credentials === undefined) return <div/>;
+        let userInfo = this.context.userInfo;
+        if (userInfo === undefined) return <div/>;
         
-        let username = this.context.credentials.username;
+        let username = userInfo.username;
+        let bio = userInfo.bio;
         
         return (
             <div className="profile">
@@ -24,6 +26,7 @@ export class Profile extends Component<any, any> {
                         <UserImage width="100%" username={username}/>
                     </div>
                     <h4>{username}</h4>
+                    <p>{bio}</p>
                     <SimpleLink to="/settings">
                         <Button className="btn-icon" variant="secondary">
                             <PencilSquare/>

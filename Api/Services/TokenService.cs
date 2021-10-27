@@ -29,7 +29,7 @@ namespace Api.Services
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Name, user.Name),
+                    new Claim(ClaimTypes.Name, user.Username),
                 }),
                 Expires = expiringDate,
                 SigningCredentials =

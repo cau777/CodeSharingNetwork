@@ -22,7 +22,7 @@ namespace Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("AuthorName")
+                    b.Property<string>("AuthorUsername")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -49,7 +49,7 @@ namespace Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorName");
+                    b.HasIndex("AuthorUsername");
 
                     b.ToTable("CodeSnippets");
                 });
@@ -63,21 +63,25 @@ namespace Api.Migrations
                     b.Property<long?>("SnippetId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("UserName")
+                    b.Property<string>("Username")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("SnippetId");
 
-                    b.HasIndex("UserName");
+                    b.HasIndex("Username");
 
                     b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("Api.Models.User", b =>
                 {
-                    b.Property<string>("Name")
+                    b.Property<string>("Username")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Bio")
+                        .HasMaxLength(32)
                         .HasColumnType("TEXT");
 
                     b.Property<byte[]>("ImageBytes")
@@ -87,7 +91,7 @@ namespace Api.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("BLOB");
 
-                    b.HasKey("Name");
+                    b.HasKey("Username");
 
                     b.ToTable("Users");
                 });
@@ -96,7 +100,7 @@ namespace Api.Migrations
                 {
                     b.HasOne("Api.Models.User", "Author")
                         .WithMany("SnippetsPosted")
-                        .HasForeignKey("AuthorName")
+                        .HasForeignKey("AuthorUsername")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -111,7 +115,7 @@ namespace Api.Migrations
 
                     b.HasOne("Api.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserName");
+                        .HasForeignKey("Username");
 
                     b.Navigation("Snippet");
 

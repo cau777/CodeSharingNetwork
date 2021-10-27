@@ -37,7 +37,7 @@ namespace Api.Controllers
         [Route("{username}/posted")]
         public async Task<IActionResult> GetPostedSnippets([FromQuery] int page, [FromRoute] string username)
         {
-            User user = await _userService.FindByName(User.GetName());
+            User user = await _userService.FindByUsername(User.GetUsername());
             if (user is null) return NotFound();
 
             long[] snippets = await _snippetService.FindSnippetsIdsPostedByUser(user, page);
@@ -49,7 +49,7 @@ namespace Api.Controllers
         [Route("{username}/image")]
         public async Task<IActionResult> GetUserImage([FromRoute] string username)
         {
-            User user = await _userService.FindByName(username);
+            User user = await _userService.FindByUsername(username);
             if (user is null) return NotFound();
 
             if (user.ImageBytes is null)

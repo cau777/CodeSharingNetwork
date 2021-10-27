@@ -6,6 +6,8 @@ using Api.Services.Database;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.Threading.Tasks;
+using Api.Controllers.DataTransferObjects;
+using Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -26,13 +28,33 @@ namespace Api.Controllers
             _userService = userService;
             _logger = logger;
         }
-        
+
+        /// <summary>
+        /// Gets information about the current authenticated user
+        /// </summary>
+        /// <returns>A user DTO object containing all relevant data to the client</returns>
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetInfo()
+        {
+            string username = User.GetUsername();
+            
+            User user = await _userService.FindByUsername(username);
+            if (user is null) return NotFound();
+
+            return Json(new UserInfoDTO
+            {
+                Username = username,
+                Bio = user.Bio,
+            });
+        }
+
         [HttpDelete]
         [Authorize]
         [Route("image")]
         public async Task<IActionResult> DeleteProfileImage()
         {
-            bool result = await _userService.EditByName(User.GetName(), image: null);
+            bool result = await _userService.EditByUsername(User.GetUsername(), image: null);
             return result ? NoContent() : BadRequest();
         }
 
@@ -45,7 +67,7 @@ namespace Api.Controllers
             double topValue = double.Parse(top, CultureInfo.InvariantCulture);
             double leftValue = double.Parse(left, CultureInfo.InvariantCulture);
             double scaleValue = double.Parse(scale, CultureInfo.InvariantCulture);
-            
+
             try
             {
                 await using Stream inputStream = file.OpenReadStream();
@@ -84,7 +106,7 @@ namespace Api.Controllers
                 {
                     await using MemoryStream outputStream = new();
                     scaledBitmap.Save(outputStream, ImageFormat.Png);
-                    await _userService.EditByName(User.GetName(), image: outputStream.ToArray());
+                    await _userService.EditByUsername(User.GetUsername(), image: outputStream.ToArray());
                 }
 
                 return Ok();

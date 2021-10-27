@@ -67,7 +67,7 @@ class Register extends Component<IProps, IState> {
 
                 <div className="form-section">
                     <label className="form-label" htmlFor="name">Username</label><br/>
-                    <input className="selected-border" onInput={this.validateUser} name="name" type="text" id="name"
+                    <input className="selected-border" onInput={this.validateUser} name="username" type="text" id="name"
                            required={true} maxLength={9999} spellCheck={"false"}/>
                     <div>
                         <RequirementItem message="At least 4 characters long"

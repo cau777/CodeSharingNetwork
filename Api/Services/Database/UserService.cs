@@ -26,7 +26,7 @@ namespace Api.Services.Database
             databaseContext, databaseContext.Users, logger)
         {
             // Initializes the set with all names from the database
-            _namesInUse = new HashSet<string>(ItemSet.Select(o => o.Name));
+            _namesInUse = new HashSet<string>(ItemSet.Select(o => o.Username));
         }
 
         public bool ContainsName(string name)
@@ -37,36 +37,38 @@ namespace Api.Services.Database
         public override async Task<bool> Add([NotNull] User element)
         {
             bool result = await base.Add(element);
-            if (result) _namesInUse.Add(element.Name);
+            if (result) _namesInUse.Add(element.Username);
             return result;
         }
         
-        public async Task<bool> EditByName([NotNull] string currentName, 
+        public async Task<bool> EditByUsername([NotNull] string username, 
             Optional<string> name = default, 
             Optional<byte[]> password = default,
-            Optional<byte[]> image = default)
+            Optional<byte[]> image = default,
+            Optional<string> bio = default)
         {
-            User user = await FindByName(currentName);
+            User user = await FindByUsername(username);
             if (user is null) return false;
             
-            if (name.HasValue) user.Name = name.Value;
+            if (name.HasValue) user.Username = name.Value;
             if (password.HasValue) user.Password = password.Value;
             if (image.HasValue) user.ImageBytes = image.Value;
+            if (bio.HasValue) user.Bio = bio.Value;
 
             return await Edit(user);
         }
 
         [ItemCanBeNull]
-        public Task<User> FindByLogin([NotNull] string name, [NotNull] string password)
+        public Task<User> FindByLogin([NotNull] string username, [NotNull] string password)
         {
             byte[] passwordBytes = User.EncodePassword(password);
-            return ItemSet.FirstOrDefaultAsync(o => o.Name == name && o.Password.SequenceEqual(passwordBytes));
+            return ItemSet.FirstOrDefaultAsync(o => o.Username == username && o.Password.SequenceEqual(passwordBytes));
         }
 
         [ItemCanBeNull]
-        public Task<User> FindByName([NotNull] string name)
+        public Task<User> FindByUsername([NotNull] string username)
         {
-            return ItemSet.FirstOrDefaultAsync(o => o.Name == name);
+            return ItemSet.FirstOrDefaultAsync(o => o.Username == username);
         }
     }
 }

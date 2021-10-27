@@ -6,7 +6,7 @@ export class Authenticated extends Component {
     context!: React.ContextType<typeof AppContext>;
     
     public render() {
-        if (this.context.credentials !== undefined) {
+        if (this.context.userInfo !== undefined) {
             return this.props.children;
         }
         
