@@ -50,7 +50,7 @@ namespace Api.Services.Database
             User user = await FindByUsername(username);
             if (user is null) return false;
             
-            if (name.HasValue) user.Username = name.Value;
+            if (name.HasValue) user.Name = name.Value;
             if (password.HasValue) user.Password = password.Value;
             if (image.HasValue) user.ImageBytes = image.Value;
             if (bio.HasValue) user.Bio = bio.Value;

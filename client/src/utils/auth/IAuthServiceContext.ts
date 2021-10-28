@@ -1,5 +1,5 @@
-import {IUserInfo} from "./IUserInfo";
+import {IUserCredentials} from "./IUserCredentials";
 
 export interface IAuthServiceContext {
-    userInfo?: IUserInfo;
+    credentials?: IUserCredentials;
 }

@@ -81,11 +81,15 @@ namespace Api.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Bio")
-                        .HasMaxLength(32)
+                        .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
                     b.Property<byte[]>("ImageBytes")
                         .HasColumnType("BLOB");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
 
                     b.Property<byte[]>("Password")
                         .HasMaxLength(32)

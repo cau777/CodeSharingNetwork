@@ -7,17 +7,33 @@ import {UserImage} from "./UserImage";
 import {Button} from "react-bootstrap";
 import {PencilSquare} from "../svg/Icons";
 import SimpleLink from "./SimpleLink";
+import {IUserInfo} from "./IUserInfo";
+import Loading from "./Loading";
+import api from "../utils/api";
 
-export class Profile extends Component<any, any> {
+interface IState {
+    info?: IUserInfo;
+}
+
+export class Profile extends Component<any, IState> {
     static contextType = AppContext;
     context!: ContextType<typeof AppContext>;
     
-    public render() {
-        let userInfo = this.context.userInfo;
-        if (userInfo === undefined) return <div/>;
+    constructor(props: any) {
+        super(props);
         
-        let username = userInfo.username;
-        let bio = userInfo.bio;
+        this.state = {}
+    }
+    
+    
+    public render() {
+        let credentials = this.context.credentials;
+        let info = this.state.info;
+        if (credentials === undefined || info === undefined) return <Loading/>;
+        
+        let username = credentials.username;
+        let name = info.name;
+        let bio = info.bio;
         
         return (
             <div className="profile">
@@ -25,7 +41,8 @@ export class Profile extends Component<any, any> {
                     <div className="m-3">
                         <UserImage width="100%" username={username}/>
                     </div>
-                    <h4>{username}</h4>
+                    <h4>{name}</h4>
+                    <h5 className="subtitle">@{username}</h5>
                     <p>{bio}</p>
                     <SimpleLink to="/settings">
                         <Button className="btn-icon" variant="secondary">
@@ -39,5 +56,9 @@ export class Profile extends Component<any, any> {
                 </div>
             </div>
         )
+    }
+    
+    public componentDidMount() {
+        api.get<IUserInfo>("/profile/info").then(r => this.setState({info: r.data}));
     }
 }

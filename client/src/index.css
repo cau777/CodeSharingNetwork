@@ -61,7 +61,7 @@ body {
     color: var(--font);
 }
 
-/* Font size */
+/* Font */
 html {
     font-size: 14px;
 }
@@ -78,9 +78,13 @@ html {
     color: var(--font) !important;
 }
 
+.subtitle {
+    color: rgb(200, 200, 200);
+}
+
 /* Cards */
 .card {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 /* Alerts */

@@ -13,9 +13,12 @@ namespace Api.Models
         [Key]
         public string Username { get; set; }
 
-        [MaxLength(32)]
+        [MaxLength(50)]
+        public string Name { get; set; }
+
+        [MaxLength(500)]
         public string Bio { get; set; }
-        
+
         [MaxLength(32)]
         public byte[] Password { get; set; }
 

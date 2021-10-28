@@ -61,7 +61,7 @@ export class ProfilePictureSettings extends Component<any, IState> {
                 </Alert>
                 <SimpleForm name="Image" target={this.imageFormController}>
                     <div className="form-section">
-                        <UserImage height="20vmin" width="20vmin" username={this.context.userInfo?.username}/>
+                        <UserImage height="20vmin" width="20vmin" username={this.context.credentials?.username}/>
                     </div>
                     
                     <Modal className="loaded-image-modal" show={this.state.selectedFile !== undefined}

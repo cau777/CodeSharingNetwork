@@ -35,16 +35,27 @@ namespace Api.Controllers
         /// <returns>A user DTO object containing all relevant data to the client</returns>
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetInfo()
+        public IActionResult GetCredentials()
         {
             string username = User.GetUsername();
-            
-            User user = await _userService.FindByUsername(username);
+
+            return Json(new UserCredentialsDTO
+            {
+                Username = username,
+            });
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("info")]
+        public async Task<IActionResult> GetInfo()
+        {
+            User user = await _userService.FindByUsername(User.GetUsername());
             if (user is null) return NotFound();
 
             return Json(new UserInfoDTO
             {
-                Username = username,
+                Name = user.Name,
                 Bio = user.Bio,
             });
         }
@@ -116,6 +127,18 @@ namespace Api.Controllers
                 Console.WriteLine(e);
                 return BadRequest();
             }
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("info")]
+        public async Task<IActionResult> UpdateProfileInfo([FromBody] UserInfoDTO info)
+        {
+            bool result = await _userService.EditByUsername(User.GetUsername(),
+                name: info.Name,
+                bio: info.Bio);
+
+            return result ? Ok() : BadRequest();
         }
     }
 }

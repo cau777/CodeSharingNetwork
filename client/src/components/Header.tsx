@@ -16,7 +16,7 @@ class Header extends Component<IProps> {
     context !: React.ContextType<typeof AppContext>;
     
     public render() {
-        let credentials = this.context.userInfo;
+        let credentials = this.context.credentials;
         
         return (
             <header>
