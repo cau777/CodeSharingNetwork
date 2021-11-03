@@ -1,12 +1,10 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Api.Models;
 using Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Api.Controllers.DataTransferObjects;
 using Api.Services.Database;
-using Api.Utils.Extensions;
 
 namespace Api.Controllers
 {

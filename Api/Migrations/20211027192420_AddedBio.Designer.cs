@@ -3,14 +3,16 @@ using System;
 using Api.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20211027192420_AddedBio")]
+    partial class AddedBio
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +24,7 @@ namespace Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("AuthorUsername")
+                    b.Property<string>("AuthorName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -43,16 +45,13 @@ namespace Api.Migrations
                     b.Property<DateTime>("Posted")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("TagsString")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorUsername");
+                    b.HasIndex("AuthorName");
 
                     b.ToTable("CodeSnippets");
                 });
@@ -66,39 +65,35 @@ namespace Api.Migrations
                     b.Property<long?>("SnippetId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("UserName")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("SnippetId");
 
-                    b.HasIndex("Username");
+                    b.HasIndex("UserName");
 
                     b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("Api.Models.User", b =>
                 {
-                    b.Property<string>("Username")
+                    b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Bio")
-                        .HasMaxLength(500)
+                        .HasMaxLength(32)
                         .HasColumnType("TEXT");
 
                     b.Property<byte[]>("ImageBytes")
                         .HasColumnType("BLOB");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
                     b.Property<byte[]>("Password")
                         .HasMaxLength(32)
                         .HasColumnType("BLOB");
 
-                    b.HasKey("Username");
+                    b.HasKey("Name");
 
                     b.ToTable("Users");
                 });
@@ -107,7 +102,7 @@ namespace Api.Migrations
                 {
                     b.HasOne("Api.Models.User", "Author")
                         .WithMany("SnippetsPosted")
-                        .HasForeignKey("AuthorUsername")
+                        .HasForeignKey("AuthorName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -122,7 +117,7 @@ namespace Api.Migrations
 
                     b.HasOne("Api.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("Username");
+                        .HasForeignKey("UserName");
 
                     b.Navigation("Snippet");
 

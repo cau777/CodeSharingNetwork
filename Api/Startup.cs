@@ -1,5 +1,4 @@
 using System.Text;
-using Api.Attributes;
 using Api.DatabaseContexts;
 using Api.Filters;
 using Api.Models;
@@ -63,6 +62,7 @@ namespace Api
             services.AddTransient<LikeService>();
 
             services.AddTransient<SnippetsRecommenderService>();
+            services.AddSingleton<KeyTermsExtractor>();
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

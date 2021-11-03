@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 using Api.Models.Interfaces;
 
 namespace Api.Models
@@ -32,5 +30,14 @@ namespace Api.Models
         public DateTime Posted { get; set; }
 
         public long LikeCount { get; set; }
+
+        [NotMapped]
+        public string[] Tags
+        {
+            get => TagsString.Split(" ");
+            set => TagsString = string.Join(" ", value);
+        }
+
+        public string TagsString { get; set; }
     }
 }

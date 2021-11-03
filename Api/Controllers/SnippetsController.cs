@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Api.Controllers.DataTransferObjects;
 using Api.Models;
@@ -19,14 +17,16 @@ namespace Api.Controllers
         private readonly UserService _userService;
         private readonly SnippetsRecommenderService _snippetsRecommender;
         private readonly LikeService _likeService;
+        private readonly KeyTermsExtractor _keyTermsExtractor;
 
         public SnippetsController(CodeSnippetService codeSnippetService, UserService userService,
-            SnippetsRecommenderService snippetsRecommender, LikeService likeService)
+            SnippetsRecommenderService snippetsRecommender, LikeService likeService, KeyTermsExtractor keyTermsExtractor)
         {
             _codeSnippetService = codeSnippetService;
             _userService = userService;
             _snippetsRecommender = snippetsRecommender;
             _likeService = likeService;
+            _keyTermsExtractor = keyTermsExtractor;
         }
 
         [HttpGet]
@@ -92,6 +92,7 @@ namespace Api.Controllers
                 Posted = DateTime.Now,
                 LikeCount = 0,
                 Language = data.Language.ToLower(),
+                Tags = await _keyTermsExtractor.ExtractKeywords(data.Title + " " + data.Description),
             });
 
             return result ? Ok() : BadRequest();

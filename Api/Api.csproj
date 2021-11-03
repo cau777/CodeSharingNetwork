@@ -3,6 +3,10 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
+	
+	<PropertyGroup>
+		<RuntimeIdentifiers>win10-x64;linux-x64</RuntimeIdentifiers>
+	</PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2021.2.0" />
@@ -16,6 +20,17 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
         <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Python\key_terms_extractor.py" />
+      <Content Include="Python\key_terms_extractor.py">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Data" />
     </ItemGroup>
 
 </Project>

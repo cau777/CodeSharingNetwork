@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Api.Utils
+﻿namespace Api.Utils
 {
     public readonly struct Optional<T>
     {
