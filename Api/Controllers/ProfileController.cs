@@ -45,21 +45,6 @@ namespace Api.Controllers
             });
         }
 
-        [HttpGet]
-        [Authorize]
-        [Route("info")]
-        public async Task<IActionResult> GetInfo()
-        {
-            User user = await _userService.FindByUsername(User.GetUsername());
-            if (user is null) return NotFound();
-
-            return Json(new UserInfoDTO
-            {
-                Name = user.Name,
-                Bio = user.Bio,
-            });
-        }
-
         [HttpDelete]
         [Authorize]
         [Route("image")]

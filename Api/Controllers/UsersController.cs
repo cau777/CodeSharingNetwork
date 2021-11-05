@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Api.Controllers.DataTransferObjects;
 using Api.Models;
 using Api.Services.Database;
 using Api.Utils.Extensions;
@@ -30,13 +31,28 @@ namespace Api.Controllers
         {
             return Json(!_containsUserChecker.ContainsName(name));
         }
+        
+        [HttpGet]
+        [Authorize]
+        [Route("{username}/info")]
+        public async Task<IActionResult> GetInfo([FromRoute] string username)
+        {
+            User user = await _userService.FindByUsername(username);
+            if (user is null) return NotFound();
+
+            return Json(new UserInfoDTO
+            {
+                Name = user.Name,
+                Bio = user.Bio,
+            });
+        }
 
         [HttpGet]
         [Authorize]
         [Route("{username}/posted")]
         public async Task<IActionResult> GetPostedSnippets([FromQuery] int page, [FromRoute] string username)
         {
-            User user = await _userService.FindByUsername(User.GetUsername());
+            User user = await _userService.FindByUsername(username);
             if (user is null) return NotFound();
 
             long[] snippets = await _snippetService.FindSnippetsIdsPostedByUser(user, page);

@@ -14,6 +14,24 @@
     margin-bottom: 0.8rem;
 }
 
+.snippet-author-header .snippet-author-info {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    /*align-items: center;*/
+}
+
+.snippet-author-header .snippet-author-info:hover * {
+    color: var(--primary)!important;
+    text-decoration: underline var(--primary);
+}
+
+.snippet-author-header .snippet-author-username{
+    font-weight: lighter;
+    color: var(--font-darker);
+    font-size: 1.0em;
+}
+
 .code-snippet * {
     font-family: code, monospace;
     font-size: 13px !important;

@@ -81,14 +81,22 @@ class App extends React.Component<IProps, IState> {
                                 <Home/>
                             </Route>
                             
-                            <Route path={"/search"}>
+                            <Route path="/search">
                                 <RedirectNotAuthenticated/>
                                 <SearchPage query={args.q as string}/>
                             </Route>
                             
+                            <Route path="/user/:username" render={props => (
+                                    <span>
+                                        <RedirectNotAuthenticated/>
+                                        <Profile username={props.match.params.username}/>
+                                    </span>
+                                )}>
+                            </Route>
+                            
                             <Route path="/profile">
                                 <RedirectNotAuthenticated/>
-                                <Profile/>
+                                <Profile username={this.state.credentials?.username}/>
                             </Route>
                             
                             <Route path="/settings">

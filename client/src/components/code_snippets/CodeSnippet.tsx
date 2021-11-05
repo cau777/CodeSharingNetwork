@@ -13,6 +13,7 @@ import {Heart} from "../../svg/Icons";
 import api from "../../utils/api";
 import Loading from "../Loading";
 import {UserImage} from "../UserImage";
+import SimpleLink from "../SimpleLink";
 
 interface IProps {
     order: number;
@@ -94,9 +95,14 @@ export class CodeSnippet extends Component<IProps, IState> {
                         <div>
                             <div className="snippet-author-header flex-center">
                                 <div className="user-img">
-                                    <UserImage username={snippet.authorName} width="32px" focusable={true}/>
+                                    <UserImage username={snippet.authorUsername} width="40px" focusable={true}/>
                                 </div>
-                                <h5 className="snippet-author">{snippet.authorName}</h5>
+                                <SimpleLink to={"/user/" + snippet.authorUsername}>
+                                    <span className="snippet-author-info">
+                                            <h5 className="snippet-author-name">{snippet.authorName}</h5>
+                                            <h5 className="snippet-author-username">@{snippet.authorUsername}</h5>
+                                    </span>
+                                </SimpleLink>
                                 <h6 className="snippet-language ms-auto">{capitalize(snippet.language)}</h6>
                             </div>
                             

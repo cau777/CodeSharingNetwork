@@ -47,7 +47,7 @@ class Header extends Component<IProps, IState> {
                         <Navbar.Collapse>
                             <Nav id="header-nav-collapse">
                                 <SimpleLink to="/"><Nav.Link>Home</Nav.Link></SimpleLink>
-                                <SimpleLink to="/post"><Nav.Link>Post Snippet</Nav.Link></SimpleLink>
+                                    <SimpleLink to="/post"><Nav.Link>Post Snippet</Nav.Link></SimpleLink>
                                 <Authenticated>
                                     <span className="search-wrapper flex-center">
                                         <input className="my-auto" type="text" placeholder="Search" id="search"
@@ -62,9 +62,9 @@ class Header extends Component<IProps, IState> {
                             </Nav>
                             <Nav className="ms-auto" id="header-nav-collapse">
                                 <Authenticated>
-                                    <Dropdown>
+                                    <Dropdown className="mt-2">
                                         <Dropdown.Toggle className="simple-dropdown-toggle">
-                                            <UserImage username={credentials?.username} width="32px"/>
+                                            <UserImage username={credentials?.username} width="40px"/>
                                         </Dropdown.Toggle>
                                         
                                         <Dropdown.Menu variant="dark">

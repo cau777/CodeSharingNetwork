@@ -42,7 +42,8 @@ namespace Api.Controllers
             {
                 Id = found.Id,
                 Title = found.Title,
-                AuthorName = found.Author.Username,
+                AuthorName = found.Author.Name,
+                AuthorUsername = found.Author.Username,
                 Description = found.Description,
                 Code = found.Code,
                 LikeCount = found.LikeCount,

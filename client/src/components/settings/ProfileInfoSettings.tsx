@@ -55,7 +55,7 @@ export class ProfileInfoSettings extends Component<any, IState> {
     }
     
     public componentDidMount() {
-        api.get<IUserInfo>("/profile/info").then(r => {
+        api.get<IUserInfo>("/users/" + this.context.credentials?.username + "/info").then(r => {
             this.setState({info: r.data});
             this.formController.setValue("name", r.data.name);
             this.formController.setValue("bio", r.data.bio);

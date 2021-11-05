@@ -101,6 +101,7 @@ class SnippetsFeed extends Component<IProps, IState> {
         let result = await generator.next();
         
         if (this.props.snippetsIdGenerator !== generator) return; // If the generator changed while fetching
+        if (!this.componentExists) return; // Avoids error: Can't perform a React state update on an unmounted component
         
         let data = result.value;
         
