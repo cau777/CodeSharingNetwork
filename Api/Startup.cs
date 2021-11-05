@@ -44,7 +44,7 @@ namespace Api
                     IssuerSigningKey =
                         new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["Security:JwtKey"])),
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateAudience = false,
                 };
             });
             
@@ -60,8 +60,7 @@ namespace Api
             services.AddTransient<TokenService>();
             services.AddTransient<CodeSnippetService>();
             services.AddTransient<LikeService>();
-
-            services.AddTransient<SnippetsRecommenderService>();
+            
             services.AddSingleton<KeyTermsExtractor>();
         }
         

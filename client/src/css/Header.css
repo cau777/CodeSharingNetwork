@@ -1,8 +1,7 @@
 
 .logo {
-    color: var(--primary) !important;
-    font-weight: bolder;
     cursor: pointer;
+    height: 2.5rem;
 }
 
 #user-img {
@@ -15,4 +14,18 @@
     background-color: transparent!important;
     box-shadow: none!important;
     border: none!important;
+}
+
+.search-wrapper {
+    position: relative;
+}
+
+.floating-x {
+    background-color: transparent;
+    border: none;
+    color: var(--font);
+    position: absolute;
+    right: 0.5rem;
+    cursor: pointer;
+    line-height: 0;
 }

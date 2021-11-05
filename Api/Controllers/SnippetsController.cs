@@ -15,16 +15,14 @@ namespace Api.Controllers
     {
         private readonly CodeSnippetService _codeSnippetService;
         private readonly UserService _userService;
-        private readonly SnippetsRecommenderService _snippetsRecommender;
         private readonly LikeService _likeService;
         private readonly KeyTermsExtractor _keyTermsExtractor;
 
         public SnippetsController(CodeSnippetService codeSnippetService, UserService userService,
-            SnippetsRecommenderService snippetsRecommender, LikeService likeService, KeyTermsExtractor keyTermsExtractor)
+            LikeService likeService, KeyTermsExtractor keyTermsExtractor)
         {
             _codeSnippetService = codeSnippetService;
             _userService = userService;
-            _snippetsRecommender = snippetsRecommender;
             _likeService = likeService;
             _keyTermsExtractor = keyTermsExtractor;
         }
@@ -65,13 +63,27 @@ namespace Api.Controllers
 
             if (currentUser is null) return Unauthorized();
 
-            long[] recommendSnippets = await _snippetsRecommender.RecommendSnippets(start, end, currentUser);
+            long[] recommendSnippets = await _codeSnippetService.RecommendSnippets(start, end, currentUser);
 
             if (recommendSnippets.Length == 0 &&
                 !await _codeSnippetService.HasElementsBefore(end)) // If there are no more snippets in the database
                 return NoContent();
 
             return Json(recommendSnippets);
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("search")]
+        public async Task<IActionResult> SearchSnippets([FromQuery] string q, [FromQuery] int page)
+        {
+            string username = User.GetUsername();
+            User currentUser = await _userService.FindByUsername(username);
+
+            if (currentUser is null) return Unauthorized();
+
+            long[] foundSnippets = await _codeSnippetService.SearchSnippets(q, page);
+            return Json(foundSnippets);
         }
 
         [HttpPost]
@@ -92,7 +104,7 @@ namespace Api.Controllers
                 Posted = DateTime.Now,
                 LikeCount = 0,
                 Language = data.Language.ToLower(),
-                Tags = await _keyTermsExtractor.ExtractKeywords(data.Title + " " + data.Description),
+                Tags = await _keyTermsExtractor.ExtractKeywords(data.Title + " " + data.Description, true),
             });
 
             return result ? Ok() : BadRequest();

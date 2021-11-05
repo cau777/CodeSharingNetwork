@@ -17,25 +17,29 @@ async function* generateSnippetsByDay() {
     start.setMilliseconds(0);
     
     while (true) {
-        let response = await api.get<number[]>("snippets/recommended/", {
-            params: {
-                start: start,
-                end: minDate(end, dateCreated)
-            }
-        });
-        
-        if (response.status === 200) {
-            let emptyResponse = response.data.length === 0;
+        try {
+            let response = await api.get<number[]>("snippets/recommended/", {
+                params: {
+                    start: start,
+                    end: minDate(end, dateCreated)
+                }
+            });
             
-            if (!emptyResponse) {
-                yield response.data;
+            if (response.status === 200) {
+                let emptyResponse = response.data.length === 0;
+                
+                if (!emptyResponse) {
+                    yield response.data;
+                }
+                
+                subtractDays(start, 1);
+                subtractDays(end, 1);
+            } else {
+                if (response.status !== 204)
+                    console.log(response);
+                break;
             }
-            
-            subtractDays(start, 1);
-            subtractDays(end, 1);
-        } else {
-            if (response.status !== 204)
-                console.log(response);
+        } catch (e) {
             break;
         }
     }
@@ -45,17 +49,21 @@ async function* generateProfileSnippets(username: string) {
     let page = 0;
     
     while (true) {
-        let response = await api.get<number[]>("users/" + username + "/posted", {
-            params: {
-                page: page
+        try {
+            let response = await api.get<number[]>("users/" + username + "/posted", {
+                params: {
+                    page: page
+                }
+            });
+            
+            if (response.status === 200) {
+                yield response.data;
+            } else {
+                if (response.status !== 204)
+                    console.log(response);
+                break;
             }
-        });
-        
-        if (response.status === 200) {
-            yield response.data;
-        } else {
-            if (response.status !== 204)
-                console.log(response);
+        } catch (e) {
             break;
         }
         
@@ -63,4 +71,29 @@ async function* generateProfileSnippets(username: string) {
     }
 }
 
-export {generateSnippetsByDay, generateProfileSnippets}
+async function* generateSearchSnippets(query: string) {
+    let page = 0;
+    
+    while (true) {
+        try {
+            let response = await api.get<number[]>("snippets/search", {
+                params: {
+                    q: query,
+                    page: page
+                }
+            });
+            
+            if (response.status === 200) {
+                if (response.data.length === 0) break;
+                yield response.data;
+            } else {
+                console.log(response);
+            }
+        } catch (e) {
+            break;
+        }
+        page++;
+    }
+}
+
+export {generateSnippetsByDay, generateProfileSnippets, generateSearchSnippets}

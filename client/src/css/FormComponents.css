@@ -23,11 +23,11 @@ form {
     margin-right: 1rem;
 }
 
-form input:focus {
+input:focus {
     border: solid 1px var(--primary);
 }
 
-form input {
+input {
     margin-bottom: 0.4rem;
     outline: none;
     min-width: 20rem;
@@ -67,7 +67,7 @@ form textarea {
     border: none;
 }
 
-form select {
+select {
     background-color: var(--input);
     color: var(--font);
     outline: none;

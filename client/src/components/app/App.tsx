@@ -1,7 +1,7 @@
 import React from "react";
 import {IAppContext} from "./IAppContext";
 import Header from "../Header";
-import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import {Route, RouteComponentProps, Switch, withRouter} from "react-router-dom";
 import Login from "../forms/Login";
 import Loading from "../Loading";
 import Register from "../forms/Register";
@@ -14,12 +14,19 @@ import {AuthService} from "../../utils/auth/AuthService";
 import {Profile} from "../Profile";
 import {Home} from "../Home";
 import {Settings} from "../settings/Settings";
+import SearchPage from "../SearchPage";
+import queryString from "querystring";
+
+interface IProps extends RouteComponentProps {
+
+}
 
 interface IState extends IAppContext {
     loading: boolean;
+    query?: string;
 }
 
-export class App extends React.Component<any, IState> {
+class App extends React.Component<IProps, IState> {
     public constructor(props: any) {
         super(props);
         
@@ -36,61 +43,66 @@ export class App extends React.Component<any, IState> {
             return <Loading/>;
         }
         
+        let args = queryString.parse(this.props.location.search.substring(1));
+        
         return (
             <AppContext.Provider value={{
                 credentials: this.state.credentials,
                 authService: this.state.authService
             }}>
-                <Router>
-                    <Header/>
-                    <div className="container">
-                        <div className="pb-3">
-                            <Switch>
-                                {/* Public routes */}
-                                <Route path="/login">
-                                    <Login/>
-                                </Route>
-                                <Route path="/loading">
-                                    <Loading/>
-                                </Route>
-                                <Route path="/register">
-                                    <Register/>
-                                </Route>
-                                
-                                {/* Authenticated routes */}
-                                <Route path="/post">
-                                    <RedirectNotAuthenticated/>
-                                    <PostSnippet/>
-                                </Route>
-                                
-                                <Route path="/logout">
-                                    <RedirectNotAuthenticated/>
-                                    <Logout/>
-                                </Route>
-                                
-                                <Route path="/" exact={true}>
-                                    <RedirectNotAuthenticated/>
-                                    <Home/>
-                                </Route>
-                                
-                                <Route path="/profile">
-                                    <RedirectNotAuthenticated/>
-                                    <Profile/>
-                                </Route>
-                                
-                                <Route path="/settings">
-                                    <RedirectNotAuthenticated/>
-                                    <Settings/>
-                                </Route>
-                                
-                                {/* Not found */}
-                                <Route path="/">
-                                    <NotFound/>
-                                </Route>
-                            </Switch>
-                        </div>
+                <Header onSearchChanged={() => this.forceUpdate()}/>
+                <div className="container">
+                    <div className="pb-3">
+                        <Switch>
+                            {/* Public routes */}
+                            <Route path="/login">
+                                <Login/>
+                            </Route>
+                            <Route path="/loading">
+                                <Loading/>
+                            </Route>
+                            <Route path="/register">
+                                <Register/>
+                            </Route>
+                            
+                            {/* Authenticated routes */}
+                            <Route path="/post">
+                                <RedirectNotAuthenticated/>
+                                <PostSnippet/>
+                            </Route>
+                            
+                            <Route path="/logout">
+                                <RedirectNotAuthenticated/>
+                                <Logout/>
+                            </Route>
+                            
+                            <Route path="/" exact={true}>
+                                <RedirectNotAuthenticated/>
+                                <Home/>
+                            </Route>
+                            
+                            <Route path={"/search"}>
+                                <RedirectNotAuthenticated/>
+                                <SearchPage query={args.q as string}/>
+                            </Route>
+                            
+                            <Route path="/profile">
+                                <RedirectNotAuthenticated/>
+                                <Profile/>
+                            </Route>
+                            
+                            <Route path="/settings">
+                                <RedirectNotAuthenticated/>
+                                <Settings/>
+                            </Route>
+                            
+                            {/* Not found */}
+                            <Route path="/">
+                                <NotFound/>
+                            </Route>
+                        </Switch>
                     </div>
-                </Router>
+                </div>
             </AppContext.Provider>
         );
     }
@@ -108,3 +120,5 @@ export class App extends React.Component<any, IState> {
         this.setState({loading: false});
     }
 }
+
+export default withRouter(App);
