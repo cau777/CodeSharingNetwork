@@ -7,7 +7,7 @@ namespace Api.Services
 {
     public class KeyTermsExtractor
     {
-        private const int DefaultCount = 10;
+        private const int DefaultCount = 15;
         private const string FileName = @"Data\KeywordsDataset.json";
 
         public async Task<string[]> ExtractKeywords([NotNull] string text, bool save)

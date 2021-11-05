@@ -78,7 +78,7 @@ namespace Api.Services.Database
             int[][] searchPrefixFunctions = searchRawTerms.Select(StringAlgorithms.CalcPrefixFunction).ToArray();
 
             return ItemSet
-                .Select(o => new SearchSnippetContext(o.Id, o.Title, o.Description, o.Tags))
+                .Select(o => new SearchSnippetContext(o.Id, o.Title, o.Tags))
                 .AsEnumerable()
                 .AsParallel()
                 .Select(o => new
@@ -118,14 +118,12 @@ namespace Api.Services.Database
         {
             public long Id { get; }
             public string Title { get; }
-            public string Description { get; }
             public string[] Tags { get; }
 
-            public SearchSnippetContext(long id, string title, string description, string[] tags)
+            public SearchSnippetContext(long id, string title, string[] tags)
             {
                 Id = id;
                 Title = title;
-                Description = description;
                 Tags = tags;
             }
         }

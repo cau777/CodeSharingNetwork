@@ -14,10 +14,10 @@ interface IState {
 }
 
 class SnippetsFeed extends Component<IProps, IState> {
-    private elementPosition: number; // Element position in the list to serve as keys
+    private elementPosition!: number; // Element position in the list to serve as keys
     private snippetsAvailable?: boolean;
     private componentExists: boolean;
-    private snippetsLoading: number;
+    private snippetsLoading!: number;
     
     public constructor(props: any) {
         super(props);
@@ -33,9 +33,7 @@ class SnippetsFeed extends Component<IProps, IState> {
             content: []
         };
         
-        this.elementPosition = 0;
         this.componentExists = true;
-        this.snippetsLoading = 0;
     }
     
     public componentDidMount() {
@@ -59,9 +57,26 @@ class SnippetsFeed extends Component<IProps, IState> {
         );
     }
     
+    public componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any) {
+        if (prevProps.snippetsIdGenerator !== this.props.snippetsIdGenerator) {
+            this.startFeed().then();
+        }
+    }
+    
     public componentWillUnmount() {
         this.componentExists = false;
         window.removeEventListener("scroll", this.updateWindow);
+    }
+    
+    private async startFeed() {
+        this.elementPosition = 0;
+        this.snippetsLoading = 0;
+        this.snippetsAvailable = true;
+        this.setState({content: []});
+        
+        if (this.componentExists) { // Avoids error: Can't perform a React state update on an unmounted component
+            this.updateSnippets().then();
+        }
     }
     
     private updateWindow() {
@@ -75,14 +90,18 @@ class SnippetsFeed extends Component<IProps, IState> {
             if (!this.snippetsAvailable) return;
             if (this.snippetsLoading !== 0) return;
             
-            this.setState({loadingNewSnippets: true});
-            
             this.updateSnippets().then();
         }
     }
     
     private async updateSnippets() {
-        let result = await this.props.snippetsIdGenerator.next();
+        this.setState({loadingNewSnippets: true});
+        
+        let generator = this.props.snippetsIdGenerator;
+        let result = await generator.next();
+        
+        if (this.props.snippetsIdGenerator !== generator) return; // If the generator changed while fetching
+        
         let data = result.value;
         
         if (data !== undefined) {
@@ -96,12 +115,11 @@ class SnippetsFeed extends Component<IProps, IState> {
                                  snippetId={snippetId} onLoad={this.snippetLoaded}/>
                 );
             }
-    
+            
             // Avoids error: Can't perform a React state update on an unmounted component
             if (!this.componentExists) return;
             this.setState({content: content});
         }
-        
         
         this.setState({loadingNewSnippets: false});
     }
@@ -109,14 +127,6 @@ class SnippetsFeed extends Component<IProps, IState> {
     private snippetLoaded() {
         this.snippetsLoading--;
         if (this.snippetsLoading === 0) {
-            this.updateWindow();
-        }
-    }
-    
-    private async startFeed() {
-        this.snippetsAvailable = true;
-        
-        if (this.componentExists) { // Avoids error: Can't perform a React state update on an unmounted component
             this.updateWindow();
         }
     }
