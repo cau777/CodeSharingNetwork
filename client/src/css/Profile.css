@@ -12,6 +12,7 @@
 
 .profile .info-col {
     width: max(15vw, 15rem);
+    min-width: max(15vw, 15rem);
 }
 
 .profile .snippets-col {

@@ -35,9 +35,8 @@ namespace Api.Services.Database
         [ItemNotNull]
         public Task<long[]> FindSnippetsIdsPostedByUser(User user, int page)
         {
-            const int snippetsPerPage = 10;
             return ItemSet.Where(o => o.Author == user).OrderByDescending(o => o.Posted).Select(o => o.Id)
-                .Skip(page * snippetsPerPage).Take(snippetsPerPage).ToArrayAsync();
+                .Skip(page * SnippetsPerPage).Take(SnippetsPerPage).ToArrayAsync();
         }
 
         private static double CalcSnippetScore(CodeSnippet snippet, DateTime referenceDateTime)

@@ -14,9 +14,24 @@ interface IProps extends RouteComponentProps {
     onSearchChanged: (s: string) => void;
 }
 
-class Header extends Component<IProps> {
+interface IState {
+    query?: string;
+}
+
+class Header extends Component<IProps, IState> {
     static contextType = AppContext;
     context !: React.ContextType<typeof AppContext>;
+    
+    constructor(props: IProps) {
+        super(props);
+        
+        this.searchInput = this.searchInput.bind(this);
+        this.searchKeyDown = this.searchKeyDown.bind(this);
+        this.clearSearch = this.clearSearch.bind(this);
+        
+        this.state = {};
+    }
+    
     
     public render() {
         let credentials = this.context.credentials;
@@ -36,16 +51,12 @@ class Header extends Component<IProps> {
                                 <Authenticated>
                                     <span className="search-wrapper flex-center">
                                         <input className="my-auto" type="text" placeholder="Search" id="search"
-                                               onKeyDown={e => {
-                                                   let value = e.currentTarget.value;
-                                                   if (e.key === "Enter" && value !== "") {
-                                                       this.props.history.push("/search?q=" + value);
-                                                       this.props.onSearchChanged(value);
-                                                       e.preventDefault();
-                                                   }
-                                               }}/>
-                                        <span className="floating-x"
-                                              onClick={() => (document.getElementById("search") as HTMLInputElement).value = ""}><XSymbol/></span>
+                                               onKeyDown={this.searchKeyDown} onInput={this.searchInput}/>
+                                        
+                                        <span className="floating-x" hidden={!this.state.query}
+                                              onClick={this.clearSearch}>
+                                            <XSymbol/>
+                                        </span>
                                     </span>
                                 </Authenticated>
                             </Nav>
@@ -94,6 +105,26 @@ class Header extends Component<IProps> {
                 </Navbar>
             </header>
         );
+    }
+    
+    private searchKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+        let value = e.currentTarget.value;
+        this.setState({query: value});
+        
+        if (e.key === "Enter" && value !== "") {
+            this.props.history.push("/search?q=" + value);
+            this.props.onSearchChanged(value);
+            e.preventDefault();
+        }
+    }
+    
+    private searchInput(e: React.FormEvent<HTMLInputElement>) {
+        this.setState({query: e.currentTarget.value});
+    }
+    
+    private clearSearch() {
+        (document.getElementById("search") as HTMLInputElement).value = "";
+        this.setState({query: ""});
     }
 }
 
