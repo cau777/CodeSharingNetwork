@@ -38,16 +38,16 @@ namespace Api.Services.Database
             if (result) _namesInUse.Add(element.Username);
             return result;
         }
-        
-        public async Task<bool> EditByUsername([NotNull] string username, 
-            Optional<string> name = default, 
+
+        public async Task<bool> EditByUsername([NotNull] string username,
+            Optional<string> name = default,
             Optional<byte[]> password = default,
             Optional<byte[]> image = default,
             Optional<string> bio = default)
         {
             User user = await FindByUsername(username);
             if (user is null) return false;
-            
+
             if (name.HasValue) user.Name = name.Value;
             if (password.HasValue) user.Password = password.Value;
             if (image.HasValue) user.ImageBytes = image.Value;
@@ -67,6 +67,27 @@ namespace Api.Services.Database
         public Task<User> FindByUsername([NotNull] string username)
         {
             return ItemSet.FirstOrDefaultAsync(o => o.Username == username);
+        }
+
+        public async Task<SearchResult[]> SearchUsers([NotNull] string query)
+        {
+            string lowerQuery = query.ToLower();
+            return await ItemSet
+                .Where(o => o.Name.ToLower().Contains(lowerQuery) || o.Username.ToLower().Contains(lowerQuery))
+                .Select(o => new SearchResult(o.Username, o.Name))
+                .ToArrayAsync();
+        }
+
+        public class SearchResult
+        {
+            public string Username { get; }
+            public string Name { get;  }
+
+            public SearchResult(string username, string name)
+            {
+                Username = username;
+                Name = name;
+            }
         }
     }
 }

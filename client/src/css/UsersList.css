@@ -1,0 +1,33 @@
+.user-list {
+    display: flex;
+    flex-direction: column;
+    max-height: 60vh;
+    overflow-y: auto;
+    border: solid black 1px;
+    border-radius: 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0 1rem;
+    margin-bottom: 3rem;
+}
+
+.user-item {
+    display: flex;
+    margin: 1rem 0;
+    cursor: pointer;
+    align-items: center;
+}
+
+.user-item .user-info {
+    display: flex;
+    flex-direction: column;
+    margin-left: 0.4rem;
+}
+
+.user-item:hover .user-info {
+    color: var(--primary);
+}
+
+.user-item .user-info h5 {
+    margin-bottom: 0.1rem;
+}
+

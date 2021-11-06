@@ -78,6 +78,8 @@ namespace Api.Controllers
         [Route("search")]
         public async Task<IActionResult> SearchSnippets([FromQuery] string q, [FromQuery] int page)
         {
+            if (string.IsNullOrWhiteSpace(q)) return BadRequest(q);
+
             string username = User.GetUsername();
             User currentUser = await _userService.FindByUsername(username);
 
