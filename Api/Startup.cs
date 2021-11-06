@@ -60,6 +60,7 @@ namespace Api
             services.AddTransient<TokenService>();
             services.AddTransient<CodeSnippetService>();
             services.AddTransient<LikeService>();
+            services.AddTransient<FollowService>();
             
             services.AddSingleton<KeyTermsExtractor>();
         }

@@ -17,16 +17,24 @@ interface IProps {
 
 interface IState {
     info?: IUserInfo;
+    isFollowing?: boolean;
 }
 
 export class Profile extends Component<IProps, IState> {
+    private componentExists: boolean;
+    
     static contextType = AppContext;
     context !: React.ContextType<typeof AppContext>;
     
     constructor(props: any) {
         super(props);
         
+        this.getData = this.getData.bind(this);
+        this.isOwnProfile = this.isOwnProfile.bind(this);
+        this.follow = this.follow.bind(this);
+        
         this.state = {}
+        this.componentExists = true;
     }
     
     
@@ -37,9 +45,9 @@ export class Profile extends Component<IProps, IState> {
         let username = this.props.username;
         let name = info.name;
         let bio = info.bio;
-        let isOwnProfile = username === this.context.credentials?.username;
+        let isOwnProfile = this.isOwnProfile();
         
-        let infoColElements: JSX.Element = <span/>;
+        let infoColElements: JSX.Element;
         
         if (isOwnProfile) {
             infoColElements = (
@@ -49,6 +57,16 @@ export class Profile extends Component<IProps, IState> {
                     </Button>
                 </SimpleLink>
             );
+        } else {
+            infoColElements = (
+                <Button variant="secondary" id="follow" onMouseEnter={() => {
+                    if (this.state.isFollowing) document.getElementById("follow")!.innerText = "Unfollow";
+                }} onMouseLeave={() => {
+                    if (this.state.isFollowing) document.getElementById("follow")!.innerText = "Following";
+                }} onClick={this.follow}>
+                    {this.state.isFollowing ? "Following" : "Follow"}
+                </Button>
+            )
         }
         
         return (
@@ -59,7 +77,7 @@ export class Profile extends Component<IProps, IState> {
                     </div>
                     <h4>{name}</h4>
                     <h5 className="subtitle">@{username}</h5>
-                    <p>{bio ? bio : "No bio available"}</p>
+                    <p>{bio ? bio : <i>No bio available</i>}</p>
                     {infoColElements}
                 </div>
                 <div className="vertical-separator"/>
@@ -71,6 +89,58 @@ export class Profile extends Component<IProps, IState> {
     }
     
     public componentDidMount() {
-        api.get<IUserInfo>("/users/" + this.props.username + "/info").then(r => this.setState({info: r.data}));
+        this.getData().then();
+    }
+    
+    public componentWillUnmount() {
+        this.componentExists = false;
+    }
+    
+    private async getData() {
+        try {
+            let userInfoResult = await api.get<IUserInfo>("/users/" + this.props.username + "/info");
+            
+            if (userInfoResult.status !== 200) {
+                console.log(userInfoResult);
+                return;
+            }
+            
+            if (!this.isOwnProfile()) {
+                let isFollowingResult = await api.post<boolean>("/follow/check", this.props.username);
+                
+                if (isFollowingResult.status !== 200) {
+                    console.log(isFollowingResult);
+                    return;
+                }
+                
+                if (!this.componentExists) return;
+                this.setState({info: userInfoResult.data, isFollowing: isFollowingResult.data})
+            } else {
+                if (!this.componentExists) return;
+                this.setState({info: userInfoResult.data})
+            }
+            
+        } catch (e) {
+            console.log(e);
+        }
+    }
+    
+    private isOwnProfile() {
+        return this.props.username === this.context.credentials?.username;
+    }
+    
+    private async follow() {
+        try {
+            if (this.state.isFollowing) {
+                await api.post("follow/unfollow", this.props.username);
+            } else {
+                await api.post("follow", this.props.username);
+            }
+    
+            if (!this.componentExists) return;
+            this.setState({isFollowing: !this.state.isFollowing});
+        } catch (e) {
+            console.log(e);
+        }
     }
 }
