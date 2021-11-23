@@ -52,9 +52,11 @@ export class UsersSearchList extends Component<IProps, IState> {
             );
         }
         
-        return <div className="user-list">
-            {content}
-        </div>
+        return (
+            <div className="user-list">
+                {content}
+            </div>
+        );
     }
     
     public componentDidMount() {
