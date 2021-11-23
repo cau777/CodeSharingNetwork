@@ -17,10 +17,7 @@ namespace Api.Utils
             using IEnumerator<T1> t1 = e1.GetEnumerator();
             using IEnumerator<T2> t2 = e2.GetEnumerator();
 
-            while (t1.MoveNext() && t2.MoveNext())
-            {
-                yield return (t1.Current, t2.Current);
-            }
+            while (t1.MoveNext() && t2.MoveNext()) yield return (t1.Current, t2.Current);
         }
     }
 }

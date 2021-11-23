@@ -17,17 +17,15 @@ namespace Api.Services.Database
     {
         private const int SnippetsPerPage = 10;
         private readonly KeyTermsExtractor _keyTermsExtractor;
-        private readonly FollowService _followService;
 
         public override IQueryable<CodeSnippet> IncludingAll => ItemSet
             .Include(o => o.Author);
 
         public CodeSnippetService(DatabaseContext context, ILogger<CodeSnippetService> logger,
-            KeyTermsExtractor keyTermsExtractor, FollowService followService) : base(context,
+            KeyTermsExtractor keyTermsExtractor) : base(context,
             context.CodeSnippets, logger)
         {
             _keyTermsExtractor = keyTermsExtractor;
-            _followService = followService;
         }
 
         public Task<bool> HasElementsBefore(DateTime date)
@@ -38,23 +36,28 @@ namespace Api.Services.Database
         [ItemNotNull]
         public Task<long[]> FindSnippetsIdsPostedByUser(User user, int page)
         {
-            return ItemSet.Where(o => o.Author == user).OrderByDescending(o => o.Posted).Select(o => o.Id)
-                .Skip(page * SnippetsPerPage).Take(SnippetsPerPage).ToArrayAsync();
+            return ItemSet
+                .Where(o => o.Author == user)
+                .OrderByDescending(o => o.Posted)
+                .Select(o => o.Id)
+                .Skip(page * SnippetsPerPage)
+                .Take(SnippetsPerPage)
+                .ToArrayAsync();
         }
 
         private static double CalcSnippetScore(RecommendingContext context, DateTime referenceDateTime)
         {
             const double minutesWeight = -1;
-            const double connectionWeight = 120;
+            const double fromFriendWeight = 120;
             CodeSnippet snippet = context.Snippet;
 
             double minutes = (referenceDateTime - snippet.Posted).TotalMinutes;
-            return minutes * minutesWeight + connectionWeight * context.ConnectionScore;
+            return minutes * minutesWeight + (context.IsFromFried ? fromFriendWeight : 0);
         }
 
         /// <summary>
-        /// Finds the ids of the most relevant posts of the time period. Right now, it only sorts the by their date,
-        /// but in the future it'll consider the user's favorite language and topics
+        /// Finds the ids of the most relevant posts of the time period. It finds a score for each post considering date
+        /// and whether it was posted by following users
         /// </summary>
         /// <param name="start">The start of the time period to search</param>
         /// <param name="end">The end of the time period to search</param>
@@ -70,29 +73,27 @@ namespace Api.Services.Database
                 .Where(o => o.Posted >= start)
                 .Where(o => o.Posted < end)
                 .Where(o => o.Author != user) // Don't recommend the user's own posts
-                .Select(o => new RecommendingContext {ConnectionScore = 1, Snippet = o})
+                .Select(o => new RecommendingContext {IsFromFried = true, Snippet = o})
                 .Concat(ItemSet // Gets all posts in the time period
                     .Where(o => o.Posted >= start)
                     .Where(o => o.Posted < end)
                     .Where(o => o.Author != user) // Don't recommend the user's own posts
-                    .Select(o => new RecommendingContext {ConnectionScore = 0, Snippet = o})
+                    .Select(o => new RecommendingContext {IsFromFried = false, Snippet = o})
                 )
                 .ToArrayAsync();
 
             // Remove duplicates
             IDictionary<long, RecommendingContext> contextsById = new Dictionary<long, RecommendingContext>();
             foreach (RecommendingContext context in contexts)
-            {
                 if (contextsById.TryGetValue(context.Snippet.Id, out RecommendingContext currentContext))
                 {
-                    if (currentContext.ConnectionScore < context.ConnectionScore)
+                    if (!currentContext.IsFromFried)
                         contextsById[context.Snippet.Id] = context;
                 }
                 else
                 {
                     contextsById[context.Snippet.Id] = context;
                 }
-            }
 
             long[] result = contextsById
                 .Select(o => o.Value)
@@ -106,10 +107,16 @@ namespace Api.Services.Database
 
         private class RecommendingContext
         {
-            public int ConnectionScore { get; set; }
+            public bool IsFromFried { get; set; }
             public CodeSnippet Snippet { get; set; }
         }
 
+        /// <summary>
+        /// Find snippets that contain words from the query in the title or contain key terms
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
         [ItemNotNull]
         public async Task<long[]> SearchSnippets([NotNull] string query, int page)
         {
@@ -125,9 +132,9 @@ namespace Api.Services.Database
                 {
                     Element = o,
                     Score = EvaluateKeyTerms(o, searchKeyTerms) +
-                            EvaluateRayTerms(o, searchRawTerms, searchPrefixFunctions),
+                            EvaluateContent(o, searchRawTerms, searchPrefixFunctions),
                 })
-                .Where(tuple => tuple.Score != 0)
+                .Where(o => o.Score != 0)
                 .OrderByDescending(o => o.Score)
                 .Select(o => o.Element.Id)
                 .Skip(page * SnippetsPerPage)
@@ -135,16 +142,22 @@ namespace Api.Services.Database
                 .ToArray();
         }
 
-        private static int EvaluateRayTerms(SearchSnippetContext codeSnippet, IEnumerable<string> terms,
+        /// <summary>
+        /// Counts the search terms in the title of the snippet, using KMP algorithm
+        /// </summary>
+        /// <param name="codeSnippet"></param>
+        /// <param name="terms"></param>
+        /// <param name="prefixFunctions"></param>
+        /// <returns></returns>
+        private static int EvaluateContent(SearchSnippetContext codeSnippet, IEnumerable<string> terms,
             IEnumerable<int[]> prefixFunctions)
         {
             string text = codeSnippet.Title.ToLower();
 
             int result = 0;
             foreach ((string term, int[] prefixFunc) in IterationUtils.Zip(terms, prefixFunctions))
-            {
-                if (StringAlgorithms.KMPContains(text, term, prefixFunc)) result++;
-            }
+                if (StringAlgorithms.KMPContains(text, term, prefixFunc))
+                    result++;
 
             return result;
         }

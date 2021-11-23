@@ -120,7 +120,7 @@ namespace Api.Controllers
         public async Task<IActionResult> UpdateProfileInfo([FromBody] UserInfoDTO info)
         {
             bool result = await _userService.EditByUsername(User.GetUsername(),
-                name: info.Name,
+                info.Name,
                 bio: info.Bio);
 
             return result ? Ok() : BadRequest();

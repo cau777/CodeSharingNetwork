@@ -19,7 +19,7 @@ namespace Api.DataStructures
         {
             return _nodes.Contains(element);
         }
-        
+
         public bool ContainsEdge([NotNull] T element1, [NotNull] T element2)
         {
             return _edges.Contains((element1, element2)) || _edges.Contains((element2, element1));

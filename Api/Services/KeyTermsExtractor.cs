@@ -14,14 +14,15 @@ namespace Api.Services
         {
             PythonRunner runner = new("key_terms_extractor");
             byte[] textBytes = Encoding.Default.GetBytes(text);
-            string base64 = Convert.ToBase64String(textBytes);
+            string
+                base64 = Convert.ToBase64String(textBytes); // Encode in base64 to avoid errors with quotes and spaces
 
             PythonRunner.Result result = await runner.RunAsync(
                 ("text", base64),
                 ("count", DefaultCount + ""),
                 ("dataset", FileName),
                 ("save", save ? "1" : "0"));
-            
+
             if (result.Error.Length > 1) throw new Exception(result.Error);
             return result.Output.Split(' ');
         }

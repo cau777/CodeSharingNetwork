@@ -9,11 +9,14 @@ using JetBrains.Annotations;
 
 namespace Api.Services
 {
+    /// <summary>
+    /// Utility class to execute python scripts synchronously and asynchronously
+    /// </summary>
     public class PythonRunner
     {
         private const string PythonVenvPath = @"Python\venv\Scripts\python.exe";
         private const string PythonPath = @"Python";
-        
+
         private readonly ProcessStartInfo _psi;
         private readonly string _scriptPath;
 
@@ -44,7 +47,7 @@ namespace Api.Services
                 Output = process.StandardOutput.ReadToEnd().RemoveSuffix("\r\n"),
             };
         }
-        
+
         public async Task<Result> RunAsync([NotNull] params (string, string)[] args)
         {
             _psi.Arguments = $"\"{_scriptPath}\" {CreateArguments(args)}";
@@ -63,11 +66,8 @@ namespace Api.Services
         {
             StringBuilder argsString = new();
 
-            foreach ((string name, string value) in args)
-            {
-                argsString.Append($"--{name}=\"{value}\" ");
-            }
-            
+            foreach ((string name, string value) in args) argsString.Append($"--{name}=\"{value}\" ");
+
             return argsString.ToString();
         }
 

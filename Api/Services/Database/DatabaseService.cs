@@ -13,11 +13,6 @@ namespace Api.Services.Database
     public abstract class DatabaseService<T> where T : class
     {
         /// <summary>
-        /// IEnumerable of all element in the table
-        /// </summary>
-        public IEnumerable<T> Elements => IncludingAll;
-
-        /// <summary>
         /// IQueryable including values from related tables. Example: Author.Name of CodeSnippet
         /// </summary>
         public virtual IQueryable<T> IncludingAll => ItemSet;

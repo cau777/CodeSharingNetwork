@@ -42,7 +42,7 @@ namespace Api.Controllers
         {
             if (string.IsNullOrWhiteSpace(q)) return BadRequest(q);
             Console.WriteLine(q);
-            
+
             UserService.SearchResult[] results = await _userService.SearchUsers(q);
             results = results.Where(o => o.Username != User.GetUsername()).ToArray();
             return Json(results);

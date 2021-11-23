@@ -11,10 +11,10 @@ namespace Api.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
-        
+
         [Required]
         public string Title { get; set; }
-        
+
         [Required]
         public User Author { get; set; }
 
@@ -22,10 +22,10 @@ namespace Api.Models
 
         [Required]
         public string Code { get; set; }
-        
+
         [Required]
         public string Language { get; set; }
-        
+
         [Required]
         public DateTime Posted { get; set; }
 

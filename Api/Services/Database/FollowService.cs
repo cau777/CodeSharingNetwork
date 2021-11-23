@@ -30,7 +30,7 @@ namespace Api.Services.Database
         {
             if (element.Origin == element.Target) return false;
             if (await IsFollowing(element.Origin, element.Target)) return false;
-            
+
             return await base.Add(element);
         }
 

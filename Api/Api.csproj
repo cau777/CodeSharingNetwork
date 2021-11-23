@@ -3,18 +3,18 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
-	
-	<PropertyGroup>
-		<RuntimeIdentifiers>win10-x64;linux-x64</RuntimeIdentifiers>
-	</PropertyGroup>
+
+    <PropertyGroup>
+        <RuntimeIdentifiers>win10-x64;linux-x64</RuntimeIdentifiers>
+    </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2021.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.10" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.10" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.10">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.10" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -23,14 +23,14 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Python\key_terms_extractor.py" />
-      <Content Include="Python\key_terms_extractor.py">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
+        <None Remove="Python\key_terms_extractor.py" />
+        <Content Include="Python\key_terms_extractor.py">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Data" />
+        <Folder Include="Data" />
     </ItemGroup>
 
 </Project>

@@ -9,7 +9,7 @@ namespace Api.Controllers.DataTransferObjects
         [MinLength(1)]
         [MaxLength(50)]
         public string Name { get; set; }
-        
+
         [MaxLength(500)]
         public string Bio { get; set; }
     }

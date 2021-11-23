@@ -69,6 +69,11 @@ namespace Api.Services.Database
             return ItemSet.FirstOrDefaultAsync(o => o.Username == username);
         }
 
+        /// <summary>
+        /// Find users that contains the query in the Name or Username
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
         public async Task<SearchResult[]> SearchUsers([NotNull] string query)
         {
             string lowerQuery = query.ToLower();
@@ -81,7 +86,7 @@ namespace Api.Services.Database
         public class SearchResult
         {
             public string Username { get; }
-            public string Name { get;  }
+            public string Name { get; }
 
             public SearchResult(string username, string name)
             {

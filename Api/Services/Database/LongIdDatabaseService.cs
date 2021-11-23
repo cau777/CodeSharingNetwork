@@ -9,7 +9,8 @@ namespace Api.Services.Database
 {
     public abstract class LongIdDatabaseService<T> : DatabaseService<T> where T : class, ILongIdModel
     {
-        protected LongIdDatabaseService(DatabaseContext context, DbSet<T> itemSet, ILogger<LongIdDatabaseService<T>> logger) :
+        protected LongIdDatabaseService(DatabaseContext context, DbSet<T> itemSet,
+            ILogger<LongIdDatabaseService<T>> logger) :
             base(context, itemSet, logger) { }
 
         [ItemCanBeNull]

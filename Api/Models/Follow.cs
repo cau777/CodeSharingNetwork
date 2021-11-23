@@ -9,6 +9,7 @@ namespace Api.Models
     {
         [Key]
         public long Id { get; set; }
+
         public User Origin { get; set; }
         public User Target { get; set; }
     }

@@ -11,6 +11,7 @@ namespace Api.Services
     public class TokenService
     {
         private readonly byte[] _keyBytes;
+
         public TokenService(IConfiguration configuration)
         {
             _keyBytes = Encoding.ASCII.GetBytes(configuration["Security:JwtKey"]);
@@ -33,7 +34,7 @@ namespace Api.Services
                 }),
                 Expires = expiringDate,
                 SigningCredentials =
-                    new SigningCredentials(new SymmetricSecurityKey(_keyBytes), SecurityAlgorithms.HmacSha256Signature)
+                    new SigningCredentials(new SymmetricSecurityKey(_keyBytes), SecurityAlgorithms.HmacSha256Signature),
             };
             SecurityToken token = handler.CreateToken(descriptor);
             return handler.WriteToken(token);

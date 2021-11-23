@@ -24,7 +24,7 @@ namespace Api
         }
 
         public IConfiguration Configuration { get; }
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
@@ -47,8 +47,8 @@ namespace Api
                     ValidateAudience = false,
                 };
             });
-            
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" }); });
+
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Api", Version = "v1"}); });
             services.AddMvc(o => { o.Filters.Add<AutoLoggingFilter>(); });
 
             services.AddDbContext<DatabaseContext>(o => o.UseSqlite(Configuration["Database:ConnectionString"]));
@@ -61,10 +61,10 @@ namespace Api
             services.AddTransient<CodeSnippetService>();
             services.AddTransient<LikeService>();
             services.AddTransient<FollowService>();
-            
+
             services.AddSingleton<KeyTermsExtractor>();
         }
-        
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

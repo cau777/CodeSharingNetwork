@@ -12,7 +12,7 @@ namespace Api.Controllers
     {
         private readonly FollowService _followService;
         private readonly UserService _userService;
-        
+
         public FollowsController(FollowService followService, UserService userService)
         {
             _followService = followService;
@@ -50,7 +50,7 @@ namespace Api.Controllers
             bool result = await _followService.RemoveByOriginAndTarget(origin, target);
             return result ? Ok() : BadRequest();
         }
-        
+
         [HttpPost]
         [Authorize]
         [Route("check")]
